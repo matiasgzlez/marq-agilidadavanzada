@@ -1,6 +1,6 @@
-# MARQ Alloy — Agilidad avanzada
+# MARQ — Alloy & MARQUI · Agilidad avanzada
 
-**Arquitectura, arte y comunidad para hacer visible a MARQ en Resistencia.**
+**Dos propuestas para MARQ: presencia en la ciudad y agilidad en el equipo.**
 
 Este proyecto es una presentación web de **MARQ Alloy**, una propuesta para Estudio MARQ que busca transformar sus desarrollos en lugares que la ciudad reconozca, recuerde y comparta.
 
@@ -31,13 +31,23 @@ La experiencia sigue el recorrido **Dolor → Solución → Noticias** e incluye
 - Una visualización conceptual de una escultura frente a Torre Natalini, con comparación de la imagen actual y la propuesta.
 - Google Maps integrado y un enlace a Google Earth para explorar el entorno.
 - Cuatro maquetas de noticias inspiradas en Diario Norte, Diario Chaco, Diario TAG y DataChaco, con lectura ampliada.
-- Un selector entre **Soluciones** y **Design thinking**. La segunda solución y Design thinking tienen espacios reservados para una próxima etapa.
+- Un selector entre **Soluciones** y **Design thinking**. MARQUI ocupa la segunda solución; Design thinking mantiene su espacio reservado para una próxima etapa.
 
 ### El escenario de Natalini
 
 Torre Natalini ya está construida. Aquí se utiliza como referencia visual para **imaginar que el edificio y su escultura se inauguran juntos**. Ese ejercicio permite mostrar cómo se comunicaría la propuesta al aplicarla a un nuevo desarrollo de MARQ.
 
 Las noticias son textos originales y ficticios; no fueron publicadas por los medios ni representan su respaldo. La imagen de la intervención fue generada con IA. Esta presentación conceptual no es el sitio oficial de MARQ. Los acuerdos con artistas e instituciones, el emplazamiento y los permisos se definirían durante la implementación; la instalación de una obra no implica su declaración automática como patrimonio cultural.
+
+## MARQUI: todo MARQ, desde WhatsApp
+
+La segunda propuesta es un asistente para el equipo comercial y operativo de MARQ. Su identidad incorpora el personaje en forma de Q compartido por el equipo, con una paleta de verde salvia que acompaña el estilo de Alloy.
+
+La presentación incluye seis recorridos interactivos: responder consultas, crear proyectos, actualizar precios públicos, gestionar señas, compartir avances de obra y entender la demanda con MARQador. Cada función explica el pedido, la preparación y la decisión del equipo.
+
+La demo recrea WhatsApp Web con una lista ilustrativa de chats, conversaciones, sugerencias internas y un borrador editable. También permite visualizar el modo celular. Son simulaciones locales: no hay conexión a WhatsApp, pagos, publicación de proyectos ni envíos reales.
+
+Abrí `http://127.0.0.1:4173/?solution=marqui` para entrar directamente. La referencia de producto está en [docs/marqui-referencia.md](docs/marqui-referencia.md). `marqui.js` y `marqui.css` contienen la interacción y los estilos propios de esta propuesta.
 
 ## Ejecutar en tu computadora
 

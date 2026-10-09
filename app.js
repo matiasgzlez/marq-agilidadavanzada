@@ -15,7 +15,7 @@ function updateSolutionIdentity() {
   $(".brand").setAttribute("aria-label", marqui ? "MARQUI, inicio" : "MARQ Alloy, inicio");
   $(".hero h1").innerHTML = marqui ? 'Menos pendientes.<br />Más tiempo para <em>hacer MARQ.</em>' : alloyHero.title;
   $(".hero-description").innerHTML = marqui ? 'Tu equipo, con una mano más.<br />Consultas, proyectos y decisiones. Todo MARQ, desde WhatsApp.' : alloyHero.description;
-  $(".hero .actions").innerHTML = marqui ? '<a class="button primary" href="#marqui-demo">Conocé a MARQUI <span>↓</span></a><a class="button translucent" href="#marqui-demo">Probá la demo <span>↗</span></a>' : alloyHero.actions;
+  $(".hero .actions").innerHTML = marqui ? '<a class="button primary" href="#marqui">Conocé a MARQUI <span>↓</span></a><a class="button translucent" href="#marqui-demo">Probá la demo <span>↗</span></a>' : alloyHero.actions;
   $(".hero-caption").innerHTML = marqui ? '<span class="tiny-dot"></span> Tu asistente de equipo <span class="caption-place">Propuesta conceptual</span>' : alloyHero.caption;
   $(".header-link").href = marqui ? "#marqui-demo" : "#futuro";
   $(".header-link").innerHTML = marqui ? 'Probar MARQUI <span>↗</span>' : 'Explorar el futuro <span>↗</span>';

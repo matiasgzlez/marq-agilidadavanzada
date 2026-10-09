@@ -34,3 +34,12 @@ Google Earth se ofrece como enlace externo, sin incrustación 3D propia. Las im�
 - Lectura de noticia abre/cierra correctamente; consola sin errores JavaScript.
 - Build Vite y node --check app.js correctos.
 - La herramienta de viewport no aplicó el cambio a 390×844 (innerWidth siguió en 1440). Estilos móviles implementados; verificación visual móvil pendiente.
+
+## MARQUI — seis funciones y demo WhatsApp Web
+- Añadida segunda solución MARQUI; eliminada la función de coordinación del equipo del selector de la demo.
+- Seis casos con explicación, tres pasos, conversación y acciones simuladas.
+- Verificado en navegador: selección de respuesta, edición, envío ficticio y reinicio con borrador vacío y envío deshabilitado.
+- Verificados los cinco flujos restantes: paso de revisión, confirmación/continuación y estado completado.
+- Verificado el cambio entre WhatsApp Web y celular. La vista de celular es un modo de la demo, no una integración real.
+- Build Vite, sintaxis JS y git diff --check correctos.
+- Tras propagarse el cambio de viewport, se verificó 390×844: sin desborde horizontal, publicación simulada de avance completada y selección de respuesta en modo celular correcta.

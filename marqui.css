@@ -143,3 +143,136 @@
  .channel-visual { gap:8px; }
  .channel-visual img { width:50px; }
 }
+
+/* Six guided tasks, then a full-width WhatsApp-style workspace. */
+.marqui-workspace { grid-template-columns:1fr; gap:32px; }
+.marqui-usecases { grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+.marqui-usecases button { border-color:#dedfd6; background:#f4f4ed; padding:19px; }
+.marqui-usecases button > span { grid-row:span 2; }
+.marqui-usecases strong { font-size:18px; }
+.marqui-usecases small { font-size:12px; }
+.marqui-feature-explainer { display:grid; grid-template-columns:1.2fr 1fr; gap:65px; align-items:center; padding:12px 0 16px; min-height:225px; }
+.marqui-feature-explainer h3 { font-size:34px; margin-bottom:18px; }
+.marqui-feature-explainer p { font-size:18px; }
+.marqui-feature-explainer ol { list-style:none; margin:0; padding:0; counter-reset:task; }
+.marqui-feature-explainer li { display:flex; gap:15px; align-items:center; counter-increment:task; padding:12px 0; font-size:15px; color:#56624d; border-bottom:1px solid #e2e4d9; }
+.marqui-feature-explainer li::before { content:counter(task); display:grid; place-items:center; flex:none; width:24px; height:24px; border:1px solid #cbd6bb; border-radius:50%; color:#758967; font-size:11px; }
+.marqui-demo-panel { border-radius:20px; background:#f6f6f3; border-color:#d9ded5; }
+.demo-toolbar { display:flex; align-items:center; justify-content:space-between; padding:16px 22px; gap:25px; border-bottom:1px solid #dbe0d6; }
+.demo-toolbar > span:first-child { font-size:12px; color:#75816c; }
+.demo-toolbar .marqui-mode { width:270px; margin:0; }
+.demo-toolbar .demo-badge { margin:0; }
+.wa-window { display:grid; grid-template-columns:270px minmax(0,1fr); align-items:stretch; min-height:800px; }
+.wa-sidebar { background:#fff; border-right:1px solid #dfe4dc; position:relative; }
+.wa-sidebar-top { display:flex; align-items:center; justify-content:space-between; padding:25px 20px; }
+.wa-sidebar-top strong { color:#168c69; font-family:var(--display); font-size:21px; letter-spacing:-.04em; }
+.wa-sidebar-top > span { color:#5b6861; font-size:19px; }
+.wa-search { background:#f1f3f0; margin:0 14px; padding:9px 12px; color:#859087; border-radius:8px; font-size:11px; }
+.wa-filters { display:flex; gap:8px; padding:15px; }
+.wa-filters span { background:#f1f3f0; padding:3px 11px; font-size:11px; border-radius:20px; color:#788477; }
+.wa-filters span:first-child { background:#d8f1dc; color:#25885c; }
+.wa-contact { display:flex; gap:12px; align-items:center; padding:18px 16px; border-bottom:1px solid #f1f2ee; }
+.wa-contact.active { background:#edf3e9; }
+.wa-contact > img { width:40px; height:40px; object-fit:contain; }
+.wa-contact > div { min-width:0; flex:1; }
+.wa-contact strong { display:block; font-size:13px; font-weight:600; }
+.wa-contact small { display:block; font-size:10px; color:#829080; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.wa-contact time { font-size:9px; color:#8a9688; align-self:start; margin-top:5px; }
+.wa-person { display:grid; place-items:center; width:40px; height:40px; flex:none; border-radius:50%; background:#d4e1d8; color:#688774; font-size:18px; font-weight:500; }
+.wa-person img { width:100%; height:100%; object-fit:contain; }
+.person-clay { background:#e9ded1; color:#a28a6d; }
+.wa-sidebar-note { position:absolute; bottom:22px; left:20px; right:20px; font-size:10px; color:#9aa293; line-height:1.8; }
+.wa-main { min-width:0; background:#efeae2; }
+.wa-main .marqui-chat-top { background:#f0f2ef; padding:14px 24px; border-bottom:1px solid #e0e4dc; }
+.wa-chat-tools { margin-left:auto; font-size:20px; color:#7c867b; }
+.wa-main .marqui-mode-note { background:#fff8d8; padding:9px 18px; text-align:center; margin:0; color:#8a7b4d; font-size:11px; min-height:36px; }
+.wa-main .marqui-conversation { min-height:700px; padding:22px 35px; background-image:radial-gradient(#9ba99024 .8px,transparent .8px); background-size:15px 15px; gap:14px; }
+.wa-main .chat-date { font-size:9px; padding:5px 10px; border-radius:6px; background:#ffffffc9; color:#84907f; }
+.wa-main .chat-bubble { border-radius:9px; padding:11px 14px 7px; box-shadow:0 1px 1px #00000014; min-width:150px; max-width:85%; position:relative; }
+.wa-main .chat-bubble p { color:#334039; font-size:14px; line-height:1.5; white-space:pre-line; }
+.wa-main .chat-bubble.incoming { background:white; border:0; border-top-left-radius:0; }
+.wa-main .chat-bubble.outgoing { background:#d9fdd3; border-top-right-radius:0; }
+.bubble-time { display:block; text-align:right; font-size:9px; color:#8c9c87; margin-top:3px; }
+.wa-assistant { width:100%; background:#ffffffdc; border:1px solid #9eb591; border-radius:14px; padding:19px; margin:8px 0; box-shadow:0 4px 14px #47693a0d; }
+.wa-assistant-heading { display:flex; gap:9px; align-items:center; margin-bottom:9px; }
+.wa-assistant-heading img { width:26px; height:26px; object-fit:contain; }
+.wa-assistant-heading strong { font-size:12px; }
+.wa-assistant-heading small { margin-left:auto; font-size:8px; border:1px solid #c3d2b8; border-radius:20px; padding:3px 8px; color:#7c8f6b; }
+.wa-assistant-intro { font-size:11px; margin-bottom:13px; }
+.reply-options button { display:flex; gap:10px; padding:10px; font-size:12px; background:white; }
+.reply-number { color:#9bae8c; font-size:10px; }
+.wa-composer { width:100%; padding:14px; background:#f5f7f1; border-radius:12px; border:1px solid #d9e0d1; }
+.wa-composer .draft-label { display:block; margin-bottom:8px; }
+.wa-composer #marqui-draft { min-height:75px; background:white; border:0; font-size:13px; }
+.wa-composer .chat-action { width:auto; margin-top:8px; float:right; padding:9px 18px; background:#168b67; }
+.wa-composer::after { content:''; display:block; clear:both; }
+.wa-main .chat-status { font-size:12px; color:#5f7054; margin-top:2px; }
+.wa-main .chat-preview { background:#fff; border-color:#d5e1cd; padding:23px; max-width:90%; margin:5px 0; }
+.chat-preview small { display:block; color:#97a18e; font-size:9px; letter-spacing:.06em; margin-bottom:10px; }
+.chat-preview p { white-space:pre-line; line-height:1.8; }
+.wa-main .marqui-conversation > .chat-action { max-width:90%; background:#168b67; text-align:center; }
+.wa-main .marqui-demo-foot { background:#f0f2ef; }
+.wa-file { align-self:flex-end; display:grid; grid-template-columns:30px 1fr; gap:3px 10px; background:#d9fdd3; border-radius:9px; padding:15px; max-width:85%; }
+.wa-file-icon { grid-row:span 2; color:#658b5b; font-size:25px; }
+.wa-file strong { font-size:12px; }
+.wa-file small { font-size:10px; color:#77936e; }
+.mobile-mode .wa-sidebar { display:none; }
+.mobile-mode .wa-window { display:block; max-width:510px; margin:25px auto; border:6px solid #333b33; border-radius:30px; overflow:hidden; }
+.mobile-mode .wa-main .marqui-conversation { padding:20px; }
+.mobile-mode .wa-assistant-heading { flex-wrap:wrap; }
+@media(max-width:1000px) {
+ .wa-window { grid-template-columns:210px minmax(0,1fr); }
+ .wa-main .marqui-conversation { padding:22px; }
+ .marqui-usecases button { grid-template-columns:20px 1fr; }
+ .marqui-feature-explainer { gap:35px; }
+}
+@media(max-width:700px) {
+ .marqui-usecases { grid-template-columns:repeat(2,minmax(0,1fr)); }
+ .marqui-usecases button { grid-template-columns:1fr; padding:12px; }
+ .marqui-usecases strong { font-size:14px; }
+ .marqui-usecases small { font-size:10px; }
+ .marqui-feature-explainer { grid-template-columns:1fr; gap:22px; min-height:0; padding:0; }
+ .marqui-feature-explainer h3 { font-size:28px; }
+ .marqui-feature-explainer p { font-size:17px; }
+ .marqui-feature-explainer li { font-size:13px; }
+ .demo-toolbar { padding:14px 12px; gap:10px; flex-wrap:wrap; }
+ .demo-toolbar > span:first-child { display:none; }
+ .demo-toolbar .marqui-mode { width:100%; order:1; }
+ .demo-toolbar .demo-badge { font-size:8px; margin:auto; }
+ .wa-sidebar { display:none; }
+ .wa-window { display:block; }
+ .wa-main .marqui-conversation { padding:16px 12px; min-height:760px; }
+ .wa-main .marqui-chat-top { padding:14px; }
+ .wa-main .chat-bubble { max-width:95%; }
+ .wa-main .chat-bubble p { font-size:13px; }
+ .wa-assistant { padding:12px; }
+ .wa-assistant-heading { flex-wrap:wrap; }
+ .wa-assistant-heading small { margin-left:35px; }
+ .wa-assistant-heading strong { font-size:11px; }
+ .reply-options button { font-size:11px; }
+ .wa-main .chat-preview,.wa-main .marqui-conversation > .chat-action { max-width:100%; }
+ .mobile-mode .wa-window { margin:10px; border-width:3px; border-radius:20px; }
+ .mobile-mode .wa-main .marqui-conversation { padding:16px 10px; }
+}
+.marqui-stem { width:265px; }
+
+/* The task picker follows the conversation within the demo only. */
+.marqui-demo-panel { overflow:visible; }
+.demo-toolbar { position:sticky; top:104px; z-index:8; background:#f6f7f2f5; backdrop-filter:blur(14px); border-radius:20px 20px 0 0; box-shadow:0 5px 16px #24352608; }
+.wa-window { border-radius:0 0 20px 20px; overflow:hidden; }
+.demo-case-picker { min-width:0; }
+.demo-case-picker label { display:block; font-size:10px; color:#7b8971; margin-bottom:5px; }
+.demo-case-picker > div { display:flex; align-items:center; gap:7px; }
+.demo-case-picker select { font:inherit; font-size:13px; font-weight:500; color:#344a3b; background:#e8eddf; border:1px solid #cbd5bf; border-radius:9px; padding:9px 28px 9px 12px; max-width:100%; cursor:pointer; }
+.demo-case-picker button { width:34px; height:36px; border:1px solid #d5ddcc; border-radius:9px; background:white; color:#45603b; flex:none; }
+.demo-case-picker button:hover { background:#e3ecd8; }
+.demo-case-picker select:focus-visible { outline:3px solid #8a9f76; outline-offset:3px; }
+@media(max-width:1000px) { .demo-toolbar .demo-badge { display:none; } }
+@media(max-width:700px) {
+ .demo-toolbar { top:116px; gap:10px; padding:12px; }
+ .demo-case-picker { width:100%; }
+ .demo-case-picker > div { width:100%; }
+ .demo-case-picker select { flex:1; width:0; font-size:12px; padding-left:8px; padding-right:8px; }
+ .demo-case-picker label { font-size:9px; }
+ .demo-toolbar .marqui-mode { width:100%; }
+}

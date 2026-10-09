@@ -51,3 +51,9 @@ También se consideró Compare para las vistas de Natalini; no se incorporó por
 
 ### Cuatro maquetas editoriales (9 de octubre de 2026)
 Se revisaron las portadas y recursos públicos de https://www.diarionorte.com/ , https://www.diariochaco.com/ , https://www.diariotag.com/ y https://www.datachaco.com/ . Se guardaron sus logos en assets. Colores observados en CSS: Diario Chaco #bc1918, TAG #125ecc, DataChaco #d82727. Norte conserva su logo verde/amarillo, títulos serif y etiquetas amarillas. Titulares y textos de las maquetas son originales, ficticios, sin citas inventadas de personas reales.
+
+### MARQUI
+- Texto de referencia facilitado por Matias: `marqui-referencia.md`. Describe una propuesta, no integraciones implementadas.
+- https://gasti.pro/ : referencia de presentación de un asistente cercano, con ejemplos conversacionales y demostraciones de producto. No se reutilizaron sus textos, personajes ni código.
+- Personaje Q facilitado por Matias; versión con transparencia preparada mediante edición asistida por IA en `assets/marqui-mascot.png`.
+- Referencias visuales de WhatsApp compartidas por Matias. El simulador está construido en HTML/CSS/JavaScript, sin conexión ni afiliación con WhatsApp.

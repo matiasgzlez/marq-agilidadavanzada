@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#242622" />
     <meta
       name="description"
-      content="MARQ Alloy. Una propuesta que une arquitectura, arte y comunidad en Resistencia."
+      content="Dos propuestas para MARQ: Alloy une arquitectura y arte; MARQUI acompaña al equipo desde WhatsApp."
     />
     <title>MARQ — Alloy & MARQUI</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -300,27 +300,27 @@
             <div><h2>El equipo construye.<br />Los pendientes<br /><em>se acumulan.</em></h2><p>Responder lo mismo. Buscar un precio. Pedir que actualicen la web. La información está, pero conectar cada parte lleva tiempo.</p></div>
             <div class="marqui-pain-stack"><div class="pending-message"><span>Consulta · Pauta</span><p>Hola, ¿precio y financiación?</p></div><div class="pending-message"><span>Lista de precios</span><p>¿Esta es la última versión?</p></div><div class="pending-message"><span>Equipo · Obra</span><p>Tenemos fotos nuevas. Falta subirlas.</p></div><p class="pain-stat"><strong>4 h</strong><span>por día respondiendo consultas cuando hay pauta, según el relevamiento compartido.</span></p></div>
           </section>
-          <section class="marqui-introduction">
+          <section class="marqui-introduction" id="marqui">
             <div class="wrap"><div class="marqui-wordmark" role="img" aria-label="MARQUI: MARQ con su personaje en la Q"><span class="marqui-stem"><img src="assets/marq-official.svg" alt="" /></span><img class="marqui-q" src="assets/marqui-mascot.png" alt="" /></div><h2>Todo MARQ.<br /><em>A una conversación.</em></h2><p>Un asistente para el equipo, en el lugar donde ya trabaja: WhatsApp. Le escribís, le mandás un audio o una foto. MARQUI conecta la información y prepara el siguiente paso.</p><a class="button dark" href="#marqui-demo">Probá la experiencia <span>↗</span></a><div class="marqui-input-types"><span>Texto</span><span>Audio</span><span>Fotos y planos</span></div></div>
           </section>
           <section class="wrap marqui-demo-section" id="marqui-demo">
             <div class="section-heading"><h2>Así se sentiría<br />trabajar con <em>MARQUI.</em></h2><p class="section-lead">Elegí una tarea y recorré la conversación. Son ejemplos interactivos de la propuesta, sin conexión a WhatsApp, la web ni pagos reales.</p></div>
             <div class="marqui-workspace">
-              <div class="marqui-usecases" role="tablist" aria-label="Tareas de MARQUI" aria-orientation="vertical">
+              <div class="marqui-usecases" role="tablist" aria-label="Tareas de MARQUI" aria-orientation="horizontal">
                 <button role="tab" id="marqui-tab-consultas" aria-controls="marqui-demo-panel" aria-selected="true" data-marqui-case="consultas"><span>01</span><strong>Responder consultas</strong><small>La persona responde. MARQUI ayuda.</small></button>
                 <button role="tab" id="marqui-tab-proyectos" aria-controls="marqui-demo-panel" aria-selected="false" tabindex="-1" data-marqui-case="proyectos"><span>02</span><strong>Crear un proyecto</strong><small>De una conversación a una landing.</small></button>
                 <button role="tab" id="marqui-tab-precios" aria-controls="marqui-demo-panel" aria-selected="false" tabindex="-1" data-marqui-case="precios"><span>03</span><strong>Actualizar precios</strong><small>Una lista. La misma información.</small></button>
                 <button role="tab" id="marqui-tab-reservas" aria-controls="marqui-demo-panel" aria-selected="false" tabindex="-1" data-marqui-case="reservas"><span>04</span><strong>Reservas y señas</strong><small>Del interés a la reserva.</small></button>
                 <button role="tab" id="marqui-tab-obra" aria-controls="marqui-demo-panel" aria-selected="false" tabindex="-1" data-marqui-case="obra"><span>05</span><strong>Compartir avances</strong><small>De la obra a la web.</small></button>
                 <button role="tab" id="marqui-tab-mercado" aria-controls="marqui-demo-panel" aria-selected="false" tabindex="-1" data-marqui-case="mercado"><span>06</span><strong>Escuchar al mercado</strong><small>MARQador encuentra las señales.</small></button>
-                <button role="tab" id="marqui-tab-equipo" aria-controls="marqui-demo-panel" aria-selected="false" tabindex="-1" data-marqui-case="equipo"><span>07</span><strong>Coordinar al equipo</strong><small>Roles claros. Cambios registrados.</small></button>
               </div>
+              <div class="marqui-feature-explainer" aria-live="polite"><div><h3 id="marqui-feature-title"></h3><p id="marqui-feature-description"></p></div><ol id="marqui-feature-steps"></ol></div>
               <div class="marqui-demo-panel" id="marqui-demo-panel" role="tabpanel" aria-labelledby="marqui-tab-consultas">
-                <div class="marqui-chat-top"><img src="assets/marqui-mascot.png" alt="" /><div><strong>MARQUI</strong><span>Tu asistente de MARQ</span></div><span class="demo-badge">DEMO</span></div>
-                <div class="marqui-mode" role="group" aria-label="Modo de la demostración"><button aria-pressed="true" data-marqui-mode="web">WhatsApp Web</button><button aria-pressed="false" data-marqui-mode="mobile">Celular</button></div>
-                <p id="marqui-mode-note" class="marqui-mode-note">Dentro del chat con el cliente, en el navegador.</p>
-                <div id="marqui-conversation" class="marqui-conversation"></div>
-                <div class="marqui-demo-foot"><span class="tiny-dot"></span>Simulación local · Vos tenés el control<button id="marqui-reset" aria-label="Reiniciar ejemplo de MARQUI">↺</button></div>
+                <div class="demo-toolbar"><div class="demo-case-picker"><label for="marqui-case-select">Elegí un ejemplo</label><div><button type="button" data-case-step="-1" aria-label="Ejemplo anterior">←</button><select id="marqui-case-select"><option value="consultas">01 · Responder consultas</option><option value="proyectos">02 · Crear un proyecto</option><option value="precios">03 · Actualizar precios</option><option value="reservas">04 · Reservas y señas</option><option value="obra">05 · Compartir avances</option><option value="mercado">06 · Escuchar al mercado</option></select><button type="button" data-case-step="1" aria-label="Ejemplo siguiente">→</button></div></div><div class="marqui-mode" role="group" aria-label="Modo de la demostración"><button aria-pressed="true" data-marqui-mode="web">WhatsApp Web</button><button aria-pressed="false" data-marqui-mode="mobile">Celular</button></div><span class="demo-badge">DEMO INTERACTIVA</span></div>
+                <div class="wa-window">
+                  <aside class="wa-sidebar" aria-label="Lista ilustrativa de conversaciones"><div class="wa-sidebar-top"><strong>WhatsApp</strong><span aria-hidden="true">◉ &nbsp; ⋮</span></div><div class="wa-search" aria-hidden="true">⌕ &nbsp; Buscar un chat</div><div class="wa-filters" aria-hidden="true"><span>Todos</span><span>No leídos</span></div><div class="wa-contact wa-contact-marqui"><img src="assets/marqui-mascot.png" alt="" /><div><strong>MARQUI</strong><small>Tu asistente de MARQ</small></div><time>10:32</time></div><div class="wa-contact wa-contact-juan"><span class="wa-person">J</span><div><strong>Juan</strong><small>Hola, ¿precio?</small></div><time>10:30</time></div><div class="wa-contact"><span class="wa-person person-clay">L</span><div><strong>Lucía</strong><small>Gracias por la información</small></div><time>Ayer</time></div><div class="wa-sidebar-note">Conversaciones de ejemplo<br />Línea de pauta · MARQ</div></aside>
+                  <div class="wa-main"><div class="marqui-chat-top"><span id="wa-avatar" class="wa-person">J</span><div><strong id="wa-chat-name">Juan</strong><span id="wa-chat-subtitle">Consulta desde un anuncio</span></div><span class="wa-chat-tools" aria-hidden="true">⌕ &nbsp; ⋮</span></div><p id="marqui-mode-note" class="marqui-mode-note"></p><div id="marqui-conversation" class="marqui-conversation"></div><div class="marqui-demo-foot"><span class="tiny-dot"></span>Simulación local · Sin envíos ni cambios reales<button id="marqui-reset" aria-label="Reiniciar ejemplo de MARQUI">↺</button></div></div>
+                </div>
               </div>
             </div>
           </section>
