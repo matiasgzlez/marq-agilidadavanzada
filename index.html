@@ -8,7 +8,7 @@
       name="description"
       content="MARQ Alloy. Una propuesta que une arquitectura, arte y comunidad en Resistencia."
     />
-    <title>MARQ Alloy — Arquitectura que deja huella</title>
+    <title>MARQ — Alloy & MARQUI</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -16,6 +16,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="marqui.css" />
     <script type="module" src="/app.js"></script>
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
   </head>
@@ -114,9 +115,9 @@
             <span class="solution-card-copy"><small>01</small><strong>MARQ Alloy</strong><span>Arquitectura, arte y una ciudad que reconoce tu nombre.</span></span>
             <span class="solution-arrow" aria-hidden="true">↗</span>
           </button>
-          <button class="solution-card reserved" aria-pressed="false" data-solution="next">
-            <span class="reserved-art" aria-hidden="true">+</span>
-            <span class="solution-card-copy"><small>02</small><strong>Próxima solución</strong><span>Un espacio para la próxima idea.</span></span>
+          <button class="solution-card marqui-choice" aria-pressed="false" data-solution="marqui">
+            <img class="marqui-choice-icon" src="assets/marqui-mascot.png" alt="" />
+            <span class="solution-card-copy"><small>02</small><strong>MARQUI</strong><span>Todo MARQ, desde WhatsApp. Tu equipo, con una mano más.</span></span>
             <span class="solution-arrow" aria-hidden="true">↗</span>
           </button>
         </div>
@@ -294,14 +295,40 @@
             </div>
           </section>
         </div>
-        <section id="next-content" class="empty-panel wrap" hidden>
-          <span class="empty-symbol">+</span>
-          <h2>El próximo paso<br />tiene su <em>lugar.</em></h2>
-          <p>Espacio reservado para la segunda solución.</p>
-          <button class="button dark" data-return="alloy">
-            Volver a MARQ Alloy ↗
-          </button>
-        </section>
+        <div id="marqui-content" hidden>
+          <section class="wrap marqui-pain">
+            <div><h2>El equipo construye.<br />Los pendientes<br /><em>se acumulan.</em></h2><p>Responder lo mismo. Buscar un precio. Pedir que actualicen la web. La información está, pero conectar cada parte lleva tiempo.</p></div>
+            <div class="marqui-pain-stack"><div class="pending-message"><span>Consulta · Pauta</span><p>Hola, ¿precio y financiación?</p></div><div class="pending-message"><span>Lista de precios</span><p>¿Esta es la última versión?</p></div><div class="pending-message"><span>Equipo · Obra</span><p>Tenemos fotos nuevas. Falta subirlas.</p></div><p class="pain-stat"><strong>4 h</strong><span>por día respondiendo consultas cuando hay pauta, según el relevamiento compartido.</span></p></div>
+          </section>
+          <section class="marqui-introduction">
+            <div class="wrap"><div class="marqui-wordmark" role="img" aria-label="MARQUI: MARQ con su personaje en la Q"><span class="marqui-stem"><img src="assets/marq-official.svg" alt="" /></span><img class="marqui-q" src="assets/marqui-mascot.png" alt="" /></div><h2>Todo MARQ.<br /><em>A una conversación.</em></h2><p>Un asistente para el equipo, en el lugar donde ya trabaja: WhatsApp. Le escribís, le mandás un audio o una foto. MARQUI conecta la información y prepara el siguiente paso.</p><a class="button dark" href="#marqui-demo">Probá la experiencia <span>↗</span></a><div class="marqui-input-types"><span>Texto</span><span>Audio</span><span>Fotos y planos</span></div></div>
+          </section>
+          <section class="wrap marqui-demo-section" id="marqui-demo">
+            <div class="section-heading"><h2>Así se sentiría<br />trabajar con <em>MARQUI.</em></h2><p class="section-lead">Elegí una tarea y recorré la conversación. Son ejemplos interactivos de la propuesta, sin conexión a WhatsApp, la web ni pagos reales.</p></div>
+            <div class="marqui-workspace">
+              <div class="marqui-usecases" role="tablist" aria-label="Tareas de MARQUI" aria-orientation="vertical">
+                <button role="tab" id="marqui-tab-consultas" aria-controls="marqui-demo-panel" aria-selected="true" data-marqui-case="consultas"><span>01</span><strong>Responder consultas</strong><small>La persona responde. MARQUI ayuda.</small></button>
+                <button role="tab" id="marqui-tab-proyectos" aria-controls="marqui-demo-panel" aria-selected="false" tabindex="-1" data-marqui-case="proyectos"><span>02</span><strong>Crear un proyecto</strong><small>De una conversación a una landing.</small></button>
+                <button role="tab" id="marqui-tab-precios" aria-controls="marqui-demo-panel" aria-selected="false" tabindex="-1" data-marqui-case="precios"><span>03</span><strong>Actualizar precios</strong><small>Una lista. La misma información.</small></button>
+                <button role="tab" id="marqui-tab-reservas" aria-controls="marqui-demo-panel" aria-selected="false" tabindex="-1" data-marqui-case="reservas"><span>04</span><strong>Reservas y señas</strong><small>Del interés a la reserva.</small></button>
+                <button role="tab" id="marqui-tab-obra" aria-controls="marqui-demo-panel" aria-selected="false" tabindex="-1" data-marqui-case="obra"><span>05</span><strong>Compartir avances</strong><small>De la obra a la web.</small></button>
+                <button role="tab" id="marqui-tab-mercado" aria-controls="marqui-demo-panel" aria-selected="false" tabindex="-1" data-marqui-case="mercado"><span>06</span><strong>Escuchar al mercado</strong><small>MARQador encuentra las señales.</small></button>
+                <button role="tab" id="marqui-tab-equipo" aria-controls="marqui-demo-panel" aria-selected="false" tabindex="-1" data-marqui-case="equipo"><span>07</span><strong>Coordinar al equipo</strong><small>Roles claros. Cambios registrados.</small></button>
+              </div>
+              <div class="marqui-demo-panel" id="marqui-demo-panel" role="tabpanel" aria-labelledby="marqui-tab-consultas">
+                <div class="marqui-chat-top"><img src="assets/marqui-mascot.png" alt="" /><div><strong>MARQUI</strong><span>Tu asistente de MARQ</span></div><span class="demo-badge">DEMO</span></div>
+                <div class="marqui-mode" role="group" aria-label="Modo de la demostración"><button aria-pressed="true" data-marqui-mode="web">WhatsApp Web</button><button aria-pressed="false" data-marqui-mode="mobile">Celular</button></div>
+                <p id="marqui-mode-note" class="marqui-mode-note">Dentro del chat con el cliente, en el navegador.</p>
+                <div id="marqui-conversation" class="marqui-conversation"></div>
+                <div class="marqui-demo-foot"><span class="tiny-dot"></span>Simulación local · Vos tenés el control<button id="marqui-reset" aria-label="Reiniciar ejemplo de MARQUI">↺</button></div>
+              </div>
+            </div>
+          </section>
+          <section class="marqui-two-ways"><div class="wrap"><div class="section-heading"><h2>Dos líneas.<br />Un equipo <em>con contexto.</em></h2><p class="section-lead">Pauta y clientes conservan sus conversaciones por separado. La propuesta es que MARQUI ayude al equipo en ambas, cuando abre un chat o le pide una mano.</p></div><div class="marqui-channel-grid"><article><div class="channel-visual"><span>Pauta</span><span class="channel-link">↔</span><img src="assets/marqui-mascot.png" alt="MARQUI" /><span class="channel-link">↔</span><span>Clientes</span></div><h3>En la computadora</h3><p>Una integración en WhatsApp Web propone respuestas dentro de la conversación. Elegís, corregís y enviás vos, desde la línea de siempre.</p><small>Integración propuesta para el navegador, no para la app de escritorio. Su viabilidad debe validarse.</small></article><article><div class="mobile-contact"><img src="assets/marqui-mascot.png" alt="" /><span><strong>MARQUI</strong><small>Un contacto de tu equipo</small></span><span>↗</span></div><h3>En el celular</h3><p>MARQUI es un contacto. Le reenviás una consulta o le pedís una tarea con texto, audio o fotos. Te devuelve lo que necesitás para seguir.</p><small>Sin un nuevo panel para el trabajo de todos los días.</small></article></div></div></section>
+          <section class="wrap marqui-market"><div><h2>Las conversaciones<br />también dicen<br /><em>qué construir.</em></h2><p>MARQador convierte las consultas en un resumen semanal: qué busca la gente, qué la frena y qué canales llevan a una reunión.</p><p>Y cuando necesitás profundizar, preguntás: “¿Qué fue lo más consultado este mes sobre MARQ Collection?”.</p></div><div class="marqador-report"><div class="report-top"><strong>MARQador</strong><span>Ejemplo ilustrativo</span></div><h3>Tu semana, en tres señales.</h3><div><span>Qué buscan</span><strong>2 dormitorios</strong><p>La tipología más consultada en este ejemplo.</p></div><div><span>Qué los frena</span><strong>Financiación</strong><p>Una conversación para revisar la propuesta comercial.</p></div><div><span>Quiénes avanzan</span><strong>Recomendaciones</strong><p>El canal que más llega a reunión en esta simulación.</p></div></div></section>
+          <section class="wrap marqui-control"><h2>MARQUI prepara.<br /><em>El equipo decide.</em></h2><div class="marqui-control-grid"><article><span>↗</span><h3>Tu voz, siempre</h3><p>El cliente habla con una persona de MARQ. Las sugerencias se pueden editar antes de enviarlas.</p></article><article><span>✓</span><h3>Primero, tu OK</h3><p>Landings, fotos y precios públicos pasan por una confirmación. Los precios privados quedan fuera de la web.</p></article><article><span>◎</span><h3>Cada cambio, claro</h3><p>Permisos por integrante y un historial para saber quién hizo qué y cuándo.</p></article></div><details class="marqui-scope"><summary>Qué necesitamos validar para llevarlo a la práctica <span>+</span></summary><p>La conexión de las dos líneas actuales, la lectura de la lista de precios y la integración con la web de MARQ. También los permisos del equipo y el flujo de reservas con Mercado Pago.</p><p>La asistencia dentro de WhatsApp Web es una integración propuesta, no una función oficial de WhatsApp. Su implementación y mantenimiento dependen de la viabilidad técnica y de las condiciones de la plataforma.</p><p>Los porcentajes de conversaciones que llegan a reunión requieren historial suficiente y resultados registrados. Son una referencia del pasado, no una predicción individual.</p></details></section>
+          <section class="marqui-outro"><img src="assets/marqui-mascot.png" alt="MARQUI" /><h2>Menos ir y venir.<br />Más tiempo para <em>hacer MARQ.</em></h2><a class="button dark" href="#marqui-demo">Volver a probar MARQUI <span>↑</span></a></section>
+        </div>
       </div>
       <section
         id="thinking"

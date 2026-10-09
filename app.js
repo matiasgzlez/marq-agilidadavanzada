@@ -1,4 +1,5 @@
 import "./background.js";
+import "./marqui.js";
 import { revealContent, installSlidingTabs } from "./transitions.js";
 ("use strict");
 const $ = (selector) => document.querySelector(selector);
@@ -6,6 +7,19 @@ const $$ = (selector) => [...document.querySelectorAll(selector)];
 const header = $(".header");
 let currentSolution = "alloy";
 let currentPanel = "soluciones";
+const alloyHero = { title: $(".hero h1").innerHTML, description: $(".hero-description").innerHTML, actions: $(".hero .actions").innerHTML, caption: $(".hero-caption").innerHTML };
+function updateSolutionIdentity() {
+  const marqui = currentSolution === "marqui";
+  document.body.classList.toggle("show-marqui", marqui);
+  $(".brand .alloy").textContent = marqui ? "MARQUI" : "Alloy";
+  $(".brand").setAttribute("aria-label", marqui ? "MARQUI, inicio" : "MARQ Alloy, inicio");
+  $(".hero h1").innerHTML = marqui ? 'Menos pendientes.<br />Más tiempo para <em>hacer MARQ.</em>' : alloyHero.title;
+  $(".hero-description").innerHTML = marqui ? 'Tu equipo, con una mano más.<br />Consultas, proyectos y decisiones. Todo MARQ, desde WhatsApp.' : alloyHero.description;
+  $(".hero .actions").innerHTML = marqui ? '<a class="button primary" href="#marqui-demo">Conocé a MARQUI <span>↓</span></a><a class="button translucent" href="#marqui-demo">Probá la demo <span>↗</span></a>' : alloyHero.actions;
+  $(".hero-caption").innerHTML = marqui ? '<span class="tiny-dot"></span> Tu asistente de equipo <span class="caption-place">Propuesta conceptual</span>' : alloyHero.caption;
+  $(".header-link").href = marqui ? "#marqui-demo" : "#futuro";
+  $(".header-link").innerHTML = marqui ? 'Probar MARQUI <span>↗</span>' : 'Explorar el futuro <span>↗</span>';
+}
 function selectPanel(name) {
   const changed = currentPanel !== name;
   currentPanel = name;
@@ -17,7 +31,7 @@ function selectPanel(name) {
       !active;
   });
   $(".header-link").hidden =
-    name !== "soluciones" || currentSolution !== "alloy";
+    name !== "soluciones";
   if (changed) revealContent(document.getElementById(name), 0);
 }
 function selectSolution(name) {
@@ -29,14 +43,15 @@ function selectSolution(name) {
     button.setAttribute("aria-pressed", String(active));
   });
   $("#alloy-content").hidden = name !== "alloy";
-  $("#next-content").hidden = name !== "next";
+  $("#marqui-content").hidden = name !== "marqui";
+  updateSolutionIdentity();
   selectPanel("soluciones");
   if (changed)
-    revealContent($("#" + (name === "alloy" ? "alloy-content" : "next-content")), 0);
+    revealContent($("#" + (name === "alloy" ? "alloy-content" : "marqui-content")), 0);
 }
 $$(".brand,.footer-bottom a").forEach((link) =>
   link.addEventListener("click", () => {
-    selectSolution("alloy");
+    selectPanel("soluciones");
   }),
 );
 $$("[data-panel]").forEach((button) =>
@@ -48,6 +63,10 @@ $$("[data-panel]").forEach((button) =>
 $$("[data-solution]").forEach((button) =>
   button.addEventListener("click", () => {
     selectSolution(button.dataset.solution);
+    const url = new URL(window.location.href);
+    url.searchParams.set("solution", currentSolution);
+    url.hash = "";
+    history.replaceState(null, "", url);
   }),
 );
 $$("[data-return]").forEach((button) =>
@@ -221,3 +240,5 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     });
   });
 }
+
+if (new URLSearchParams(window.location.search).get("solution") === "marqui") selectSolution("marqui");

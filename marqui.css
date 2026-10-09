@@ -1,0 +1,145 @@
+/* MARQUI shares Alloy's paper, charcoal and typography; sage marks the assistant. */
+:root { --marqui-green:#cad7b4; --marqui-deep:#354a3e; }
+.show-marqui .hero-shader { filter:hue-rotate(38deg) saturate(.62); }
+.show-marqui .hero h1 em { color:#dce6cb; }
+.show-marqui .hero .button.primary { background:#d4dfc0; }
+.show-marqui .hero-gradient { background:radial-gradient(ellipse at 70% 20%,#b9c3a3,transparent 60%),#293a30; }
+.solution-card.marqui-choice .marqui-choice-icon { object-fit:contain; padding:15px; background:#d7dfc8; }
+.solution-card.marqui-choice.active { background:#354a3e; border-color:#8fa27c; }
+#marqui-content { --bronze:#94a77d; }
+#marqui-content em { color:#81956c; }
+.marqui-pain { display:grid; grid-template-columns:1.2fr 1fr; gap:100px; padding:140px 0; align-items:center; }
+.marqui-pain h2 { font-size:clamp(45px,5vw,72px); }
+.marqui-pain > div > p { font-size:23px; margin-top:30px; max-width:570px; }
+.marqui-pain-stack { padding:24px 0; }
+.pending-message { background:#efeee7; border:1px solid #dfddd2; padding:19px 25px; border-radius:20px; margin-bottom:12px; }
+.pending-message:nth-child(2) { margin-left:40px; }
+.pending-message:nth-child(3) { margin-right:25px; }
+.pending-message > span { color:#84857c; font-size:11px; letter-spacing:.06em; }
+.pending-message p { font-size:19px; color:var(--ink); margin-top:5px; }
+.marqui-pain-stack .pain-stat { display:flex; align-items:center; gap:25px; margin-top:35px; }
+.pain-stat strong { font-family:var(--display); font-size:72px; letter-spacing:-.065em; line-height:1; white-space:nowrap; font-weight:500; }
+.pain-stat span { font-size:13px; max-width:210px; }
+.marqui-introduction { position:relative; isolation:isolate; overflow:hidden; padding:95px 0; text-align:center; background:#e7ebdc; }
+.marqui-introduction::before { content:''; position:absolute; z-index:-1; inset:-30%; background:radial-gradient(ellipse at 25% 40%,#c0cfa680,transparent 40%),radial-gradient(ellipse at 80% 65%,#ffffffa1,transparent 40%); animation:alloy-light 20s ease-in-out infinite alternate; }
+.marqui-wordmark { display:flex; align-items:center; justify-content:center; gap:0; height:150px; margin-bottom:35px; }
+.marqui-stem { width:242px; height:139px; overflow:hidden; display:block; }
+.marqui-stem img { display:block; width:380px; max-width:none; height:139px; }
+.marqui-q { width:165px; height:165px; object-fit:contain; margin-left:-7px; }
+.marqui-introduction h2 { font-size:clamp(50px,6vw,88px); }
+.marqui-introduction p { max-width:625px; margin:30px auto; font-size:21px; }
+.marqui-input-types { display:flex; justify-content:center; gap:12px; margin-top:35px; }
+.marqui-input-types span { border:1px solid #b7c2a7; border-radius:50px; font-size:12px; padding:6px 18px; color:#54634a; }
+.marqui-demo-section { padding-top:120px; padding-bottom:120px; }
+.marqui-workspace { display:grid; grid-template-columns:1fr 1.2fr; gap:70px; align-items:start; }
+.marqui-usecases { display:grid; gap:8px; }
+.marqui-usecases button { display:grid; grid-template-columns:35px 1fr; column-gap:15px; text-align:left; border:1px solid transparent; border-radius:17px; padding:20px; background:transparent; transition:background .25s,border-color .25s; }
+.marqui-usecases button > span { grid-row:span 2; font-size:11px; color:#9a9d92; padding-top:5px; }
+.marqui-usecases strong { font-family:var(--display); font-size:21px; letter-spacing:-.03em; font-weight:600; }
+.marqui-usecases small { font-size:14px; color:#767a6f; margin-top:4px; }
+.marqui-usecases button[aria-selected=true] { background:#e9eddf; border-color:#cbd4bb; }
+.marqui-usecases button:hover { background:#f0f1e9; }
+.marqui-demo-panel { border:1px solid #c9cfc0; border-radius:30px; background:#f0f2e9; box-shadow:0 25px 65px #25362010; overflow:hidden; }
+.marqui-chat-top { display:flex; gap:14px; align-items:center; padding:22px 28px; border-bottom:1px solid #d8ddce; background:#e3e9d8; }
+.marqui-chat-top > img { width:44px; height:44px; object-fit:contain; }
+.marqui-chat-top > div { display:grid; }
+.marqui-chat-top strong { font-size:17px; letter-spacing:-.02em; }
+.marqui-chat-top div span { font-size:11px; color:#6a7560; }
+.demo-badge { margin-left:auto; font-size:9px; letter-spacing:.1em; border:1px solid #a7b898; padding:4px 8px; border-radius:5px; color:#647854; }
+.marqui-mode { display:flex; margin:18px 24px 0; padding:4px; border:1px solid #d6dccb; border-radius:99px; background:#e2e6da; }
+.marqui-mode button { flex:1; background:none; border:0; font-size:12px; border-radius:99px; padding:8px; color:#57624f; }
+.marqui-mode button[aria-pressed=true] { background:#354a3e; color:white; }
+.marqui-mode-note { font-size:11px; margin:10px 28px 0; min-height:36px; }
+.marqui-conversation { padding:8px 26px 20px; min-height:625px; display:flex; flex-direction:column; align-items:flex-start; gap:12px; }
+.chat-date { align-self:center; font-size:10px; color:#818a77; margin-bottom:5px; }
+.chat-bubble { font-size:14px; line-height:1.5; white-space:pre-line; padding:15px 18px; border-radius:16px; max-width:92%; color:#343f31; }
+.chat-bubble.outgoing { align-self:flex-end; background:#d7e4c7; border-bottom-right-radius:3px; }
+.chat-bubble.incoming { background:white; border-bottom-left-radius:3px; border:1px solid #e1e4da; }
+.reply-options { display:grid; gap:7px; width:100%; }
+.reply-options button { padding:12px 15px; border:1px solid #d2daca; border-radius:12px; text-align:left; background:#ffffff9e; color:#53614b; font-size:12px; line-height:1.5; transition:background .2s; }
+.reply-options button:hover,.reply-options button[aria-pressed=true] { background:#e3ecd6; border-color:#7d966e; }
+.draft-label { font-size:11px; color:#6c7762; margin-top:5px; }
+#marqui-draft { resize:vertical; min-height:85px; max-height:180px; width:100%; border:1px solid #d5dbcc; border-radius:12px; padding:12px; font-size:13px; color:#34412e; background:white; }
+.chat-action { width:100%; background:#354a3e; color:#fff; padding:12px; border:0; border-radius:12px; font-size:12px; font-weight:500; }
+.chat-action:disabled { opacity:.45; cursor:default; }
+.chat-action:not(:disabled):hover { background:#45614e; }
+.chat-status { font-size:12px; color:#405838; min-height:40px; line-height:1.5; }
+.chat-preview { width:100%; margin:15px 0; border:1px solid #cdd5c2; background:#e5ebda; border-radius:15px; padding:22px; }
+.chat-preview strong { font-size:17px; }
+.chat-preview p { font-size:14px; margin-top:12px; }
+.marqui-demo-foot { display:flex; gap:8px; align-items:center; border-top:1px solid #d8ddce; padding:14px 26px; font-size:10px; color:#69765e; }
+.marqui-demo-foot button { margin-left:auto; background:none; border:0; font-size:22px; padding:0 8px; }
+.marqui-two-ways { background:#efeee7; padding:100px 0; }
+.marqui-channel-grid { display:grid; grid-template-columns:1fr 1fr; gap:25px; }
+.marqui-channel-grid article { padding:35px; background:#faf9f5; border:1px solid #dfded4; border-radius:24px; }
+.channel-visual { display:flex; align-items:center; justify-content:center; gap:12px; min-height:150px; margin-bottom:30px; border-bottom:1px solid #e2e4d8; }
+.channel-visual > span:not(.channel-link) { border:1px solid #ccd4c0; border-radius:10px; padding:12px; font-size:12px; background:#eaf0df; }
+.channel-visual img { width:65px; }
+.channel-link { color:#95a684; }
+.marqui-channel-grid h3 { font-size:30px; margin-bottom:20px; }
+.marqui-channel-grid p { font-size:17px; }
+.marqui-channel-grid small { display:block; font-size:12px; color:#85897d; margin-top:20px; }
+.mobile-contact { min-height:150px; display:flex; gap:20px; align-items:center; border-bottom:1px solid #e2e4d8; margin-bottom:30px; }
+.mobile-contact img { width:65px; }
+.mobile-contact small { margin-top:4px; }
+.mobile-contact > span:last-child { margin-left:auto; font-size:30px; color:#859972; }
+.marqui-market { display:grid; grid-template-columns:1.1fr 1fr; gap:95px; align-items:center; padding:130px 0; }
+.marqui-market > div > p { font-size:20px; margin-top:25px; }
+.marqador-report { padding:35px; border-radius:25px; background:#354a3e; color:#f4f7ed; box-shadow:0 20px 50px #354a3e18; }
+.report-top { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:30px; }
+.report-top strong { font-size:18px; letter-spacing:-.04em; }
+.report-top span { color:#bccbb0; font-size:9px; }
+.marqador-report h3 { font-size:30px; }
+.marqador-report > div:not(.report-top) { display:grid; gap:6px; padding-top:22px; margin-top:22px; border-top:1px solid #ffffff29; }
+.marqador-report > div > span { color:#c4d3b7; font-size:11px; }
+.marqador-report > div > strong { font-size:26px; font-weight:500; }
+.marqador-report p { color:#c9d1c3; font-size:13px; }
+.marqui-control { padding-bottom:110px; }
+.marqui-control-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:40px; margin-top:50px; }
+.marqui-control-grid article { border-top:1px solid #cbd3c0; padding-top:25px; }
+.marqui-control-grid article > span { color:#83966f; font-size:30px; }
+.marqui-control-grid h3 { margin:15px 0; }
+.marqui-control-grid p { font-size:17px; }
+.marqui-scope { border-top:1px solid #d4d7cb; border-bottom:1px solid #d4d7cb; margin-top:60px; padding:25px 0; }
+.marqui-scope summary { cursor:pointer; display:flex; justify-content:space-between; gap:25px; font-size:16px; }
+.marqui-scope p { max-width:850px; font-size:15px; margin-top:22px; }
+.marqui-outro { background:#e6ebdc; text-align:center; padding:85px 25px 100px; }
+.marqui-outro img { width:120px; margin-bottom:30px; }
+.marqui-outro h2 { margin-bottom:35px; }
+@media(max-width:1000px) {
+ .marqui-pain,.marqui-workspace,.marqui-market { gap:40px; }
+ .marqui-usecases strong { font-size:18px; }
+ .marqui-usecases button { padding:15px; grid-template-columns:22px 1fr; gap:8px; }
+ .marqui-channel-grid article { padding:25px; }
+}
+@media(max-width:700px) {
+ .marqui-pain { grid-template-columns:1fr; padding:80px 0; gap:25px; }
+ .marqui-pain h2 { font-size:44px; }
+ .marqui-pain > div > p { font-size:20px; }
+ .marqui-pain-stack .pain-stat { font-size:14px; }
+ .marqui-introduction { padding:65px 0; }
+ .marqui-wordmark { transform:scale(.72); transform-origin:center; width:420px; margin-left:calc(50% - 210px); margin-bottom:0; }
+ .marqui-introduction h2 { font-size:48px; }
+ .marqui-introduction p { font-size:18px; }
+ .marqui-demo-section { padding-top:75px; padding-bottom:75px; }
+ .marqui-workspace { grid-template-columns:1fr; gap:25px; }
+ .marqui-usecases { grid-template-columns:repeat(2,minmax(0,1fr)); gap:7px; }
+ .marqui-usecases button { grid-template-columns:1fr; padding:12px; border-color:#e1e4d8; border-radius:12px; }
+ .marqui-usecases button > span { display:none; }
+ .marqui-usecases strong { font-size:14px; }
+ .marqui-usecases small { font-size:10px; }
+ .marqui-chat-top { padding:18px; }
+ .marqui-conversation { padding:8px 16px 18px; min-height:670px; }
+ .marqui-mode { margin-left:16px; margin-right:16px; }
+ .marqui-demo-foot { padding:12px 16px; font-size:9px; }
+ .marqui-two-ways { padding:70px 0; }
+ .marqui-channel-grid,.marqui-market,.marqui-control-grid { grid-template-columns:1fr; }
+ .marqui-market { padding:80px 0; gap:35px; }
+ .marqui-market > div > p { font-size:18px; }
+ .marqador-report { padding:25px; }
+ .marqui-control-grid { gap:25px; }
+ .marqui-control { padding-bottom:70px; }
+ .marqui-outro h2 { font-size:35px; }
+ .channel-visual { gap:8px; }
+ .channel-visual img { width:50px; }
+}
