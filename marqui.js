@@ -1,4 +1,4 @@
-import { revealContent } from './transitions.js';
+import { revealContent, installSlidingTabs } from './transitions.js';
 const $ = selector => document.querySelector(selector);
 const panel = $('#marqui-conversation');
 const tabs = [...document.querySelectorAll('[data-marqui-case]')];
@@ -124,7 +124,7 @@ function renderWorkflow(example) {
 }
 function render() {
   const example = examples[currentCase];
-  $('#marqui-case-select').value = currentCase;
+  document.querySelectorAll('[data-demo-case]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.demoCase === currentCase)));
   const clientChat = currentCase === 'consultas' && mode === 'web';
   $('#marqui-feature-title').textContent = example.title;
   $('#marqui-feature-description').textContent = example.description;
@@ -171,9 +171,7 @@ function selectFromDemo(key) {
     behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth'
   });
 }
-$('#marqui-case-select').addEventListener('change', event => selectFromDemo(event.target.value));
-document.querySelectorAll('[data-case-step]').forEach(button => button.addEventListener('click', () => {
-  const index = tabs.findIndex(tab => tab.dataset.marquiCase === currentCase);
-  const next = (index + Number(button.dataset.caseStep) + tabs.length) % tabs.length;
-  selectFromDemo(tabs[next].dataset.marquiCase);
-}));
+document.querySelectorAll('[data-demo-case]').forEach(button => {
+  button.addEventListener('click', () => selectFromDemo(button.dataset.demoCase));
+});
+installSlidingTabs($('.demo-function-switch'));

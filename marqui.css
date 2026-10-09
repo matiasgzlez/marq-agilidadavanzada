@@ -260,19 +260,22 @@
 .marqui-demo-panel { overflow:visible; }
 .demo-toolbar { position:sticky; top:104px; z-index:8; background:#f6f7f2f5; backdrop-filter:blur(14px); border-radius:20px 20px 0 0; box-shadow:0 5px 16px #24352608; }
 .wa-window { border-radius:0 0 20px 20px; overflow:hidden; }
-.demo-case-picker { min-width:0; }
-.demo-case-picker label { display:block; font-size:10px; color:#7b8971; margin-bottom:5px; }
-.demo-case-picker > div { display:flex; align-items:center; gap:7px; }
-.demo-case-picker select { font:inherit; font-size:13px; font-weight:500; color:#344a3b; background:#e8eddf; border:1px solid #cbd5bf; border-radius:9px; padding:9px 28px 9px 12px; max-width:100%; cursor:pointer; }
-.demo-case-picker button { width:34px; height:36px; border:1px solid #d5ddcc; border-radius:9px; background:white; color:#45603b; flex:none; }
-.demo-case-picker button:hover { background:#e3ecd8; }
-.demo-case-picker select:focus-visible { outline:3px solid #8a9f76; outline-offset:3px; }
-@media(max-width:1000px) { .demo-toolbar .demo-badge { display:none; } }
+/* All six functions stay visible; the active surface slides between them. */
+.demo-toolbar { flex-wrap:wrap; gap:12px; }
+.demo-function-switch { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); flex:1; padding:5px; gap:3px; border:1px solid #cbd5bf; border-radius:14px; background:#e7ecdf; min-width:0; }
+.demo-function-switch button { border:0; background:transparent; color:#67765c; padding:12px 8px; font-size:12px; font-weight:500; border-radius:10px; white-space:nowrap; }
+.demo-function-switch button[aria-pressed="true"] { color:#fff; }
+.demo-function-switch .tab-indicator { background:#354a3e; border-radius:10px; }
+.demo-function-switch button:hover:not([aria-pressed="true"]) { color:#293e2d; }
+.demo-toolbar .marqui-mode { width:220px; flex:none; }
+.demo-toolbar .demo-badge { display:none; }
+@media(max-width:1000px) {
+ .demo-function-switch { flex-basis:100%; }
+ .demo-toolbar .marqui-mode { margin-left:auto; }
+}
 @media(max-width:700px) {
- .demo-toolbar { top:116px; gap:10px; padding:12px; }
- .demo-case-picker { width:100%; }
- .demo-case-picker > div { width:100%; }
- .demo-case-picker select { flex:1; width:0; font-size:12px; padding-left:8px; padding-right:8px; }
- .demo-case-picker label { font-size:9px; }
+ .demo-toolbar { top:116px; padding:10px; gap:8px; }
+ .demo-function-switch { grid-template-columns:repeat(3,minmax(0,1fr)); padding:4px; border-radius:12px; gap:2px; }
+ .demo-function-switch button { padding:9px 4px; font-size:11px; }
  .demo-toolbar .marqui-mode { width:100%; }
 }
