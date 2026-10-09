@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#242622" />
+    <meta
+      name="description"
+      content="MARQ Alloy. Una propuesta que une arquitectura, arte y comunidad en Resistencia."
+    />
+    <title>MARQ Alloy — Arquitectura que deja huella</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module" src="/app.js"></script>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <a class="skip" href="#contenido">Saltar al contenido</a>
+    <header class="header">
+      <a class="brand" href="#" aria-label="MARQ Alloy, inicio"
+        ><img class="brand-logo" src="assets/marq-official.svg" alt="MARQ — Creamos valor" /><span class="brand-line"></span><span class="alloy">Alloy</span></a
+      >
+      <div
+        class="switch"
+        role="tablist"
+        aria-label="Secciones de la presentación"
+      >
+        <button
+          role="tab"
+          aria-selected="true"
+          aria-controls="soluciones"
+          id="tab-soluciones"
+          data-panel="soluciones"
+        >
+          Soluciones <span>02</span></button
+        ><button
+          role="tab"
+          aria-selected="false"
+          aria-controls="thinking"
+          id="tab-thinking"
+          data-panel="thinking"
+          tabindex="-1"
+        >
+          Design thinking
+        </button>
+      </div>
+      <a class="header-link" href="#futuro"
+        >Explorar el futuro <span>↗</span></a
+      >
+    </header>
+    <main id="contenido">
+      <div id="soluciones" role="tabpanel" aria-labelledby="tab-soluciones">
+        <section class="hero" id="inicio">
+          <div class="hero-gradient" aria-hidden="true"></div>
+          <div class="hero-shader" aria-hidden="true"></div>
+          <div class="grain" aria-hidden="true"></div>
+          <div class="hero-fade" aria-hidden="true"></div>
+          <div class="hero-content">
+            <h1>
+              Arquitectura que se habita.<br />Arte que <em>deja huella.</em>
+            </h1>
+            <p class="hero-description">
+              Una nueva forma de hacer visible a MARQ en Resistencia.<br
+                class="desktop"
+              />
+              Cada proyecto, una obra. Cada obra, un vínculo con la ciudad.
+            </p>
+            <div class="actions">
+              <a class="button primary" href="#propuesta"
+                >Descubrir la solución <span>↓</span></a
+              ><a class="button translucent" href="#futuro"
+                >Ver el futuro <span>↗</span></a
+              >
+            </div>
+            <div class="hero-caption">
+              <span class="tiny-dot"></span> Arquitectura + arte + comunidad
+              <span class="caption-place">Resistencia, Chaco</span>
+            </div>
+          </div>
+          <div class="hero-orbit" aria-hidden="true">
+            <svg viewBox="0 0 400 400">
+              <defs>
+                <linearGradient id="bronze">
+                  <stop stop-color="#e5d0a9" />
+                  <stop offset=".5" stop-color="#a47952" />
+                  <stop offset="1" stop-color="#ddd2bd" />
+                </linearGradient>
+              </defs>
+              <ellipse
+                cx="200"
+                cy="200"
+                rx="160"
+                ry="80"
+                transform="rotate(-48 200 200)"
+              />
+              <ellipse
+                cx="200"
+                cy="200"
+                rx="160"
+                ry="80"
+                transform="rotate(48 200 200)"
+              />
+            </svg>
+          </div>
+        </section>
+        <div class="wrap solution-selector" aria-label="Soluciones">
+          <button class="solution-card active" aria-pressed="true" data-solution="alloy">
+            <img src="assets/alloy-concept.png" alt="" />
+            <span class="solution-card-copy"><small>01</small><strong>MARQ Alloy</strong><span>Arquitectura, arte y una ciudad que reconoce tu nombre.</span></span>
+            <span class="solution-arrow" aria-hidden="true">↗</span>
+          </button>
+          <button class="solution-card reserved" aria-pressed="false" data-solution="next">
+            <span class="reserved-art" aria-hidden="true">+</span>
+            <span class="solution-card-copy"><small>02</small><strong>Próxima solución</strong><span>Un espacio para la próxima idea.</span></span>
+            <span class="solution-arrow" aria-hidden="true">↗</span>
+          </button>
+        </div>
+        <div id="alloy-content">
+          <section class="wrap pain-section" id="propuesta">
+            <div class="pain-copy reveal">
+              <h2>MARQ construye.<br />Resistencia todavía<br />no <em>la reconoce.</em></h2>
+              <p>Los edificios están en la ciudad. El desafío es que las personas también sepan quién los hace posibles.</p>
+              <p>Para hacer conocida a MARQ, cada proyecto puede convertirse en algo más que una dirección: un lugar que la gente recuerde, nombre y comparta.</p>
+            </div>
+            <figure class="pain-image reveal"><img src="assets/natalini.webp" alt="Torre Natalini, un desarrollo de MARQ en Resistencia" loading="lazy" /><figcaption>Torre Natalini · Resistencia</figcaption></figure>
+          </section>
+          <section class="alloy-interlude" aria-label="MARQ Alloy">
+            <div class="alloy-signature"><img src="assets/marq-official.svg" alt="MARQ — Creamos valor" /><span>Alloy</span></div>
+            <p>Arquitectura. Arte. Comunidad.<br />Una nueva forma de crear valor.</p>
+          </section>
+          <section class="wrap alloy-method" id="idea">
+            <div class="section-heading reveal">
+              <h2>Una escultura por proyecto.<br />Una identidad que <em>permanece.</em></h2>
+              <p class="section-lead">MARQ Alloy une arquitectura y arte regional para hacer visible a la marca en la vida cotidiana de Resistencia. Cada edificio aporta un lugar. Cada obra, una razón para recordarlo.</p>
+            </div>
+            <div class="alloy-grid">
+              <article class="alloy-card reveal">
+                <div class="card-art architecture-art" aria-hidden="true"><i></i><i></i><i></i></div>
+                <h3>Arquitectura</h3><p>Una obra que dialogue con la fachada, el paisaje y la escala del peatón. Cada proyecto gana un carácter propio y un nuevo punto de referencia.</p>
+              </article>
+              <article class="alloy-card reveal">
+                <div class="card-art sculpture-art" aria-hidden="true"><i></i><i></i></div>
+                <h3>Arte regional</h3><p>Talento local en primer plano: artistas de la región o un concurso estudiantil, mediante un convenio a explorar con FADyCC–UNNE.</p>
+              </article>
+              <article class="alloy-card reveal">
+                <div class="card-art presence-art" aria-hidden="true"><span>MARQ<span>× AUTOR</span></span></div>
+                <h3>Presencia</h3><p>MARQ y el artista, grabados en hormigón. Una luz cálida revela la escultura al caer la noche. La firma permanece, todos los días.</p>
+              </article>
+              <article class="alloy-card reveal">
+                <div class="card-art community-art" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+                <h3>Comunidad</h3><p>El edificio y su escultura se inauguran juntos. Una celebración abierta que presenta el proyecto, cuenta la historia del artista y genera contenido para los medios.</p>
+              </article>
+            </div>
+          </section>
+          <section class="experience" id="visualizar">
+            <div class="wrap">
+              <div class="section-heading reveal">
+                <div class="heading-row">
+                  <h2>Natalini, desde<br />una nueva <em>perspectiva.</em></h2>
+                  <p>
+                    Tomamos Natalini como referencia para imaginar una inauguración conjunta: el edificio y su escultura, presentados como un mismo proyecto.
+                  </p>
+                </div>
+              </div>
+              <div class="viewer reveal">
+                <div class="viewer-bar">
+                  <span class="viewer-name"
+                    ><span class="tiny-dot"></span> TORRE NATALINI /
+                    EXPLORADOR</span
+                  >
+                  <div
+                    class="mini-switch"
+                    role="group"
+                    aria-label="Vista del proyecto"
+                  >
+                    <button
+                      data-view="concept"
+                      class="active"
+                      aria-pressed="true"
+                    >
+                      Propuesta</button
+                    ><button data-view="real" aria-pressed="false">
+                      Actual</button
+                    ><button data-view="map" aria-pressed="false">Mapa</button>
+                  </div>
+                </div>
+                <div class="viewer-stage" id="viewer-stage">
+                  <img
+                    id="project-image"
+                    src="assets/alloy-concept.png"
+                    alt="Visualización conceptual con IA: escultura de bronce iluminada sobre una base de hormigón frente a Torre Natalini"
+                    width="1672"
+                    height="941"
+                    loading="lazy"
+                  />
+                  <div class="view-note" id="view-note">
+                    VISUALIZACIÓN CONCEPTUAL · IA
+                  </div>
+                  <a
+                    class="expand"
+                    id="expand-image"
+                    href="assets/alloy-concept.png"
+                    target="_blank"
+                    rel="noopener"
+                    aria-label="Abrir imagen a tamaño completo"
+                    >↗</a
+                  >
+                </div>
+                <div class="viewer-footer">
+                  <span id="viewer-description"
+                    >Dos formas se encuentran. La arquitectura continúa en el
+                    espacio público.</span
+                  ><span class="coordinates">FORMOSA 485 / AV. RIVADAVIA</span>
+                </div>
+              </div>
+              <div class="detail-grid">
+                <article>
+                  <span class="detail-number">A</span>
+                  <h3>Identidad propia</h3>
+                  <p>
+                    La forma final y el material se definirán con el artista. La
+                    escultura ilustrada es una exploración, no una obra
+                    seleccionada.
+                  </p>
+                </article>
+                <article>
+                  <span class="detail-number">B</span>
+                  <h3>La firma, en el lugar</h3>
+                  <p>
+                    Base de hormigón con autoría y marca. Iluminación cálida
+                    propuesta de 2700 K, con mantenimiento previsto desde el
+                    diseño.
+                  </p>
+                </article>
+                <article>
+                  <span class="detail-number">C</span>
+                  <h3>Conectada a la ciudad</h3>
+                  <p>
+                    Explorá el entorno real para pensar visibilidad y
+                    circulación.
+                  </p>
+                  <div class="text-links">
+                    <a
+                      href="https://www.google.com/maps/search/?api=1&query=Torre+Natalini+Formosa+485+Resistencia+Chaco"
+                      target="_blank"
+                      rel="noopener"
+                      >Google Maps ↗</a
+                    ><a
+                      href="https://earth.google.com/web/search/Torre+Natalini,+Formosa+485,+Resistencia,+Chaco"
+                      target="_blank"
+                      rel="noopener"
+                      >Google Earth ↗</a
+                    >
+                  </div>
+                </article>
+              </div>
+            </div>
+          </section>
+          <section class="recognition wrap" id="valor">
+            <div class="recognition-intro"><h2>Que vean la obra.<br />Que recuerden <em>MARQ.</em></h2><p>La escultura despierta interés. La firma conecta ese encuentro con MARQ. Al repetirse en distintos proyectos, la experiencia puede convertirse en reconocimiento.</p></div>
+            <div class="recognition-path">
+              <article><span>01</span><h3>Te detenés.</h3><p>Una obra inesperada cambia el recorrido de todos los días. El edificio empieza a ser un lugar para mirar, fotografiar y compartir.</p></article>
+              <article><span>02</span><h3>Descubrís.</h3><p>En la base encontrás al artista y a MARQ. La marca aparece ligada a una experiencia concreta: sumar arte a tu ciudad.</p></article>
+              <article><span>03</span><h3>Lo recordás.</h3><p>“Nos encontramos en la escultura de MARQ”. Ese es el vínculo que buscamos: que el proyecto se vuelva referencia y la marca, parte de la conversación.</p></article>
+            </div>
+            <p class="recognition-close">El edificio y la escultura se presentan juntos. Una historia para contar.<br /><strong>La obra sigue construyendo presencia después.</strong></p>
+          </section>
+          <section class="wrap future" id="futuro">
+            <div class="section-heading reveal">
+              <h2>Hoy es una idea.<br />Mañana podría ser <em>noticia.</em></h2>
+              <p class="section-lead">
+                Imaginá que Natalini abre sus puertas junto con su escultura. Una misma inauguración, cuatro maneras de contar la llegada del proyecto a la ciudad.
+              </p>
+            </div>
+            <div class="future-label">
+              <span class="tiny-dot"></span> EDICIÓN FUTURA / 2027
+              <span>Recreación de una inauguración conjunta. Noticias no publicadas.</span>
+            </div>
+<div class="press-grid"><article class="press-card press-norte"><div class="press-masthead"><img src="assets/diarionorte.svg" alt="Diario Norte" /><span>EDICIÓN CONCEPTUAL</span></div><div class="press-visual"><img src="assets/alloy-concept.png" alt="Imagen conceptual de una escultura frente a Natalini, generada con IA" loading="lazy" /><span class="press-image-label">IMAGEN CONCEPTUAL · IA</span></div><div class="press-card-body"><span class="press-kicker">ARTE A CIELO ABIERTO</span><h3>Natalini abre sus puertas con una escultura que suma arte al paisaje de Resistencia</h3><p>MARQ presentó el edificio y una obra de autor regional en una misma inauguración. La propuesta Alloy integra arquitectura y arte desde el comienzo de cada desarrollo.</p></div><div class="press-card-footer"><span>2027 · Noticia imaginada</span><button data-story="norte" aria-label="Leer noticia imaginada de Diario Norte">Leer <span aria-hidden="true">↗</span></button></div></article><article class="press-card press-chaco"><div class="press-masthead"><img src="assets/diariochaco.png" alt="Diario Chaco" /><span>EDICIÓN CONCEPTUAL</span></div><div class="press-visual"><img src="assets/alloy-concept.png" alt="Imagen conceptual de una escultura frente a Natalini, generada con IA" loading="lazy" /><span class="press-image-label">IMAGEN CONCEPTUAL · IA</span></div><div class="press-card-body"><span class="press-kicker">RESISTENCIA</span><h3>MARQ inauguró Torre Natalini junto con una escultura de un artista regional</h3><p>El edificio y la obra se presentaron en un mismo acto. Con Alloy, la desarrolladora propone que cada nuevo proyecto nazca con una identidad artística propia.</p></div><div class="press-card-footer"><span>2027 · Noticia imaginada</span><button data-story="chaco" aria-label="Leer noticia imaginada de Diario Chaco">Leer <span aria-hidden="true">↗</span></button></div></article><article class="press-card press-tag"><div class="press-masthead"><img src="assets/diariotag.png" alt="Diario TAG" /><span>EDICIÓN CONCEPTUAL</span></div><div class="press-visual"><img src="assets/alloy-concept.png" alt="Imagen conceptual de una escultura frente a Natalini, generada con IA" loading="lazy" /><span class="press-image-label">IMAGEN CONCEPTUAL · IA</span></div><div class="press-card-body"><span class="press-kicker">Arte urbano.</span><h3>Natalini abrió sus puertas: así es la escultura que se presentó junto al edificio</h3><p>La inauguración reunió arquitectura y arte regional en una misma celebración. La pieza forma parte de MARQ Alloy y acompaña al proyecto desde su apertura.</p></div><div class="press-card-footer"><span>2027 · Noticia imaginada</span><button data-story="tag" aria-label="Leer noticia imaginada de Diario TAG">Leer <span aria-hidden="true">↗</span></button></div></article><article class="press-card press-data"><div class="press-masthead"><img src="assets/datachaco.png" alt="DataChaco" /><span>EDICIÓN CONCEPTUAL</span></div><div class="press-visual"><img src="assets/alloy-concept.png" alt="Imagen conceptual de una escultura frente a Natalini, generada con IA" loading="lazy" /><span class="press-image-label">IMAGEN CONCEPTUAL · IA</span></div><div class="press-card-body"><span class="press-kicker">CULTURA Y CIUDAD</span><h3>MARQ inauguró Natalini y presentó la escultura que le da identidad al proyecto</h3><p>El edificio abrió sus puertas junto con una obra de autor regional. La presentación conjunta marca el inicio de Alloy, la propuesta de MARQ para unir arte y arquitectura.</p></div><div class="press-card-footer"><span>2027 · Noticia imaginada</span><button data-story="data" aria-label="Leer noticia imaginada de DataChaco">Leer <span aria-hidden="true">↗</span></button></div></article></div><p class="press-disclaimer">Escenarios ficticios creados para presentar MARQ Alloy. No son publicaciones reales ni implican respaldo o afiliación con estos medios.</p>            <div class="impact-line">
+              <p class="editorial">
+                La noticia es el comienzo.<br />La presencia permanece.
+              </p>
+              <p>
+                Una inauguración puede generar fotografías, entrevistas al
+                artista, recorridos y piezas para redes. Después del evento, la
+                obra sigue allí: integrada a la experiencia cotidiana de la
+                ciudad.
+              </p>
+            </div>
+          </section>
+        </div>
+        <section id="next-content" class="empty-panel wrap" hidden>
+          <span class="empty-symbol">+</span>
+          <h2>El próximo paso<br />tiene su <em>lugar.</em></h2>
+          <p>Espacio reservado para la segunda solución.</p>
+          <button class="button dark" data-return="alloy">
+            Volver a MARQ Alloy ↗
+          </button>
+        </section>
+      </div>
+      <section
+        id="thinking"
+        role="tabpanel"
+        aria-labelledby="tab-thinking"
+        class="empty-panel wrap"
+        hidden
+      >
+        <span class="empty-symbol">↗</span>
+        <h1>Un espacio para<br />lo que viene.</h1>
+        <p>
+          Esta sección está reservada. Su contenido se incorporará en una
+          próxima etapa.
+        </p>
+        <button class="button dark" data-return="soluciones">
+          Explorar las soluciones ↗
+        </button>
+      </section>
+    </main>
+    <footer>
+      <div class="footer-top wrap">
+        <div>
+          <p>Una propuesta para crear valor en Resistencia.</p>
+          <small>MARQ — Agilidad avanzada · Presentación conceptual</small>
+        </div>
+        <nav aria-label="Referencias">
+          <a href="https://estudiomarq.com.ar/" target="_blank" rel="noopener"
+            >Conocer MARQ ↗</a
+          ><a href="docs/fuentes.md">Fuentes y referencias ↗</a
+          ><a href="docs/propuesta.md">La propuesta ↗</a>
+        </nav>
+      </div>
+      <div class="footer-bottom wrap">
+        <span>ARQUITECTURA QUE DEJA HUELLA.</span
+        ><a href="#inicio">Volver arriba ↑</a>
+      </div>
+    </footer>
+    <dialog id="article-dialog" aria-labelledby="article-title">
+      <button class="dialog-close" aria-label="Cerrar noticia">×</button>
+      <h2 id="article-title"></h2>
+      <p class="dialog-notice">
+        Simulación editorial. Este acontecimiento y esta cobertura no son
+        reales.
+      </p>
+      <img
+        src="assets/alloy-concept.png"
+        alt="Visualización conceptual de la intervención artística"
+        loading="lazy"
+      />
+      <div id="article-body"></div>
+      <button class="button dark dialog-done">Cerrar lectura</button>
+    </dialog>
+  </body>
+</html>
