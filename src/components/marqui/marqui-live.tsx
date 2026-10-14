@@ -2,6 +2,7 @@ import { useEffect, useId, useMemo, useRef } from "react";
 import { animate, motion, useMotionValue, useReducedMotion, useSpring, useTransform, type MotionValue } from "motion/react";
 import { cn } from "@/lib/utils";
 import type { Pose } from "./marqui-character";
+import { MARQADOR } from "./marqador-mark";
 import { MARK } from "./marqui-mark";
 
 /* ——— MARQui, alive ———
@@ -108,7 +109,17 @@ function useEye(eye: Eye) {
   return { mv, d };
 }
 
-export function MarquiLive({ pose, className, shadow = true, follow = false, title = "MARQui" }: { pose: Pose; className?: string; shadow?: boolean; follow?: boolean; title?: string }) {
+/* MARQador wears the same face in his own body: the Marqui-space eyes are
+   mapped onto his head and drawn a little smaller, as in his logo. */
+const K = MARQADOR.head.r / MARK.head.r;
+const FACE_TO_MARQADOR = `translate(${MARQADOR.head.cx + 15 - MARK.head.cx * K} ${MARQADOR.head.cy + 7 - MARK.head.cy * K}) scale(${K})`;
+const EYE_SCALE = { marqui: 1, marqador: 0.8 };
+
+export type Who = "marqui" | "marqador";
+
+export function MarquiLive({ pose, className, shadow = true, follow = false, who = "marqui", title, svgProps }: { pose: Pose; className?: string; shadow?: boolean; follow?: boolean; who?: Who; title?: string; svgProps?: React.SVGProps<SVGSVGElement> }) {
+  const isM = who === "marqador";
+  const label = title ?? (isM ? "MARQador" : "MARQui");
   const svgRef = useRef<SVGSVGElement>(null);
   // Eyes follow the pointer: a small, springy offset toward wherever it is.
   const lookX = useSpring(0, { stiffness: 120, damping: 14 });
@@ -118,8 +129,8 @@ export function MarquiLive({ pose, className, shadow = true, follow = false, tit
   const e0 = useEye(SHAPES.reposo.eyes[0]);
   const e1 = useEye(SHAPES.reposo.eyes[1]);
   const body = { y: useMotionValue(0), rot: useMotionValue(0), sx: useMotionValue(1), sy: useMotionValue(1) };
-  const shadowScale = useTransform(body.y, [-90, 0], [0.55, 1]);
-  const shadowOpacity = useTransform(body.y, [-90, 0], [0.35, 1]);
+  const shadowScale = useTransform(body.y, [isM ? -180 : -90, 0], [0.55, 1]);
+  const shadowOpacity = useTransform(body.y, [isM ? -180 : -90, 0], [0.35, 1]);
 
   useEffect(() => {
     const target = SHAPES[pose];
@@ -127,11 +138,11 @@ export function MarquiLive({ pose, className, shadow = true, follow = false, tit
     const blink = pose === "parpadeo";
     const t = reduce ? { duration: 0 } : blink ? { duration: 0.07, ease: "easeIn" as const } : { type: "spring" as const, stiffness: 260, damping: 18, mass: 0.8 };
     const controls = [
-      ...[e0, e1].flatMap((e, i) => EYE_KEYS.map((k) => animate(e.mv[k], target.eyes[i]![k], t))),
-      ...BODY_KEYS.map((k) => animate(body[k], target.body[k], reduce ? { duration: 0 } : { type: "spring", stiffness: pose === "salto" ? 180 : 220, damping: pose === "salto" ? 12 : 16 })),
+      ...[e0, e1].flatMap((e, i) => EYE_KEYS.map((k) => animate(e.mv[k], (k === "len" || k === "w" ? EYE_SCALE[who] : 1) * target.eyes[i]![k], t))),
+      ...BODY_KEYS.map((k) => animate(body[k], (k === "y" && isM ? K : 1) * target.body[k], reduce ? { duration: 0 } : { type: "spring", stiffness: pose === "salto" ? 180 : 220, damping: pose === "salto" ? 12 : 16 })),
     ];
     // Landing from a jump: a quick squash, then back to round.
-    if (pose !== "salto" && !reduce && body.y.get() < -30) {
+    if (pose !== "salto" && !reduce && body.y.get() < -30 * (isM ? K : 1)) {
       const t2 = window.setTimeout(() => {
         animate(body.sy, [0.9, 1.04, 1], { duration: 0.45, ease: "easeOut" });
         animate(body.sx, [1.08, 0.98, 1], { duration: 0.45, ease: "easeOut" });
@@ -156,6 +167,7 @@ export function MarquiLive({ pose, className, shadow = true, follow = false, tit
       const reach = Math.min(1, dist / 600);
       lookX.set((dx / dist) * 22 * reach);
       lookY.set((dy / dist) * 16 * reach);
+      // (in face space; MARQador's face group scales it up with him)
     };
     const reset = () => {
       lookX.set(0);
@@ -170,10 +182,10 @@ export function MarquiLive({ pose, className, shadow = true, follow = false, tit
   }, [follow, reduce, lookX, lookY]);
 
   const { head, tail } = MARK;
-  const g = useMemo(() => ({ body: `b${id}`, rim: `r${id}`, eye: `e${id}`, glint: `s${id}`, soft: `f${id}` }), [id]);
+  const g = useMemo(() => ({ body: `b${id}`, rim: `r${id}`, eye: `e${id}`, glint: `s${id}`, soft: `f${id}`, mbody: `mb${id}`, mrim: `mr${id}` }), [id]);
 
   return (
-    <svg ref={svgRef} viewBox="380 240 470 590" className={cn("overflow-visible", className)} role="img" aria-label={title}>
+    <svg ref={svgRef} viewBox={isM ? "170 150 960 1060" : "380 240 470 590"} className={cn("overflow-visible", className)} role="img" aria-label={label} {...svgProps}>
       <defs>
         {/* Soft white, lit from the top left. */}
         <radialGradient id={g.body} cx="560" cy="430" r="400" gradientUnits="userSpaceOnUse">
@@ -188,9 +200,20 @@ export function MarquiLive({ pose, className, shadow = true, follow = false, tit
           <stop offset="1" stopColor="#014645" stopOpacity="0.2" />
         </radialGradient>
         <linearGradient id={g.eye} x1="540" y1="390" x2="700" y2="540" gradientUnits="userSpaceOnUse">
-          <stop offset="0" stopColor="#0d7c71" />
-          <stop offset="1" stopColor="#03433d" />
+          <stop offset="0" stopColor={isM ? "#ffffff" : "#0d7c71"} />
+          <stop offset="1" stopColor={isM ? "#fff4ea" : "#03433d"} />
         </linearGradient>
+        {/* MARQador: the brand's orange, lit from the top left, warmer and lighter toward the tail. */}
+        <linearGradient id={g.mbody} x1="300" y1="250" x2="1000" y2="1000" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#ff4000" />
+          <stop offset="0.38" stopColor="#ff6c0c" />
+          <stop offset="0.7" stopColor="#fda25a" />
+          <stop offset="1" stopColor="#fdc08e" />
+        </linearGradient>
+        <radialGradient id={g.mrim} cx="640" cy="640" r="420" gradientUnits="userSpaceOnUse">
+          <stop offset="0.82" stopColor="#7a2a00" stopOpacity="0" />
+          <stop offset="1" stopColor="#7a2a00" stopOpacity="0.22" />
+        </radialGradient>
         <filter id={g.glint} x="-50%" y="-50%" width="200%" height="200%">
           <feGaussianBlur stdDeviation="14" />
         </filter>
@@ -200,29 +223,39 @@ export function MarquiLive({ pose, className, shadow = true, follow = false, tit
       </defs>
 
       {shadow && (
-        <motion.ellipse cx="610" cy="760" rx="150" ry="20" fill="#012a27" opacity={0.28} filter={`url(#${g.soft})`} style={{ scale: shadowScale, opacity: shadowOpacity, transformBox: "fill-box", transformOrigin: "50% 50%" }} />
+        <motion.ellipse cx={isM ? 640 : 610} cy={isM ? 1105 : 760} rx={isM ? 300 : 150} ry={isM ? 38 : 20} fill={isM ? "#3a1400" : "#012a27"} opacity={0.28} filter={`url(#${g.soft})`} style={{ scale: shadowScale, opacity: shadowOpacity, transformBox: "fill-box", transformOrigin: "50% 50%" }} />
       )}
 
       {/* The body squashes and stretches from the ground up. */}
       {/* Breathing: a slow, barely-there swell. */}
       <motion.g animate={reduce ? undefined : { scaleY: [1, 1.018, 1], scaleX: [1, 0.992, 1] }} transition={{ duration: 3.6, repeat: Infinity, ease: "easeInOut" }} style={{ transformBox: "fill-box", transformOrigin: "50% 100%" }}>
       <motion.g style={{ y: body.y, rotate: body.rot, scaleX: body.sx, scaleY: body.sy, transformBox: "fill-box", transformOrigin: "50% 100%" }}>
-        <g>
-          <line {...tail} stroke={`url(#${g.body})`} strokeWidth={tail.width} strokeLinecap="round" />
-          <circle {...head} fill={`url(#${g.body})`} />
-          <circle {...head} fill={`url(#${g.rim})`} />
-          <ellipse cx="540" cy="405" rx="72" ry="42" fill="#fff" opacity="0.9" transform="rotate(-32 540 405)" filter={`url(#${g.glint})`} />
-        </g>
+        {isM ? (
+          <g>
+            <path d={MARQADOR.body} fill={`url(#${g.mbody})`} />
+            <path d={MARQADOR.body} fill={`url(#${g.mrim})`} />
+            <ellipse cx="430" cy="400" rx="130" ry="70" fill="#fff" opacity="0.35" transform="rotate(-36 430 400)" filter={`url(#${g.glint})`} />
+          </g>
+        ) : (
+          <g>
+            <line {...tail} stroke={`url(#${g.body})`} strokeWidth={tail.width} strokeLinecap="round" />
+            <circle {...head} fill={`url(#${g.body})`} />
+            <circle {...head} fill={`url(#${g.rim})`} />
+            <ellipse cx="540" cy="405" rx="72" ry="42" fill="#fff" opacity="0.9" transform="rotate(-32 540 405)" filter={`url(#${g.glint})`} />
+          </g>
+        )}
 
-        {/* Eyes: a faint light edge under each one makes it read as carved in. */}
+        {/* Eyes: a faint edge under each one makes it read as carved in (light under teal eyes, warm under white ones). */}
+        <g transform={isM ? FACE_TO_MARQADOR : undefined}>
         <motion.g style={{ x: lookX, y: lookY }}>
         {[e0, e1].map((e, i) => (
           <g key={i}>
-            <motion.path d={e.d} fill="none" stroke="#ffffff" strokeOpacity="0.9" strokeLinecap="round" style={{ strokeWidth: e.mv.w, x: 2.5, y: 3.5 }} />
+            <motion.path d={e.d} fill="none" stroke={isM ? "#b23d00" : "#ffffff"} strokeOpacity={isM ? 0.35 : 0.9} strokeLinecap="round" style={{ strokeWidth: e.mv.w, x: 2.5, y: 3.5 }} />
             <motion.path d={e.d} fill="none" stroke={`url(#${g.eye})`} strokeLinecap="round" style={{ strokeWidth: e.mv.w }} />
           </g>
         ))}
         </motion.g>
+        </g>
       </motion.g>
       </motion.g>
     </svg>

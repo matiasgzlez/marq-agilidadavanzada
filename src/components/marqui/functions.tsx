@@ -1,51 +1,65 @@
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { ArrowRight, BookOpen, FileSpreadsheet, MessagesSquare, PenLine } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { FadeUp, Kicker, MarquiAvatar, RiseLines, Section, ease } from "./primitives";
-import { Steps } from "./reveal";
+import type { Pose } from "./marqui-character";
+import { MarquiLive } from "./marqui-live";
+import { FadeUp, MarquiAvatar, Section, ease } from "./primitives";
+import { Lead } from "./story";
 import { Phone } from "./phone";
 import { SKY } from "./sky";
 import { ProspectCard } from "./whatsapp-web";
 
-type Feature = { n: string; title: ReactNode; text: ReactNode; points: string[]; visual: ReactNode };
+type Feature = { pain: string; title: string; text: string; visual: ReactNode; tint: string; pose: Pose };
+
+/* Soft brand gradients for the cards, like the coloured panels on the dots page. */
+const TINTS = {
+  teal: "bg-[linear-gradient(140deg,#d8f5ee_0%,#8ad8c8_55%,#3fae9c_100%)]",
+  peach: "bg-[linear-gradient(140deg,#fff0e2_0%,#fbc9a3_60%,#f19463_100%)]",
+  mint: "bg-[linear-gradient(140deg,#eefaf6_0%,#bfe9df_55%,#86d1c1_100%)]",
+  sand: "bg-[linear-gradient(140deg,#fff7e8_0%,#f8deb4_55%,#efb57a_100%)]",
+  sea: "bg-[linear-gradient(140deg,#e3f6fb_0%,#a9dfe6_55%,#5fbcc4_100%)]",
+  coral: "bg-[linear-gradient(140deg,#ffe9df_0%,#f9b493_55%,#e8784a_100%)]",
+};
 
 const features: Feature[] = [
   {
-    n: "1",
-    title: "Te propone tres respuestas.",
-    text: "Abrís el chat de un interesado y MARQui ya leyó lo que escribió. Te ofrece tres respuestas con el tono de MARQ.",
-    points: ["Tocás una y se escribe sola", "La corregís si querés", "La enviás vos, con tu nombre"],
+    pain: "Hoy: cada respuesta se escribe de cero.",
+    title: "Te sopla la respuesta",
+    text: "Abrís el chat de un interesado y MARQui ya lo leyó. Te deja tres respuestas con el tono de MARQ: tocás una, la ajustás si querés y la mandás vos, con tu nombre.",
     visual: <RepliesVisual />,
+    tint: TINTS.teal,
+    pose: "guino",
   },
   {
-    n: "2",
-    title: "Arma la tarjeta de cada interesado.",
-    text: "Mientras charlan, MARQui anota qué proyecto le interesa, qué busca, cómo piensa pagar y en qué etapa está. Sin encuestas.",
-    points: ["Si falta un dato, lo pregunta dentro de una respuesta", "Marca a clientes, referidos y a quien vuelve", "Tres etapas: Consultó, Interesado, Reservó"],
+    pain: "Hoy: lo que busca cada persona se pierde en el chat.",
+    title: "Conoce a cada interesado",
+    text: "Mientras charlan, MARQui anota qué proyecto le interesa, qué busca, cómo piensa pagar y en qué etapa está. Si falta un dato, lo pregunta dentro de una respuesta. Nunca una encuesta.",
     visual: <CardVisual />,
+    tint: TINTS.peach,
+    pose: "pensando",
   },
   {
-    n: "3",
-    title: "Te avisa solo lo importante.",
-    text: "Nada de una notificación por consulta. Un resumen cada mañana y un aviso al instante solo cuando vale la pena.",
-    points: ["Un cliente que ya invirtió vuelve a consultar", "Alguien reaparece después de 30 días", "Llega un referido de un cliente"],
+    pain: "Hoy: un cliente que vuelve puede pasar desapercibido.",
+    title: "Te avisa solo lo importante",
+    text: "Un resumen cada mañana y un aviso al instante cuando vuelve un cliente, reaparece alguien después de un mes o llega un referido. Nada de una notificación por consulta.",
     visual: (
       <Phone
         messages={[
           { kind: "day", text: "Hoy" },
           { kind: "in", time: "9:00", text: <><b>☀️ Buen día. Ayer:</b><br />23 consultas · 4 sin responder<br />2 nuevos interesados</> },
-          { kind: "in", time: "11:14", text: <><b>🔁 Reaparece:</b> Marta Ríos volvió a escribir después de 40 días. Pregunta por la 3B de MARQ Collection.</> },
+          { kind: "in", time: "11:14", text: <><b>🔁 Reaparece:</b> Marta Ríos volvió a escribir después de 40 días. Pregunta por la 3B.</> },
           { kind: "in", time: "12:02", text: <><b>⭐ Cliente:</b> Pablo Sosa, que invirtió en Torre Natalini, consulta por lotes.</> },
         ]}
       />
     ),
+    tint: TINTS.mint,
+    pose: "sorpresa",
   },
   {
-    n: "4",
-    title: "Le preguntás lo que necesites.",
-    text: "¿Cuántas consultas trajo un proyecto? ¿A quién invitar a un evento? Le escribís como a un compañero y te responde con datos.",
-    points: ["Números al instante", "Listas listas para difundir, en Excel", "Reportes semanales y mensuales en PDF"],
+    pain: "Hoy: para saber un número hay que revisar chat por chat.",
+    title: "Le preguntás lo que necesites",
+    text: "«¿Cuántas consultas trajo Collection esta semana?». «Pasame los que buscan invertir». Le escribís como a un compañero y te contesta con datos, o con la lista lista en Excel.",
     visual: (
       <Phone
         messages={[
@@ -56,64 +70,106 @@ const features: Feature[] = [
         ]}
       />
     ),
+    tint: TINTS.sand,
+    pose: "alegria",
   },
   {
-    n: "5",
-    title: "Aprende cómo trabaja MARQ.",
-    text: "MARQui aprende de tres fuentes y se mantiene al día. El equipo no tiene que cargar nada en otro sistema.",
-    points: ["Si algo nuevo contradice lo que sabía, pregunta antes", "Aprende de cada respuesta que elegís o corregís"],
+    pain: "Hoy: lo que sabe el equipo vive en la cabeza de cada uno.",
+    title: "Aprende cómo trabaja MARQ",
+    text: "MARQui aprende de las charlas, de los documentos que ya tienen y de lo que le contás. Nadie tiene que cargar nada en otro sistema.",
     visual: <LearnVisual />,
+    tint: TINTS.sea,
+    pose: "derecha",
   },
   {
-    n: "6",
-    title: "También en el celular.",
-    text: "MARQui es un contacto más de WhatsApp. Le reenviás el mensaje de un cliente y te devuelve las tres respuestas.",
-    points: ["Funciona desde el celular de cada línea", "Le podés hablar con texto o audio"],
+    pain: "Hoy: fuera de la oficina, la consulta espera.",
+    title: "También en el celular",
+    text: "MARQui es un contacto más de WhatsApp. Le reenviás el mensaje de un cliente desde el celular de la línea y te devuelve las tres respuestas.",
     visual: (
       <Phone
         messages={[
           { kind: "out", forwarded: true, time: "19:05", text: "Hola, ¿los lotes de Fontana tienen financiación?" },
           { kind: "in", time: "19:05", text: <><b>1.</b> ¡Hola! Sí, financiamos hasta 36 cuotas en pesos. ¿Te paso el plano con los lotes disponibles?</> },
           { kind: "in", time: "19:05", text: <><b>2.</b> ¡Sí! Anticipo del 30% y el resto en cuotas. ¿Lo pensás para construir ya o como inversión?</> },
-          { kind: "in", time: "19:05", text: <><b>3.</b> Sí, tenemos financiación propia. ¿Te queda bien que te llame mañana y lo vemos?</> },
+          { kind: "in", time: "19:05", text: <><b>3.</b> Sí, tenemos financiación propia. ¿Te llamo mañana y lo vemos?</> },
         ]}
         stagger={0.35}
       />
     ),
+    tint: TINTS.coral,
+    pose: "inclinado",
   },
 ];
 
 export function Functions() {
   return (
     <Section sky={SKY.noon} id="funciones" className="py-28 sm:py-40" aria-labelledby="funciones-title">
-      <div className="mx-auto max-w-[90rem]">
-        <Kicker n="02">Qué hace</Kicker>
-        <RiseLines id="funciones-title" lines={["Seis cosas que hace", <em key="e">por el equipo.</em>]} className="display sky-type mt-6 text-[clamp(2.2rem,5.8vw,7.4rem)]" />
+      <Lead id="funciones-title" title={["Empezá con MARQui"]}>
+        Pensá en MARQui como un compañero que trabaja al lado tuyo en WhatsApp. Lee cada consulta, conoce los proyectos de MARQ y te deja todo listo para que vos decidas.
+      </Lead>
 
-        <div className="mt-16 grid gap-6 sm:gap-8">
-          {features.map((f, i) => (
-            <FadeUp key={f.n}>
-              <article className="paper grid overflow-hidden rounded-[2rem] lg:grid-cols-[1fr_1.05fr]">
-                <div className={cn("flex flex-col justify-center p-7 sm:p-12 xl:p-16", i % 2 === 1 && "lg:order-2")}>
-                  <span className="font-display text-[clamp(2.4rem,4vw,4.4rem)] font-bold leading-none tracking-[-0.03em] text-blue">{f.n}</span>
-                  <h3 className="mt-5 font-display text-[clamp(1.45rem,2.5vw,2.7rem)] font-bold leading-[1.02] tracking-[-0.03em] text-balance">{f.title}</h3>
-                  <p className="mt-5 max-w-[34rem] text-[clamp(1.1rem,1.45vw,1.45rem)] leading-[1.45] text-ink-2">{f.text}</p>
-                  <Steps as="ul" className="mt-7 grid gap-3" gap={0.18}>
-                    {f.points.map((p) => (
-                      <li data-step key={p} className="flex items-start gap-3 text-[clamp(1.02rem,1.25vw,1.25rem)] font-medium text-ink">
-                        <span className="mt-[0.55em] size-2 shrink-0 rounded-full bg-teal" />
-                        {p}
-                      </li>
-                    ))}
-                  </Steps>
+      <Whisper />
+
+      <div className="mx-auto mt-24 grid max-w-[84rem] gap-24 sm:gap-32">
+        {features.map((f, i) => (
+          <article key={f.title} className="grid items-center gap-8 lg:grid-cols-[1.45fr_1fr] lg:gap-16">
+            <FadeUp className={cn(i % 2 === 1 && "lg:order-2")}>
+              <div className={cn("relative grid min-h-[30rem] place-items-center overflow-hidden rounded-[2.5rem] p-6 sm:p-12", f.tint)}>
+                {f.visual}
+                {/* MARQui lives in the corner of each card, reacting to what it shows. */}
+                <div className={cn("pointer-events-none absolute bottom-5 w-[clamp(4.5rem,8vw,7.5rem)]", i % 2 === 1 ? "right-6" : "left-6")}>
+                  <MarquiLive pose={f.pose} shadow={false} className="drop-shadow-[0_1rem_1.5rem_rgb(1_30_27/0.25)]" />
                 </div>
-                <div className="relative grid min-h-[26rem] place-items-center overflow-hidden bg-[linear-gradient(160deg,#e3f4ef,#fbe2d0)] p-6 sm:p-10">{f.visual}</div>
-              </article>
+              </div>
             </FadeUp>
-          ))}
-        </div>
+            <FadeUp delay={0.1} className={cn("grid gap-4", i % 2 === 1 && "lg:order-1")}>
+              <p className="w-fit rounded-full bg-ink/85 px-4 py-1.5 text-[clamp(0.92rem,1.05vw,1.05rem)] text-white/85">{f.pain}</p>
+              <h3 className="display sky-type text-[clamp(2rem,3.4vw,3.6rem)]">{f.title}</h3>
+              <p className="sky-type text-[clamp(1.1rem,1.45vw,1.5rem)] font-medium leading-[1.45] text-white/90">{f.text}</p>
+            </FadeUp>
+          </article>
+        ))}
       </div>
     </Section>
+  );
+}
+
+/** «Psst… mandale la segunda»: MARQui on the left, whispering; what he is, on the right. */
+function Whisper() {
+  const [pose, setPose] = useState<Pose>("guino");
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const seq: [Pose, number][] = [["guino", 2600], ["reposo", 1400], ["parpadeo", 140], ["reposo", 900], ["derecha", 1100], ["reposo", 700]];
+    let i = 0;
+    let t = 0;
+    const next = () => {
+      const [p, ms] = seq[i++ % seq.length]!;
+      setPose(p);
+      t = window.setTimeout(next, ms);
+    };
+    next();
+    return () => clearTimeout(t);
+  }, []);
+  return (
+    <div className="mx-auto mt-16 grid max-w-[78rem] items-center gap-10 md:grid-cols-[0.9fr_1.1fr] md:gap-16">
+      <FadeUp className="relative mx-auto w-full max-w-[28rem]">
+        <div className="relative pt-[22%]">
+          <MarquiLive pose={pose} follow className="w-[66%]" />
+          <span className="paper absolute left-[42%] top-[6%] whitespace-nowrap rounded-[1.4rem] rounded-bl-md max-sm:max-w-[58%] max-sm:whitespace-normal px-5 py-3.5 text-[clamp(1.05rem,1.4vw,1.45rem)] font-medium text-ink shadow-[0_1rem_2rem_-1rem_rgb(1_30_27/0.4)]">
+            Psst… mandale la segunda 😉
+          </span>
+        </div>
+      </FadeUp>
+      <FadeUp delay={0.15} className="paper grid gap-5 rounded-[2rem] p-8 sm:p-10">
+        <h3 className="text-[clamp(1.6rem,2.4vw,2.6rem)] font-medium leading-tight tracking-[-0.025em]">¿Qué es MARQui?</h3>
+        <p className="text-[clamp(1.1rem,1.4vw,1.45rem)] leading-[1.45] text-ink-2">
+          Un asistente con inteligencia artificial para el equipo de MARQ. Vive en el WhatsApp que ya usan: lee las consultas de las dos líneas y le sopla la respuesta a quien atiende.
+        </p>
+        <p className="text-[clamp(1.1rem,1.4vw,1.45rem)] leading-[1.45] text-ink-2">
+          No le habla al cliente. No hace encuestas. <b className="text-ink">El que responde siempre es una persona.</b>
+        </p>
+      </FadeUp>
+    </div>
   );
 }
 

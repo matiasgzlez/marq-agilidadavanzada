@@ -1,8 +1,10 @@
 import { cn } from "@/lib/utils";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAnimate, useInView, useReducedMotion, type AnimationPlaybackControls, type AnimationSequence } from "motion/react";
 import { MARQ_LETTERS, MARQ_Q, MARQ_TAGLINE, MARQ_VIEWBOX, Q_CENTER } from "./brand";
-import { MARQADOR, MarqadorEye, MarqadorGradient } from "./marqador-mark";
+import { MARQADOR } from "./marqador-mark";
+import { useMarquiLife, type Pose } from "./marqui-character";
+import { MarquiLive } from "./marqui-live";
 
 /* ——— From MARQ to MARQador ———
    Plays on its own each time the section comes into view, no scroll
@@ -18,7 +20,8 @@ const TARGET = { x: VB.w / 2, y: 140, scale: 1.62 };
 const MOVE = { x: TARGET.x - Q_CENTER.x, y: TARGET.y - Q_CENTER.y };
 // MARQador's own mark, placed so his head lands exactly on the grown Q.
 const K = (Q_CENTER.r * TARGET.scale) / MARQADOR.head.r;
-const PLACE = `translate(${TARGET.x - MARQADOR.head.cx * K} ${TARGET.y - MARQADOR.head.cy * K}) scale(${K})`;
+// MARQador alive (same character system as MARQui), placed so his head lands exactly on the grown Q.
+const LIVE = { x: TARGET.x - MARQADOR.head.cx * K + 170 * K, y: TARGET.y - MARQADOR.head.cy * K + 150 * K, width: 960 * K, height: 1060 * K };
 const pivot = { transformBox: "fill-box", transformOrigin: "50% 50%" } as const;
 const order = ["r", "a", "m"] as const;
 // Where each clip starts and how wide it is: the eraser travels its width.
@@ -33,8 +36,13 @@ export function MarqadorIntro() {
   const inView = useInView(scope, { amount: 0.55 });
   const reduce = useReducedMotion();
   const running = useRef<AnimationPlaybackControls[]>([]);
+  const eyeTimers = useRef<number[]>([]);
+  const [reaction, setReaction] = useState<Pose | null>("parpadeo");
+  const [alive, setAlive] = useState(false);
+  const pose = useMarquiLife({ active: alive, override: reaction });
 
   const stopAll = () => {
+    eyeTimers.current.forEach(clearTimeout);
     running.current.forEach((a) => a.stop());
     running.current = [];
   };
@@ -53,8 +61,8 @@ export function MarqadorIntro() {
     animate("[data-q]", { opacity: 1 }, now);
     animate("[data-fill]", { scale: 0 }, now);
     animate("[data-mark]", { opacity: 0 }, now);
-    animate("[data-eye]", { scale: 0 }, now);
-    animate("[data-look]", { x: 0, y: 0 }, now);
+    setReaction("parpadeo");
+    setAlive(false);
     animate("[data-char]", { y: "110%" }, now);
   };
 
@@ -65,7 +73,8 @@ export function MarqadorIntro() {
     animate("[data-q]", { x: MOVE.x, y: MOVE.y, scale: TARGET.scale }, now);
     animate("[data-q]", { opacity: 0 }, now);
     animate("[data-mark]", { opacity: 1 }, now);
-    animate("[data-eye]", { scale: 1 }, now);
+    setReaction(null);
+    setAlive(true);
     animate("[data-char]", { y: "0%" }, now);
   };
 
@@ -93,18 +102,19 @@ export function MarqadorIntro() {
       ["[data-mark]", { opacity: 1 }, { duration: 0.55, ease: "easeInOut", at: 3.9 }],
       ["[data-q]", { opacity: 0 }, { duration: 0.4, at: 4.15 }],
       // He opens his eyes.
-      ["[data-eye='0']", { scale: [0, 1.2, 1] }, { duration: 0.45, ease: out, at: 4.35 }],
-      ["[data-eye='1']", { scale: [0, 1.2, 1] }, { duration: 0.45, ease: out, at: 4.45 }],
       ...Array.from({ length: WORD.length }, (_, i): AnimationSequence[number] => [`[data-char='${i}']`, { y: "0%" }, { duration: 0.7, ease: out, at: 4.5 + i * 0.045 }]),
     ];
+    // He opens his eyes (surprised), then smiles.
+    eyeTimers.current.forEach(clearTimeout);
+    eyeTimers.current = [window.setTimeout(() => setReaction("sorpresa"), 4350), window.setTimeout(() => setReaction("alegria"), 5000)];
     const story = animate(sequence);
     running.current.push(story);
     await story;
     if (!running.current.includes(story)) return;
     // Alive: a slow float, a blink every few seconds and a glance now and then.
     running.current.push(animate("[data-float]", { y: [0, -16, 0] }, { duration: 5, repeat: Infinity, ease: "easeInOut" }));
-    running.current.push(animate("[data-eye]", { scaleY: [1, 1, 0.12, 1] }, { duration: 3.6, times: [0, 0.9, 0.94, 1], repeat: Infinity, delay: 0.6 }));
-    running.current.push(animate("[data-look]", { x: [0, 0, -22, -22, 0], y: [0, 0, 10, 10, 0] }, { duration: 7, times: [0, 0.55, 0.62, 0.85, 0.92], repeat: Infinity, ease: inOut }));
+    setReaction(null);
+    setAlive(true);
   };
 
   // Each time the section arrives on screen, the story plays again.
@@ -123,7 +133,6 @@ export function MarqadorIntro() {
       <button type="button" onClick={() => !reduce && void play()} className="relative grid cursor-pointer place-items-center rounded-[3rem] outline-offset-8" aria-label="Ver otra vez cómo MARQ se convierte en MARQador">
         <svg viewBox={`${VB.x} ${VB.y} ${VB.w} ${VB.h}`} className="w-[min(92vw,100svh)] overflow-visible" aria-hidden>
           <defs>
-            <MarqadorGradient id="marqador-intro-grad" />
             {/* One clip per letter; shrinking its width wipes the letter away. */}
             {order.map((k) => (
               <clipPath key={k} id={`clip-${k}`}>
@@ -150,15 +159,8 @@ export function MarqadorIntro() {
               {/* Fills the ring's hole: the Q becomes solid. */}
               <circle data-fill cx={Q_CENTER.x} cy={Q_CENTER.y} r={128} fill="#fff" style={pivot} />
             </g>
-            <g transform={PLACE}>
-              <g data-mark opacity="0">
-                <path d={MARQADOR.body} fill="url(#marqador-intro-grad)" />
-                <g data-look>
-                  {MARQADOR.eyes.map((e, i) => (
-                    <MarqadorEye key={i} eye={e} data-eye={i} style={pivot} />
-                  ))}
-                </g>
-              </g>
+            <g data-mark opacity="0">
+              <MarquiLive who="marqador" pose={pose} follow={alive} shadow={false} svgProps={LIVE} />
             </g>
           </g>
         </svg>
@@ -173,10 +175,6 @@ export function MarqadorIntro() {
           ))}
         </h2>
       </button>
-
-      <p className="eyebrow absolute left-4 top-24 flex items-center gap-3 text-white sm:left-8 lg:left-12">
-        <span className="grid h-7 min-w-7 place-items-center rounded-full bg-white px-2 text-ink">03</span> El tablero
-      </p>
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { ArrowDownRight, ArrowUpRight, Clock, Download, FileText, MessageCircle, Minus, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BrowserFrame, FadeUp, Illustrative, RiseLines, Section, ease } from "./primitives";
+import { Brothers } from "./brothers";
 import { MarqadorIntro } from "./marqador-intro";
 import { MarqadorMark } from "./marqador-mark";
 import { SKY } from "./sky";
@@ -30,13 +31,14 @@ export function MarqadorSection() {
         <MarqadorIntro />
       </div>
     </Section>
+    <Brothers />
     <Section sky={SKY.dusk} data-brand="marqador" className="pb-28 sm:pb-40" aria-label="El tablero de MARQador">
       <div className="mx-auto max-w-[90rem] pt-24">
         <RiseLines lines={["Lo que pide el mercado,", <em key="e">a la vista.</em>]} className="display sky-type text-[clamp(2.2rem,5.8vw,7.4rem)]" />
 
         <FadeUp className="mt-10 grid gap-4 lg:grid-cols-[1.3fr_1fr]">
           <p className="paper rounded-[1.5rem] px-6 py-5 text-[clamp(1.1rem,1.5vw,1.5rem)] leading-[1.45] sm:px-8 sm:py-6">
-            El tablero de MARQui. Se abre con un botón desde WhatsApp Web, <b>en una pestaña nueva</b>, como la app de Gasti. Cada pantalla responde una pregunta del negocio.
+            Hoy, para saber qué pide el mercado hay que leer chat por chat. MARQador lo junta todo en un tablero que se abre <b>en una pestaña nueva</b> desde WhatsApp Web. Cada pantalla responde una pregunta del negocio.
           </p>
           <div className="paper flex flex-col justify-center gap-3 rounded-[1.5rem] px-6 py-5 sm:px-8">
             <span className="eyebrow text-ink-3">También llega por WhatsApp</span>

@@ -6,15 +6,17 @@ Presentación web de **Marqui**, un asistente con IA para el equipo de MARQ dent
 
 ## Qué muestra la presentación
 
-La pestaña **Solución** recorre, sobre un mismo cielo que cambia de hora:
+La pestaña **MARQui** sigue la estructura de la página de [dots](https://chatgpt.com/es-ES/features/dots/) y cuenta todo como dolor → solución, sobre un cielo que cambia de hora:
 
-1. **Hero:** WhatsApp Web con Marqui adentro. Demo interactiva: Juan pregunta «precio?», la tarjeta se completa sola y pasa a Interesado.
-2. **Qué es:** Marqui contra un chatbot.
-3. **Qué hace:** las seis funciones, cada una con su pantalla.
-4. **MARQador:** el tablero, con cinco pantallas (Pauta, Demanda, Contactos, Frenos y Semana).
-5. **Demo «Un día con Marqui»:** 9:00, 10:30 y 18:00. El cielo sigue la hora. Se avanza con los botones o con las flechas ← → del teclado.
-6. **Por dentro:** cómo se conecta y qué pasa si la extensión falla.
-7. **Lo que viene:** precios, señas, landings y avance de obra.
+1. **Te presentamos MARQui:** el personaje vivo (sigue el cursor) y una frase.
+2. **Hoy:** el dolor, con los números del equipo.
+3. **Empezá con MARQui:** qué es, y las seis funciones en tarjetas, cada una con su «Hoy…».
+4. **De tu lado, bajo tu control:** no es un bot, no hay encuestas, decidís vos.
+5. **Más tiempo para vender:** 3 a 7 h por semana, con estudios de NBER (2023) y HBR (2011).
+6. **Un día con MARQui:** línea de tiempo de 9:00 a 18:30 (flechas ← → para presentar).
+7. **Justo donde lo necesitás:** WhatsApp Web (demo interactiva), celular y MARQador.
+8. **MARQador:** su presentación animada, «Un módulo de MARQui» y el tablero.
+9. **Cómo llega MARQui a MARQ**, **Lo que viene** y el cierre.
 
 La pestaña **Design thinking** queda en preparación (`?panel=thinking`).
 

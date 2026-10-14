@@ -5,9 +5,9 @@ import { Functions } from "@/components/marqui/functions";
 import { Header, type Panel } from "@/components/marqui/header";
 import { Hero } from "@/components/marqui/hero";
 import { Inside } from "@/components/marqui/inside";
-import { Brothers } from "@/components/marqui/brothers";
 import { MarqadorSection } from "@/components/marqui/marqador";
-import { NotBot } from "@/components/marqui/not-bot";
+import { Control, Pain, TimeSaved } from "@/components/marqui/story";
+import { Where } from "@/components/marqui/where";
 import { SkyBackground, SkyProvider } from "@/components/marqui/sky";
 
 const initialPanel = (): Panel => (new URLSearchParams(window.location.search).get("panel") === "thinking" ? "thinking" : "solucion");
@@ -33,11 +33,13 @@ export function App() {
         {panel === "solucion" ? (
           <div id="panel-solucion" role="tabpanel" aria-label="La solución: Marqui">
             <Hero />
-            <NotBot />
+            <Pain />
             <Functions />
-            <Brothers />
-            <MarqadorSection />
+            <Control />
+            <TimeSaved />
             <Day />
+            <Where />
+            <MarqadorSection />
             <Inside />
             <Next />
             <Outro />

@@ -1,5 +1,6 @@
 import { Camera, CreditCard, LayoutTemplate, Tags } from "lucide-react";
-import { FadeUp, Kicker, MarqLogo, RiseLines, Section } from "./primitives";
+import { FadeUp, MarqLogo, RiseLines, Section } from "./primitives";
+import { Lead } from "./story";
 import { MarquiLive } from "./marqui-live";
 import { Steps } from "./reveal";
 import { SKY } from "./sky";
@@ -14,43 +15,49 @@ const next = [
 export function Next() {
   return (
     <Section sky={SKY.dawn} id="lo-que-viene" className="py-28 sm:py-40" aria-labelledby="lo-que-viene-title">
-      <div className="mx-auto max-w-[90rem]">
-        <Kicker n="06">Próximamente</Kicker>
-        <RiseLines id="lo-que-viene-title" lines={["Lo que viene,", <em key="e">también por chat.</em>]} className="display sky-type mt-6 text-[clamp(2.2rem,5.8vw,7.4rem)]" />
-        <Steps className="mt-14 grid gap-4 sm:grid-cols-2 xl:grid-cols-4" gap={0.14}>
-          {next.map((n) => (
-            <div data-step key={n.title} className="h-full">
-              <article className="paper flex h-full flex-col rounded-[1.75rem] p-7">
-                <span className="grid size-14 place-items-center rounded-2xl bg-blue-soft text-blue">
-                  <n.icon className="size-7" />
-                </span>
-                <h3 className="mt-6 font-display text-[clamp(1.15rem,1.45vw,1.5rem)] font-bold leading-tight tracking-[-0.03em]">{n.title}</h3>
-                <p className="mt-3 text-[clamp(1.05rem,1.2vw,1.2rem)] leading-snug text-ink-2">{n.text}</p>
-                <p className="mt-auto pt-6 text-[1rem] font-medium italic text-blue">{n.quote}</p>
-              </article>
-            </div>
-          ))}
-        </Steps>
-        <p className="mt-6 w-fit rounded-full bg-ink px-5 py-2.5 text-[1rem] text-white">Próximas integraciones: se suman una vez que MARQui y MARQador estén funcionando.</p>
-      </div>
+      <Lead id="lo-que-viene-title" title={["Lo que viene,", <em key="e">también por chat.</em>]}>
+        Una vez que MARQui y MARQador estén andando, el mismo chat puede ocuparse de lo que hoy depende del programador o se hace dos veces.
+      </Lead>
+      <Steps className="mx-auto mt-16 grid max-w-[84rem] gap-4 sm:grid-cols-2 xl:grid-cols-4" gap={0.14}>
+        {next.map((n) => (
+          <article data-step key={n.title} className="paper flex h-full flex-col rounded-[2rem] p-7">
+            <n.icon className="size-7 text-teal" />
+            <h3 className="mt-6 text-[clamp(1.25rem,1.6vw,1.7rem)] font-medium leading-tight tracking-[-0.02em]">{n.title}</h3>
+            <p className="mt-3 text-[clamp(1.05rem,1.2vw,1.25rem)] leading-snug text-ink-2">{n.text}</p>
+            <p className="mt-auto pt-6 text-[1rem] font-medium text-teal">{n.quote}</p>
+          </article>
+        ))}
+      </Steps>
     </Section>
   );
 }
 
+/** The dots ending: one last line, and the two brothers peeking up from the bottom of the page. */
 export function Outro() {
   return (
-    <Section sky={SKY.dawn} id="cierre" className="pb-20 pt-24 sm:pt-32">
-      <div className="mx-auto grid max-w-[90rem] place-items-center text-center">
-        <FadeUp>
-          <MarquiLive pose="alegria" title="MARQui contento" className="mx-auto w-[clamp(9rem,13vw,14rem)]" />
-        </FadeUp>
-        <RiseLines lines={["El equipo responde.", <em key="e">MARQui sopla.</em>]} className="display sky-type mt-10 text-[clamp(2.2rem,6.4vw,8.6rem)]" />
-        <FadeUp className="mt-12">
-          <MarqLogo className="mx-auto h-[clamp(1.5rem,2vw,2.2rem)]" />
+    <Section sky={SKY.dawn} id="cierre" className="overflow-hidden pt-24 sm:pt-32">
+      <div className="mx-auto grid max-w-[64rem] place-items-center text-center">
+        <RiseLines lines={["El equipo responde.", <em key="e">MARQui sopla.</em>]} className="display sky-type text-[clamp(2.6rem,7vw,8.4rem)]" />
+        <FadeUp className="mt-10 flex flex-wrap justify-center gap-3">
+          <a href="#inicio" className="inline-flex h-14 items-center rounded-full bg-ink px-7 text-[1.1rem] font-medium text-white transition-transform hover:-translate-y-0.5">
+            Volver a empezar
+          </a>
+          <a href="#un-dia" className="inline-flex h-14 items-center rounded-full bg-white px-7 text-[1.1rem] font-medium text-ink transition-transform hover:-translate-y-0.5">
+            Ver un día con MARQui
+          </a>
         </FadeUp>
       </div>
-      <footer className="mx-auto mt-24 flex max-w-[90rem] flex-wrap items-center justify-between gap-3 rounded-full bg-ink px-6 py-4 text-[0.9rem] text-white/75">
-        <span>MARQui · Agilidad avanzada · 2026</span>
+      <FadeUp className="relative mx-auto mt-16 flex h-[clamp(11rem,20vw,19rem)] max-w-[44rem] items-start justify-center gap-[3%]">
+        <div className="w-[52%] translate-y-[4%]">
+          <MarquiLive pose="alegria" follow shadow={false} />
+        </div>
+        <div className="w-[40%] translate-y-[22%]">
+          <MarquiLive who="marqador" pose="guino" follow shadow={false} />
+        </div>
+      </FadeUp>
+      <footer className="relative -mx-4 flex flex-wrap items-center justify-between gap-3 bg-ink px-6 py-5 text-[0.95rem] text-white/75 sm:-mx-8 lg:-mx-12 lg:px-12">
+        <MarqLogo className="h-7" />
+        <span>MARQui y MARQador · Agilidad avanzada · 2026</span>
         <span>Conversaciones, nombres y números son ilustrativos.</span>
       </footer>
     </Section>

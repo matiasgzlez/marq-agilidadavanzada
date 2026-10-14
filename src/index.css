@@ -7,8 +7,8 @@
    from the back of a classroom. No frosted glass behind text. */
 
 @theme inline {
-  --font-display: "Lexend", ui-sans-serif, sans-serif;
-  --font-sans: "Figtree", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Geist", ui-sans-serif, sans-serif;
+  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Geist Mono", ui-monospace, monospace;
 
   --color-ink: #06231f;
@@ -89,17 +89,16 @@ body {
 
 /* Headlines on the sky: a wide, soft shadow instead of a box. Applied as a
    filter on the whole title so masked line reveals never clip it. */
-/* Like Playus: a hard ink shadow under the letters, so white type holds on any cloud. */
+/* Headlines on the sky: a wide, soft shadow (no hard outline) keeps white type legible on bright cloud. */
 .sky-type {
-  text-shadow: 0 0.06em 0 var(--color-ink);
-  filter: drop-shadow(0 0.75rem 2rem rgb(9 25 60 / 0.25));
+  text-shadow: 0 0.04em 0.6em rgb(1 30 27 / 0.28);
 }
 
 .display {
   font-family: var(--font-display);
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  line-height: 1.04;
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 1.02;
   text-wrap: balance;
 }
 /* The second line of a title: same face, lighter weight. No italics, so it reads from the back of the room. */
@@ -107,8 +106,8 @@ body {
 .serif-em {
   font-family: var(--font-display);
   font-style: normal;
-  font-weight: 350;
-  letter-spacing: -0.025em;
+  font-weight: 500;
+  opacity: 0.72;
 }
 
 .eyebrow {

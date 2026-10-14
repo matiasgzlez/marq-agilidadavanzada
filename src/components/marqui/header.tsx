@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { cn } from "@/lib/utils";
-import { MarqadorMark } from "./marqador-mark";
 import { MarquiLive } from "./marqui-live";
 import { MarqLogo, ease } from "./primitives";
 
@@ -71,24 +70,23 @@ export function Header({ panel, onPanel }: { panel: Panel; onPanel: (p: Panel) =
         ))}
       </div>
 
-      {/* Whoever is on stage. */}
-      <a href={brand === "marqador" ? "#marqador" : "#que-es"} onClick={() => onPanel("solucion")} className="pointer-events-auto relative ml-auto grid size-12 place-items-center sm:size-14 lg:size-16" aria-label={brand === "marqador" ? "MARQui con MARQador" : "MARQui"}>
-        {/* MARQui is always here; in MARQador's sections his little brother joins as a badge, like an add-on. */}
-        <MarquiLive pose={brand === "marqador" ? "derecha" : "reposo"} shadow={false} className="w-[118%] translate-x-[2%] translate-y-[6%] drop-shadow-[0_0.5rem_1rem_rgb(0_0_0/0.35)]" />
+      {/* MARQui is always here; in MARQador's sections his little brother joins him, side by side. */}
+      <a href={brand === "marqador" ? "#marqador" : "#inicio"} onClick={() => onPanel("solucion")} className="pointer-events-auto ml-auto flex h-14 items-end gap-0.5 sm:h-16 lg:h-[4.5rem]" aria-label={brand === "marqador" ? "MARQui y MARQador" : "MARQui"}>
         <AnimatePresence initial={false}>
           {brand === "marqador" && (
             <motion.span
-              key="badge"
-              initial={{ scale: 0, rotate: -40, x: -10, y: -10 }}
-              animate={{ scale: 1, rotate: 0, x: 0, y: 0 }}
-              exit={{ scale: 0, rotate: 40 }}
-              transition={{ type: "spring", stiffness: 420, damping: 18 }}
-              className="absolute -bottom-2 -right-3 size-[58%]"
+              key="bro"
+              initial={{ opacity: 0, scale: 0.3, x: 24 }}
+              animate={{ opacity: 1, scale: 1, x: 0 }}
+              exit={{ opacity: 0, scale: 0.3, x: 24 }}
+              transition={{ type: "spring", stiffness: 380, damping: 20 }}
+              className="block h-[68%] origin-bottom-right"
             >
-              <MarqadorMark className="size-full drop-shadow-[0_0.3rem_0.6rem_rgb(0_0_0/0.4)]" />
+              <MarquiLive who="marqador" pose="alegria" shadow={false} className="h-full w-auto drop-shadow-[0_0.4rem_0.8rem_rgb(0_0_0/0.35)]" />
             </motion.span>
           )}
         </AnimatePresence>
+        <MarquiLive pose={brand === "marqador" ? "izquierda" : "reposo"} shadow={false} className="h-full w-auto drop-shadow-[0_0.4rem_0.8rem_rgb(0_0_0/0.35)]" />
       </a>
     </motion.header>
   );

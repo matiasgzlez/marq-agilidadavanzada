@@ -1,5 +1,6 @@
 import { AppWindow, ArrowRight, BarChart3, Smartphone } from "lucide-react";
-import { Kicker, MarquiAvatar, RiseLines, Section } from "./primitives";
+import { MarquiAvatar, Section } from "./primitives";
+import { Lead } from "./story";
 import { Steps } from "./reveal";
 import { SKY } from "./sky";
 
@@ -19,10 +20,10 @@ export function Inside() {
   return (
     <Section sky={SKY.dusk} id="por-dentro" className="py-28 sm:py-40" aria-labelledby="por-dentro-title">
       <div className="mx-auto max-w-[90rem]">
-        <Kicker n="05">Por dentro</Kicker>
-        <RiseLines id="por-dentro-title" lines={["Lo mismo de siempre,", <em key="e">con MARQui atrás.</em>]} className="display sky-type mt-6 text-[clamp(2.2rem,5.8vw,7.4rem)]" />
-
-        <Steps className="mt-14" gap={0.28}>
+        <Lead id="por-dentro-title" title={["Cómo llega MARQui", <em key="e">a MARQ.</em>]}>
+          Las dos líneas siguen igual que hoy. MARQui se conecta por detrás, por la vía oficial de WhatsApp, y aparece donde el equipo ya trabaja.
+        </Lead>
+        <Steps className="mt-16" gap={0.28}>
           <div data-step className="paper rounded-[2rem] p-6 sm:p-10 xl:p-14">
             <div className="grid items-center gap-6 lg:grid-cols-[1fr_auto_1fr_auto_1.3fr]">
               <div data-step className="rounded-3xl bg-wa-bubble p-6">
