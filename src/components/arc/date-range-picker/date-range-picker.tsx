@@ -561,7 +561,7 @@ export function DateRangePicker({ value, defaultValue = null, onChange, label = 
   /* ---------- Copy ---------- */
   const committedText = format(committed);
   const shownText = shown ? format(shown) : "No dates";
-  const countText = shown ? `${days} ${days === 1 ? "day" : "days"}` : "";
+  const countText = shown ? `${days} ${days === 1 ? "día" : "días"}` : "";
   const status = !open ? "" : anchor ? `Start ${formatters.label.format(anchor)}. Choose an end date.` : shown ? `${shownText}, ${countText}` : "";
   const layoutId = reduced ? undefined : `${uid}-value`;
 
@@ -624,8 +624,8 @@ export function DateRangePicker({ value, defaultValue = null, onChange, label = 
               </motion.span>
             </div>
             <motion.div className={styles.actions} variants={reduced ? faceFade : faceIn} initial="hidden" animate="shown" exit="gone">
-              <button type="button" className={styles.ghost} onClick={() => close(true)}>Cancel</button>
-              <button type="button" className={styles.primary} onClick={apply} disabled={!shown}>Apply</button>
+              <button type="button" className={styles.ghost} onClick={() => close(true)}>Cancelar</button>
+              <button type="button" className={styles.primary} onClick={apply} disabled={!shown}>Aplicar</button>
             </motion.div>
           </div>
           <p className={styles.srOnly} aria-live="polite">{status}</p>

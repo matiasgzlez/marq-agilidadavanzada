@@ -88,7 +88,7 @@ export function Where() {
 function Character({ className, pose, who }: { className?: string; pose: "guino" | "alegria"; who?: "marqador" }) {
   return (
     <motion.div className={cn("pointer-events-none absolute z-10", className)} initial={{ opacity: 0, scale: 0.6, rotate: -10 }} animate={{ opacity: 1, scale: 1, rotate: 0 }} transition={{ type: "spring", stiffness: 260, damping: 16, delay: 0.3 }}>
-      <MarquiLive pose={pose} who={who} follow />
+      <MarquiLive pose={pose} who={who} />
     </motion.div>
   );
 }

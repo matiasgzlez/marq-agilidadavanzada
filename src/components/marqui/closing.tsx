@@ -49,10 +49,10 @@ export function Outro() {
       </div>
       <FadeUp className="relative mx-auto mt-16 flex h-[clamp(11rem,20vw,19rem)] max-w-[44rem] items-start justify-center gap-[3%]">
         <div className="w-[52%] translate-y-[4%]">
-          <MarquiLive pose="alegria" follow shadow={false} />
+          <MarquiLive pose="alegria" shadow={false} />
         </div>
         <div className="w-[40%] translate-y-[22%]">
-          <MarquiLive who="marqador" pose="guino" follow shadow={false} />
+          <MarquiLive who="marqador" pose="guino" shadow={false} />
         </div>
       </FadeUp>
       <footer className="relative -mx-4 flex flex-wrap items-center justify-between gap-3 bg-ink px-6 py-5 text-[0.95rem] text-white/75 sm:-mx-8 lg:-mx-12 lg:px-12">

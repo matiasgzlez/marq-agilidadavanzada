@@ -124,6 +124,10 @@ export function MarquiLive({ pose, className, shadow = true, follow = false, who
   // Eyes follow the pointer: a small, springy offset toward wherever it is.
   const lookX = useSpring(0, { stiffness: 120, damping: 14 });
   const lookY = useSpring(0, { stiffness: 120, damping: 14 });
+  // The whole body leans toward the pointer too, so the gaze reads even when he is tiny.
+  const leanX = useSpring(0, { stiffness: 90, damping: 14 });
+  const leanY = useSpring(0, { stiffness: 90, damping: 14 });
+  const leanR = useSpring(0, { stiffness: 90, damping: 14 });
   const id = useId().replace(/:/g, "");
   const reduce = useReducedMotion();
   const e0 = useEye(SHAPES.reposo.eyes[0]);
@@ -164,14 +168,26 @@ export function MarquiLive({ pose, className, shadow = true, follow = false, who
       const dx = e.clientX - (r.left + r.width * 0.5);
       const dy = e.clientY - (r.top + r.height * 0.42);
       const dist = Math.hypot(dx, dy) || 1;
-      const reach = Math.min(1, dist / 600);
-      lookX.set((dx / dist) * 22 * reach);
-      lookY.set((dy / dist) * 16 * reach);
+      const reach = Math.min(1, dist / 260);
+      const nx = (dx / dist) * reach;
+      const ny = (dy / dist) * reach;
+      // At rest the eyes sit up and to the right, so the gaze first recentres them on the face,
+      // then sends them far toward the pointer (the head radius is ≈ 195 in face space).
+      const cx = -38 * reach;
+      const cy = 50 * reach;
+      lookX.set(cx + nx * 62);
+      lookY.set(cy + ny * 52);
+      leanX.set(nx * 26);
+      leanY.set(ny * 16);
+      leanR.set(nx * 14);
       // (in face space; MARQador's face group scales it up with him)
     };
     const reset = () => {
       lookX.set(0);
       lookY.set(0);
+      leanX.set(0);
+      leanY.set(0);
+      leanR.set(0);
     };
     window.addEventListener("pointermove", onMove);
     document.addEventListener("pointerleave", reset);
@@ -179,7 +195,7 @@ export function MarquiLive({ pose, className, shadow = true, follow = false, who
       window.removeEventListener("pointermove", onMove);
       document.removeEventListener("pointerleave", reset);
     };
-  }, [follow, reduce, lookX, lookY]);
+  }, [follow, reduce, lookX, lookY, leanX, leanY, leanR]);
 
   const { head, tail } = MARK;
   const g = useMemo(() => ({ body: `b${id}`, rim: `r${id}`, eye: `e${id}`, glint: `s${id}`, soft: `f${id}`, mbody: `mb${id}`, mrim: `mr${id}` }), [id]);
@@ -229,6 +245,7 @@ export function MarquiLive({ pose, className, shadow = true, follow = false, who
       {/* The body squashes and stretches from the ground up. */}
       {/* Breathing: a slow, barely-there swell. */}
       <motion.g animate={reduce ? undefined : { scaleY: [1, 1.018, 1], scaleX: [1, 0.992, 1] }} transition={{ duration: 3.6, repeat: Infinity, ease: "easeInOut" }} style={{ transformBox: "fill-box", transformOrigin: "50% 100%" }}>
+      <motion.g style={{ x: leanX, y: leanY, rotate: leanR, transformBox: "fill-box", transformOrigin: "50% 60%" }}>
       <motion.g style={{ y: body.y, rotate: body.rot, scaleX: body.sx, scaleY: body.sy, transformBox: "fill-box", transformOrigin: "50% 100%" }}>
         {isM ? (
           <g>
@@ -256,6 +273,7 @@ export function MarquiLive({ pose, className, shadow = true, follow = false, who
         ))}
         </motion.g>
         </g>
+      </motion.g>
       </motion.g>
       </motion.g>
     </svg>

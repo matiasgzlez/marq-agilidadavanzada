@@ -8,7 +8,7 @@ import { SKY } from "./sky";
 /* ——— Te presentamos MARQui ———
    Like the dots page: the character first, centred and alive, then one big
    line, one plain sentence and two ways in. He jumps in, lands happy and
-   follows your cursor. */
+   says hi. */
 
 export function Hero() {
   const reduce = useReducedMotion();
@@ -54,7 +54,7 @@ export function Hero() {
           animate={{ y: 0, scale: 1, opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.2, ease }}
         >
-          <MarquiLive pose={pose} follow className="w-[min(46vw,30svh,17rem)]" />
+          <MarquiLive pose={pose} className="w-[min(46vw,30svh,17rem)]" />
         </motion.button>
 
         <motion.h1 {...enter(0.5)} className="display sky-type mt-4 text-[clamp(2.8rem,7.4vw,8.4rem)]">

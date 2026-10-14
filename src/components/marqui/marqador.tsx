@@ -1,11 +1,20 @@
 import { useState, type ReactNode } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { ArrowDownRight, ArrowUpRight, Clock, Download, FileText, MessageCircle, Minus, X } from "lucide-react";
+import { Clock, Download, FileText, MessageCircle, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BrowserFrame, FadeUp, RiseLines, Section, ease } from "./primitives";
 import { Brothers } from "./brothers";
 import { MarqadorIntro } from "./marqador-intro";
 import { MarqadorMark } from "./marqador-mark";
+import { BarChart } from "@/components/arc/bar-chart/bar-chart";
+import { LineChart } from "@/components/arc/line-chart/line-chart";
+import { DonutChart } from "@/components/arc/donut-chart/donut-chart";
+import { Gauge } from "@/components/arc/gauge/gauge";
+import { MetricCard } from "@/components/arc/metric-card/metric-card";
+import SegmentedControl from "@/components/arc/segmented-control/segmented-control";
+import { SlotText } from "@/components/arc/slot-text/slot-text";
+import { SortableDataTable } from "@/components/arc/sortable-data-table/sortable-data-table";
+import { Sparkline } from "@/components/arc/sparkline/sparkline";
 import { SKY } from "./sky";
 
 /* ——— MARQador ———
@@ -66,7 +75,7 @@ export function Marqador({ initial = "pauta", className }: { initial?: ScreenId;
   return (
     <BrowserFrame
       url="marqador.marq.com.ar"
-      className={className}
+      className={cn("arc-marqador", className)}
       badge={<span className="hidden items-center gap-1.5 rounded-md bg-[#fdeee3] px-2 py-1 text-[0.72rem] font-medium text-orange-deep sm:flex">Pestaña nueva</span>}
     >
       <div className="text-ink">
@@ -141,11 +150,34 @@ const pauta = [
   { name: "Recomendación de clientes", consultas: 25, interesados: 11, reservas: 3 },
 ];
 
+const trend = [
+  { key: "w1", label: "Semana del 1 de septiembre", axisLabel: "1 sep", values: { reco: 5, insta: 9, web: 4 } },
+  { key: "w2", label: "Semana del 8 de septiembre", axisLabel: "8 sep", values: { reco: 6, insta: 11, web: 5 } },
+  { key: "w3", label: "Semana del 15 de septiembre", axisLabel: "15 sep", values: { reco: 7, insta: 10, web: 6 } },
+  { key: "w4", label: "Semana del 22 de septiembre", axisLabel: "22 sep", values: { reco: 8, insta: 12, web: 6 } },
+  { key: "w5", label: "Semana del 29 de septiembre", axisLabel: "29 sep", values: { reco: 9, insta: 14, web: 7 } },
+  { key: "w6", label: "Semana del 6 de octubre", axisLabel: "6 oct", values: { reco: 11, insta: 13, web: 9 } },
+];
+
 function Pauta() {
   const rows = pauta.map((r) => ({ ...r, pct: Math.round((r.interesados / r.consultas) * 100) }));
   const best = Math.max(...rows.map((r) => r.pct));
   return (
     <>
+      <div className="mb-8">
+        <LineChart
+          label="Interesados por semana"
+          categoryLabel="Semana"
+          height={200}
+          data={trend}
+          series={[
+            { key: "reco", label: "Recomendación de clientes" },
+            { key: "insta", label: "Instagram" },
+            { key: "web", label: "Formulario de la web", dashed: true },
+          ]}
+          formatValue={(v) => `${Math.round(v)}`}
+        />
+      </div>
       {/* Phones: one row per channel, the bar is the point. */}
       <ul className="grid gap-4 md:hidden">
         {rows.map((r, i) => (
@@ -213,32 +245,49 @@ const demanda = {
 function Demanda() {
   const [project, setProject] = useState<keyof typeof demanda>("collection");
   const data = demanda[project];
+  const [busca, para, paga] = data.blocks;
+  // The donuts count people, not percentages: the centre reads «41 consultas».
+  const total = project === "collection" ? 41 : 35;
+  const donut = (rows: readonly (readonly [string, number])[]) => {
+    const out = rows.map(([label, pct]) => ({ key: label, label, value: Math.round((pct * total) / 100) }));
+    // Rounding can drift by one; the largest slice absorbs it so every donut adds up to the same total.
+    const drift = total - out.reduce((a, x) => a + x.value, 0);
+    out.reduce((m, x) => (x.value > m.value ? x : m)).value += drift;
+    return out;
+  };
   return (
     <>
-      <div className="mb-6 flex flex-wrap gap-2" role="radiogroup" aria-label="Proyecto">
-        {(Object.keys(demanda) as (keyof typeof demanda)[]).map((k) => (
-          <button key={k} role="radio" aria-checked={project === k} onClick={() => setProject(k)} className={cn("rounded-full px-4 py-2 text-[0.98rem] font-semibold transition-colors", project === k ? "bg-ink text-white" : "bg-paper-2 text-ink-2 hover:bg-line")}>
-            {demanda[k].label}
-          </button>
-        ))}
-      </div>
-      <div key={project} className="grid gap-8 md:grid-cols-3">
-        {data.blocks.map((b) => {
-          const top = Math.max(...b.rows.map((r) => r[1]));
-          return (
-            <div key={b.title}>
-              <h4 className="eyebrow mb-4 text-ink-3">{b.title}</h4>
-              <ul className="grid gap-3.5">
-                {b.rows.map(([name, v], i) => (
-                  <li key={name}>
-                    <span className={cn("mb-1.5 block text-[1.02rem]", v === top ? "font-bold" : "text-ink-2")}>{name}</span>
-                    <Bar pct={v} lit={v === top} label={`${v}%`} delay={0.08 * i} />
-                  </li>
-                ))}
-              </ul>
-            </div>
-          );
-        })}
+      <SegmentedControl
+        label="Proyecto"
+        value={project}
+        onValueChange={(v) => setProject(v as keyof typeof demanda)}
+        options={(Object.keys(demanda) as (keyof typeof demanda)[]).map((k) => ({ value: k, label: demanda[k].label }))}
+        className="mb-7"
+      />
+      <div className="grid gap-8 lg:grid-cols-[1fr_1fr_1fr]">
+        <div>
+          <h4 className="eyebrow mb-4 text-ink-3">{busca!.title}</h4>
+          <ul key={project} className="grid gap-3.5">
+            {busca!.rows.map(([name, v], i) => {
+              const top = Math.max(...busca!.rows.map((r) => r[1]));
+              return (
+                <li key={name}>
+                  <span className={cn("mb-1.5 block text-[1.02rem]", v === top ? "font-bold" : "text-ink-2")}>{name}</span>
+                  <Bar pct={v} lit={v === top} label={`${v}%`} delay={0.08 * i} />
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+        {/* The arcs morph between projects: same keys keep their colour. */}
+        <div>
+          <h4 className="eyebrow mb-4 text-ink-3">{para!.title}</h4>
+          <DonutChart data={donut(para!.rows)} label={para!.title} totalLabel="Consultas" size={200} thickness={26} />
+        </div>
+        <div>
+          <h4 className="eyebrow mb-4 text-ink-3">{paga!.title}</h4>
+          <DonutChart data={donut(paga!.rows)} label={paga!.title} totalLabel="Consultas" size={200} thickness={26} />
+        </div>
       </div>
       <Takeaway>{data.takeaway}</Takeaway>
     </>
@@ -246,11 +295,13 @@ function Demanda() {
 }
 
 const contactos = [
-  { name: "Juan Pérez", busca: "2 dorm", paga: "Crédito", marca: "", hace: "hoy" },
-  { name: "Marta Ríos", busca: "3 dorm", paga: "Contado", marca: "Reaparece", hace: "hoy" },
-  { name: "Pablo Sosa", busca: "1 dorm", paga: "Contado", marca: "Cliente", hace: "ayer" },
-  { name: "Sofía Acosta", busca: "2 dorm", paga: "¿?", marca: "Referida", hace: "hace 2 días" },
-  { name: "Diego Romero", busca: "2 dorm", paga: "Financiación", marca: "", hace: "hace 3 días" },
+  { name: "Juan Pérez", busca: "2 dorm", paga: "Crédito", marca: "", hace: "hoy", dias: 0 },
+  { name: "Marta Ríos", busca: "3 dorm", paga: "Contado", marca: "Reaparece", hace: "hoy", dias: 0.1 },
+  { name: "Pablo Sosa", busca: "1 dorm", paga: "Contado", marca: "Cliente", hace: "ayer", dias: 1 },
+  { name: "Sofía Acosta", busca: "2 dorm", paga: "¿?", marca: "Referida", hace: "hace 2 días", dias: 2 },
+  { name: "Diego Romero", busca: "2 dorm", paga: "Financiación", marca: "", hace: "hace 3 días", dias: 3 },
+  { name: "Lucía Benítez", busca: "2 dorm", paga: "Crédito", marca: "", hace: "hace 4 días", dias: 4 },
+  { name: "Andrés Molina", busca: "1 dorm", paga: "Contado", marca: "", hace: "hace 5 días", dias: 5 },
 ];
 
 function Contactos() {
@@ -266,28 +317,22 @@ function Contactos() {
           <Download className="size-4.5" /> Exportar a Excel · 9
         </button>
       </div>
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-[40rem] text-left">
-          <thead>
-            <tr className="text-[0.85rem] text-ink-3">
-              {["Nombre", "Busca", "Paga", "Marca", "Última charla"].map((h) => (
-                <th key={h} className="pb-3 font-medium">{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody className="text-[1.05rem]">
-            {contactos.map((c) => (
-              <tr key={c.name} className="border-t border-line">
-                <td className="py-3.5 font-semibold">{c.name}</td>
-                <td className="py-3.5 text-ink-2">{c.busca}</td>
-                <td className={cn("py-3.5", c.paga === "¿?" ? "text-ink-3" : "text-ink-2")}>{c.paga}</td>
-                <td className="py-3.5">{c.marca && <span className="rounded-full bg-sun px-2.5 py-1 text-[0.85rem] font-semibold text-ink">{c.marca}</span>}</td>
-                <td className="py-3.5 text-ink-3">{c.hace}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      {/* Sort by any column, tick who to invite. */}
+      <SortableDataTable
+        rows={contactos}
+        rowKey="name"
+        caption="Interesados de MARQ Collection que buscan invertir"
+        itemName={{ one: "contacto", other: "contactos" }}
+        selectable
+        defaultSort={{ key: "dias", direction: "asc" }}
+        columns={[
+          { key: "name", label: "Nombre", sortable: true },
+          { key: "busca", label: "Busca", sortable: true },
+          { key: "paga", label: "Paga", sortable: true, render: (v) => <span className={v === "¿?" ? "text-ink-3" : undefined}>{String(v)}</span> },
+          { key: "marca", label: "Marca", render: (v) => (v ? <span className="rounded-full bg-[#fdeee3] px-2.5 py-1 text-[0.85rem] font-semibold text-orange-deep">{String(v)}</span> : null) },
+          { key: "dias", label: "Última charla", sortable: true, numeric: true, render: (_v, row) => <span className="text-ink-3">{(row as (typeof contactos)[number]).hace}</span> },
+        ]}
+      />
       <Takeaway>
         Una lista lista para invitar al evento de lanzamiento. <b>También se la podés pedir a MARQui por chat.</b>
       </Takeaway>
@@ -343,12 +388,6 @@ function Frenos() {
   );
 }
 
-const tiles = [
-  { label: "Consultas", value: "112", delta: "+14%", dir: "up" as const },
-  { label: "Nuevos interesados", value: "19", delta: "+5", dir: "up" as const },
-  { label: "Reservas", value: "3", delta: "igual", dir: "flat" as const },
-  { label: "Chats sin responder", value: "4", delta: "−3", dir: "down" as const },
-];
 
 function Semana() {
   const reduce = useReducedMotion();
@@ -359,26 +398,60 @@ function Semana() {
   ];
   return (
     <>
+      {/* Numbers count up; each change carries its own direction. */}
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        {tiles.map((t) => {
-          const Icon = t.dir === "up" ? ArrowUpRight : t.dir === "down" ? ArrowDownRight : Minus;
-          return (
-            <div key={t.label} className="rounded-2xl bg-paper-2 p-5 ring-1 ring-ink/5">
-              <span className="text-[0.95rem] text-ink-3">{t.label}</span>
-              <span className="mt-1 block font-sans text-[clamp(2.2rem,3.4vw,3.4rem)] font-bold leading-none tracking-[-0.03em]">{t.value}</span>
-              <span className={cn("mt-2 inline-flex items-center gap-1 text-[0.9rem] font-semibold", t.dir === "flat" ? "text-ink-3" : "text-orange-deep")}>
-                <Icon className="size-4" /> {t.delta} <span className="font-normal text-ink-3">vs. semana anterior</span>
-              </span>
-            </div>
-          );
-        })}
+        <MetricCard label="Consultas" value={112} change="+14%" context="vs. semana anterior" />
+        <MetricCard label="Nuevos interesados" value={19} change="+5" context="vs. semana anterior" />
+        <MetricCard label="Reservas" value={3} change="igual" context="vs. semana anterior" />
+        <MetricCard label="Chats sin responder" value={4} change="3 menos" context="vs. semana anterior" />
+      </div>
+
+      <div className="mt-4 grid gap-4 lg:grid-cols-[1.4fr_1fr]">
+        <div className="rounded-2xl bg-paper-2 p-5 ring-1 ring-ink/5">
+          <BarChart
+            label="Consultas por día"
+            period="6 al 12 de octubre"
+            valueLabel="Total"
+            averageLabel="Promedio diario"
+            categoryLabel="Día"
+            data={[
+              { key: "lun", label: "Lunes", axisLabel: "Lun", value: 21 },
+              { key: "mar", label: "Martes", axisLabel: "Mar", value: 18 },
+              { key: "mie", label: "Miércoles", axisLabel: "Mié", value: 16 },
+              { key: "jue", label: "Jueves", axisLabel: "Jue", value: 19 },
+              { key: "vie", label: "Viernes", axisLabel: "Vie", value: 24 },
+              { key: "sab", label: "Sábado", axisLabel: "Sáb", value: 9 },
+              { key: "dom", label: "Domingo", axisLabel: "Dom", value: 5 },
+            ]}
+          />
+        </div>
+        <div className="grid gap-4">
+          <div className="rounded-2xl bg-paper-2 p-5 ring-1 ring-ink/5">
+            <Gauge value={78} label="Fichas completas" detail="MARQui sabe qué busca y cómo paga 78 de cada 100 interesados" thresholds={[{ from: 0, tone: "danger", label: "Pocas" }, { from: 50, tone: "warning", label: "A medias" }, { from: 70, tone: "success", label: "Bien" }]} />
+          </div>
+          <div className="rounded-2xl bg-paper-2 p-5 ring-1 ring-ink/5">
+            <Sparkline
+              label="Primera respuesta"
+              value="9 min"
+              change="−6 min"
+              tone="success"
+              width={260}
+              height={64}
+              data={[22, 19, 17, 15, 12, 10, 9]}
+              labels={["Sem 1", "Sem 2", "Sem 3", "Sem 4", "Sem 5", "Sem 6", "Esta"]}
+              formatValue={(v) => `${v} min`}
+            />
+          </div>
+        </div>
       </div>
 
       <div className="mt-4 grid gap-4 lg:grid-cols-[1.4fr_1fr]">
         <div className="rounded-2xl bg-paper-2 p-6 ring-1 ring-ink/5">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
             <h4 className="text-[1.2rem] font-bold">Tiempo ahorrado con MARQui</h4>
-            <span className="font-display text-[clamp(1.4rem,2vw,2rem)] font-bold tracking-[-0.03em] text-orange-deep">≈ 5 h esta semana</span>
+            <span className="text-[clamp(1.4rem,2vw,2rem)] font-semibold tracking-[-0.03em] text-orange-deep">
+              ≈ <SlotText value={5} /> h esta semana
+            </span>
           </div>
           <p className="mt-1 text-[0.95rem] text-ink-3">Tiempo promedio por respuesta, desde que abrís el chat hasta que enviás.</p>
           <div className="mt-5 grid gap-4">
@@ -394,28 +467,20 @@ function Semana() {
           </div>
           <p className="mt-4 text-[0.85rem] text-ink-3">126 respuestas con sugerencia × 2 min 30 s ≈ 5 h, dentro de lo que muestran los estudios. Se compara con las 2 semanas de medición sin sugerencias.</p>
         </div>
-
-        <div className="grid gap-4">
-          <div className="rounded-2xl bg-paper-2 p-6 ring-1 ring-ink/5">
-            <h4 className="text-[1.2rem] font-bold">Primera respuesta</h4>
-            <p className="mt-1 font-display text-[clamp(1.4rem,2vw,2rem)] font-bold tracking-[-0.03em]">9 min <span className="text-[1rem] font-medium tracking-normal text-ink-3">promedio</span></p>
-            <p className="mt-1 text-[0.95rem] text-ink-3">Pauta 7 min · Clientes 14 min</p>
+        <div className="rounded-2xl bg-paper-2 p-6 ring-1 ring-ink/5">
+          <h4 className="text-[1.2rem] font-bold">Cómo se respondió</h4>
+          <div className="mt-4 flex h-4 gap-[2px] overflow-hidden rounded-full" role="img" aria-label="61% elegida tal cual, 27% corregida, 12% escrita de cero">
+            {how.map((h, i) => (
+              <motion.span key={h.label} style={{ background: h.color }} initial={reduce ? false : { flexGrow: 0 }} animate={{ flexGrow: h.v }} transition={{ duration: 0.9, delay: 0.1 * i, ease }} className="h-full basis-0" />
+            ))}
           </div>
-          <div className="rounded-2xl bg-paper-2 p-6 ring-1 ring-ink/5">
-            <h4 className="text-[1.2rem] font-bold">Cómo se respondió</h4>
-            <div className="mt-4 flex h-4 gap-[2px] overflow-hidden rounded-full" role="img" aria-label="61% elegida tal cual, 27% corregida, 12% escrita de cero">
-              {how.map((h, i) => (
-                <motion.span key={h.label} style={{ background: h.color }} initial={reduce ? false : { flexGrow: 0 }} animate={{ flexGrow: h.v }} transition={{ duration: 0.9, delay: 0.1 * i, ease }} className="h-full basis-0" />
-              ))}
-            </div>
-            <ul className="mt-3 grid gap-1 text-[0.95rem]">
-              {how.map((h) => (
-                <li key={h.label} className="flex items-center gap-2">
-                  <span className="size-3 rounded-sm" style={{ background: h.color }} /> {h.label} <b className="ml-auto tabular-nums">{h.v}%</b>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <ul className="mt-3 grid gap-1 text-[0.95rem]">
+            {how.map((h) => (
+              <li key={h.label} className="flex items-center gap-2">
+                <span className="size-3 rounded-sm" style={{ background: h.color }} /> {h.label} <b className="ml-auto tabular-nums">{h.v}%</b>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </>

@@ -35,10 +35,10 @@ export function Brothers() {
             animate={inView ? { x: "0%", y: ["-10%", "-55%", "0%"], opacity: 1, rotate: [-12, 8, 0] } : undefined}
             transition={{ duration: 1.1, delay: 1.2, ease }}
           >
-            <MarquiLive who="marqador" pose={brotherPose} follow />
+            <MarquiLive who="marqador" pose={brotherPose} />
           </motion.div>
           <motion.div className="absolute bottom-0 left-0 w-[70%]" initial={reduce ? false : { opacity: 0, y: 40 }} animate={inView ? { opacity: 1, y: 0 } : undefined} transition={{ duration: 0.9, ease }}>
-            <MarquiLive pose={pose} follow />
+            <MarquiLive pose={pose} />
           </motion.div>
         </div>
 

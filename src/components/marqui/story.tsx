@@ -1,4 +1,6 @@
-import type { ReactNode } from "react";
+import { useRef, type ReactNode } from "react";
+import { useInView } from "motion/react";
+import { SlotText } from "@/components/arc/slot-text/slot-text";
 import { Ban, Hand, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { FadeUp, RiseLines, Section } from "./primitives";
@@ -24,9 +26,9 @@ export function Lead({ title, children, id, className }: { title: ReactNode[]; c
    The pain, in the team's own numbers, before anything else. */
 
 const today = [
-  { value: "4 h", label: "por día respondiendo a mano cuando hay pauta" },
-  { value: "2 + 1", label: "dos WhatsApp y un formulario, cada uno por su lado" },
-  { value: "500", label: "consultas en un proyecto, sin saber cuántos podían pagar" },
+  { value: "4 h", n: 4, unit: " h", label: "por día respondiendo a mano cuando hay pauta" },
+  { value: "2 + 1", n: 3, unit: "", label: "dos WhatsApp y un formulario, cada uno por su lado" },
+  { value: "500", n: 500, unit: "", label: "consultas en un proyecto, sin saber cuántos podían pagar" },
 ];
 
 export function Pain() {
@@ -38,7 +40,7 @@ export function Pain() {
       <Steps className="mx-auto mt-16 grid max-w-[72rem] gap-4 md:grid-cols-3" gap={0.15}>
         {today.map((t) => (
           <div key={t.value} data-step className="paper rounded-[2rem] p-8">
-            <span className="block text-[clamp(3rem,5vw,5.5rem)] font-medium leading-none tracking-[-0.04em] text-orange-deep">{t.value}</span>
+            <span className="flex h-[clamp(3.6rem,6vw,6.6rem)] items-center text-[clamp(3rem,5vw,5.5rem)] font-medium leading-none tracking-[-0.04em] text-orange-deep">{t.value === "2 + 1" ? t.value : <InViewSlot value={t.n} suffix={t.unit} />}</span>
             <span className="mt-4 block text-[clamp(1.05rem,1.3vw,1.35rem)] leading-snug text-ink-2">{t.label}</span>
           </div>
         ))}
@@ -119,5 +121,17 @@ export function Control() {
         ))}
       </Steps>
     </Section>
+  );
+}
+
+/** A number that spins into place on Arc's slot reels when it scrolls into view. */
+function InViewSlot({ value, suffix = "" }: { value: number; suffix?: string }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const seen = useInView(ref, { once: true, amount: 0.6 });
+  return (
+    <span ref={ref} className="inline-flex items-center">
+      <SlotText value={seen ? value : 0} spins={2} />
+      {suffix && <span className="ml-[0.22em]">{suffix.trim()}</span>}
+    </span>
   );
 }

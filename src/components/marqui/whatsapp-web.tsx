@@ -3,6 +3,7 @@ import { AnimatePresence, motion, useInView, useReducedMotion } from "motion/rea
 import { ArrowUpRight, CheckCheck, CircleDashed, Megaphone, MessageSquareText, MessagesSquare, Mic, MoreVertical, Plus, RotateCcw, Search, SendHorizontal, Settings, Smile, SquarePen, Users, Video } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { MarqadorMark } from "./marqador-mark";
+import { TextShimmer } from "@/components/arc/text-shimmer/text-shimmer";
 import { useMarquiLife, type Pose } from "./marqui-character";
 import { BrowserFrame, MarquiAvatar, Mascot } from "./primitives";
 
@@ -203,7 +204,7 @@ export function WhatsAppWeb({ className, autoplay = true, showSidebar = true, he
               <span className="grid size-10 shrink-0 place-items-center rounded-full bg-gradient-to-br from-[#c7d3e6] to-[#9fb3d4] font-semibold text-white">J</span>
               <span className="min-w-0 flex-1 leading-tight">
                 <span className="block text-[1rem] font-semibold">Juan</span>
-                <span className="block truncate text-[0.8rem] text-black/55">{typing ? <span className="text-wa-deep">escribiendo…</span> : "Línea de pauta · llegó por un anuncio"}</span>
+                <span className="block truncate text-[0.8rem] text-black/55">{typing ? <TextShimmer className="text-[#008069]">escribiendo…</TextShimmer> : "Línea de pauta · llegó por un anuncio"}</span>
               </span>
               <Video className="size-5 text-[#54656f]" aria-hidden />
               <Search className="size-5 text-[#54656f]" aria-hidden />
@@ -429,7 +430,7 @@ function Suggestions({ replies, visible, picked, onPick, onReset, done, pose }: 
             </motion.div>
           ) : (
             <motion.p key={done ? "done" : "wait"} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="grid h-[5.2rem] place-items-center rounded-xl border border-dashed border-ink/15 text-center text-[0.85rem] text-ink-3">
-              {done ? "Juan pasó a Interesado y ya tiene visita. Todo lo envió una persona." : "MARQui espera la respuesta de Juan…"}
+              {done ? "Juan pasó a Interesado y ya tiene visita. Todo lo envió una persona." : <TextShimmer>MARQui espera la respuesta de Juan…</TextShimmer>}
             </motion.p>
           )}
         </AnimatePresence>

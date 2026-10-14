@@ -154,7 +154,7 @@ function Whisper() {
     <div className="mx-auto mt-16 grid max-w-[78rem] items-center gap-10 md:grid-cols-[0.9fr_1.1fr] md:gap-16">
       <FadeUp className="relative mx-auto w-full max-w-[28rem]">
         <div className="relative pt-[22%]">
-          <MarquiLive pose={pose} follow className="w-[66%]" />
+          <MarquiLive pose={pose} className="w-[66%]" />
           <span className="paper absolute left-[42%] top-[6%] whitespace-nowrap rounded-[1.4rem] rounded-bl-md max-sm:max-w-[58%] max-sm:whitespace-normal px-5 py-3.5 text-[clamp(1.05rem,1.4vw,1.45rem)] font-medium text-ink shadow-[0_1rem_2rem_-1rem_rgb(1_30_27/0.4)]">
             Psst… mandale la segunda 😉
           </span>

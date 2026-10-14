@@ -160,7 +160,7 @@ export function MarqadorIntro() {
               <circle data-fill cx={Q_CENTER.x} cy={Q_CENTER.y} r={128} fill="#fff" style={pivot} />
             </g>
             <g data-mark opacity="0">
-              <MarquiLive who="marqador" pose={pose} follow={alive} shadow={false} svgProps={LIVE} />
+              <MarquiLive who="marqador" pose={pose} shadow={false} svgProps={LIVE} />
             </g>
           </g>
         </svg>
