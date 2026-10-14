@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<!-- MARQUI · "El globo que viaja". Built with the onetake skill: lib/motion.js (PolyForm Noncommercial 1.0.0) → window.OM.
+     One element (#main) carries the whole film: Juan's "precio?" bubble → a suggestion → the composer → the sent
+     message → the Mercado Pago link → unit 2A on the web → a bubble among the clouds → a bar of MARQador → the Q of
+     Marqui. Everything is a pure function of t. ?cut=film|consultas|senas|marqador · ?play · ?t=6.4&hud -->
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>MARQUI · el globo que viaja (v2)</title>
+<script src="fonts.js"></script>
+<style>
+:root{ --ink:#0b1a33; --wa:#25d366; --bubble:#d9fdd3; --mp:#009ee3; --orange:#ffb27a; }
+html,body{margin:0;overflow:hidden;background:#3d70c4}
+body{font-family:'Geist',system-ui,sans-serif;color:#fff;-webkit-font-smoothing:antialiased}
+#stage{position:absolute;inset:0;overflow:hidden}
+#sky{position:absolute;inset:0}
+#sky canvas{width:100%;height:100%;display:block}
+#veil{position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 80% at 50% 40%,transparent 40%,rgba(9,25,60,.28))}
+#world{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0}
+.abs{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform,opacity}
+.sky-type{filter:drop-shadow(0 1px 1px rgba(13,36,79,.14)) drop-shadow(0 10px 26px rgba(13,36,79,.24))}
+.disp{font-family:'Bricolage';font-weight:700;letter-spacing:-.045em;line-height:.95;white-space:nowrap}
+.ser{font-family:'Serif';font-style:italic;font-weight:400;letter-spacing:-.02em}
+.mono{font-family:'Mono';font-size:15px;letter-spacing:.16em;text-transform:uppercase}
+/* the traveller */
+#main{border-radius:24px;background:#fff;box-shadow:0 24px 60px -18px rgba(8,25,60,.45);overflow:visible}
+#main .tail{position:absolute;width:22px;height:22px;background:inherit;top:0;border-radius:3px}
+#main .face{position:absolute;left:0;top:0;transform-origin:0 0;color:#111b21}
+.f-inc{width:300px;height:96px;display:flex;align-items:center;padding:0 28px;box-sizing:border-box;font-size:44px;font-weight:500;letter-spacing:-.02em}
+.f-inc small{font-size:17px;color:rgba(0,0,0,.42);margin:18px 0 0 14px;font-weight:400}
+.sug{width:430px;height:250px;box-sizing:border-box;padding:24px 26px;font-size:21px;line-height:1.36;color:#111b21}
+.sug .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.sug .tag{font-family:'Mono';font-size:13px;letter-spacing:.12em;color:rgba(0,0,0,.45);text-transform:uppercase}
+.sug .pct{font-family:'Mono';font-size:17px;font-weight:600;border-radius:99px;padding:4px 11px;background:#e7f6ee;color:#0a6b4f}
+.sug.on .pct{background:var(--wa);color:#fff}
+.card{border-radius:24px;background:#fff;box-shadow:0 24px 60px -18px rgba(8,25,60,.45)}
+.f-comp{width:1200px;height:150px;display:flex;align-items:center;gap:22px;padding:0 22px 0 36px;box-sizing:border-box}
+.f-comp .ic{width:30px;height:30px;border-radius:50%;border:3px solid rgba(0,0,0,.35);box-sizing:border-box;flex:none}
+.f-comp .txt{flex:1;font-size:30px;line-height:1.3;color:#111b21;white-space:nowrap;overflow:hidden;font-weight:400}
+.f-comp .caret{display:inline-block;width:3px;height:34px;background:#25d366;vertical-align:-5px;margin-left:2px}
+.f-comp .send{width:72px;height:72px;border-radius:50%;background:var(--wa);flex:none;display:grid;place-items:center}
+.f-out{width:560px;height:150px;box-sizing:border-box;padding:20px 26px;font-size:24px;line-height:1.34;color:#111b21}
+.f-out .meta{position:absolute;right:20px;bottom:12px;font-size:15px;color:rgba(0,0,0,.45);display:flex;gap:6px;align-items:center}
+.f-mp,.f-paid{width:400px;height:480px;border-radius:26px;overflow:hidden;background:#f2f8fd}
+.f-mp .band,.f-paid .band{height:150px;background:var(--mp);color:#fff;padding:30px 30px;box-sizing:border-box}
+.f-paid .band{background:#18b26b}
+.band b{display:block;font-family:'Bricolage';font-weight:700;font-size:34px;letter-spacing:-.035em;margin-top:14px}
+.band span{font-family:'Mono';font-size:13px;letter-spacing:.14em;text-transform:uppercase;opacity:.9}
+.f-mp .body,.f-paid .body{padding:28px 30px;color:#111b21}
+.body .u{font-family:'Bricolage';font-weight:700;font-size:44px;letter-spacing:-.04em}
+.body .p{font-size:19px;color:rgba(0,0,0,.55);margin-top:6px}
+.body .link{font-family:'Mono';font-size:15px;color:#027eb5;margin-top:26px}
+.body .btn{margin-top:34px;height:66px;border-radius:16px;background:var(--mp);color:#fff;font-size:23px;font-weight:600;display:grid;place-items:center}
+.f-paid .body .btn{background:#e7fbe9;color:#0a6b4f}
+.f-tile{width:170px;height:110px;border-radius:16px;background:#18b26b;color:#fff;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.f-tile b{font-family:'Bricolage';font-size:40px;letter-spacing:-.04em}
+.f-tile span{font-family:'Mono';font-size:12px;letter-spacing:.14em}
+.f-q{width:240px;height:240px}
+.f-q img{width:100%;height:100%;filter:invert(1)}
+/* grid "web" */
+#grid{width:820px;height:560px;border-radius:28px;background:rgba(255,255,255,.96);box-shadow:0 40px 90px -30px rgba(8,25,60,.55);color:#111b21}
+#grid .head{display:flex;align-items:center;gap:14px;padding:26px 30px 18px}
+#grid .head b{font-family:'Bricolage';font-weight:700;font-size:30px;letter-spacing:-.035em}
+#grid .chip{font-family:'Mono';font-size:13px;letter-spacing:.1em;text-transform:uppercase;padding:6px 12px;border-radius:99px;background:#eef1f5;color:rgba(0,0,0,.55)}
+#grid .chip.ok{background:#18b26b;color:#fff}
+.tile{position:absolute;width:170px;height:110px;border-radius:16px;background:#eef2f8;color:#2b3a55;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.tile b{font-family:'Bricolage';font-size:34px;letter-spacing:-.04em}
+.tile span{font-family:'Mono';font-size:11px;letter-spacing:.14em;color:rgba(0,0,0,.45)}
+.tile.sold{background:#dfe4ec;color:rgba(0,0,0,.35)}
+/* flock */
+.mini{position:absolute;left:0;top:0;width:76px;height:42px;border-radius:16px;background:#fff;transform-origin:50% 50%;box-shadow:0 8px 20px -8px rgba(8,25,60,.45);display:grid;place-items:center}
+.mini i{display:block;width:34px;height:5px;border-radius:3px;background:rgba(0,0,0,.18)}
+.barlab{position:absolute;width:100px;text-align:center;font-family:'Mono';font-size:15px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.85)}
+/* cursor + touch */
+#cursor{position:absolute;left:0;top:0;width:44px;height:52px;transform-origin:6px 4px}
+#touch{width:70px;height:70px;border-radius:50%;background:rgba(255,255,255,.55);border:3px solid #fff;box-sizing:border-box}
+#stac{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);text-align:center;font-size:210px}
+#hud{position:fixed;left:10px;top:10px;font:13px monospace;color:#fff;background:rgba(0,0,0,.5);padding:4px 8px;display:none;z-index:9}
+.letter{display:inline-block;transform-origin:50% 90%}
+/* v2 */
+.cap{position:absolute;left:0;top:0;transform-origin:0 0}
+.ml{overflow:hidden;padding:.1em .12em .22em;margin:-.1em -.12em -.22em}
+.ml>.in{display:block}
+#flood{background:#18b26b;overflow:hidden}
+#floodTxt{position:absolute;left:50%;top:50%;color:#fff;font-size:150px;white-space:nowrap;transform-origin:50% 50%}
+#paybtn{transform-origin:50% 50%}
+#chip{transform-origin:50% 50%}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="sky"><canvas id="skycv"></canvas></div>
+  <div id="veil"></div>
+  <div id="world">
+    <!-- 1 · Juan's bubble and its label -->
+    <div id="lab0" class="abs mono sky-type cap"><div class="ml"><div class="in">Juan · línea de pauta · desde un anuncio</div></div></div>
+    <div id="read" data-disp="flex" class="abs card" style="display:flex;align-items:center;gap:10px;padding:0 16px 0 8px;height:52px;border-radius:26px;white-space:nowrap;color:#111b21;font-size:18px">
+      <span style="width:38px;height:38px;border-radius:50%;background:#0b1a33;display:grid;place-items:center"><img src="../../public/assets/marqui-mascot.png" style="width:24px;height:24px;filter:invert(1)" alt=""></span>
+      <span>Pregunta por <b>MARQ Collection</b></span>
+    </div>
+    <!-- 2 · Marqui's three -->
+    <div id="head" class="abs sky-type cap"><div class="ml"><div class="in" style="display:flex;align-items:center;gap:16px;white-space:nowrap">
+      <img src="../../public/assets/marqui-mascot.png" style="width:46px;height:46px;filter:invert(1)" alt="">
+      <span class="disp" style="font-size:46px">Marqui te propone <span class="ser" style="font-size:54px;letter-spacing:-.01em">tres respuestas.</span></span>
+    </div></div></div>
+    <div id="c1" class="abs card"><div class="sug face0"></div></div>
+    <div id="c3" class="abs card"><div class="sug face0"></div></div>
+    <div id="cap1" class="abs mono sky-type cap" style="width:1300px;text-align:center"><div class="ml"><div class="in">% de conversaciones parecidas que terminaron en una reserva o una llamada</div></div></div>
+    <div id="lab1" class="abs mono sky-type cap"><div class="ml"><div class="in">Tu WhatsApp · chat con Juan</div></div></div>
+    <div id="capSend" class="abs sky-type cap" style="width:600px">
+      <div class="ml"><div class="in disp" style="font-size:64px">Lo envía una persona.</div></div>
+      <div class="ml" style="margin-top:8px"><div class="in ser" style="font-size:46px">Desde tu WhatsApp, con tu nombre.</div></div>
+    </div>
+    <!-- 4 · Juan answers, Marqui offers the link -->
+    <div id="j2" data-disp="flex" class="abs card" style="width:560px;height:96px;border-radius:24px;border-top-left-radius:6px;display:flex;align-items:center;padding:0 28px;box-sizing:border-box;color:#111b21;font-size:27px">¡Me encanta! ¿Cómo reservo la 2A?</div>
+    <div id="chip" data-disp="flex" class="abs" style="display:flex;height:66px;border-radius:33px;background:#0b1a33;color:#fff;display:flex;align-items:center;gap:12px;padding:0 26px 0 10px;white-space:nowrap;font-size:22px;font-weight:600;box-shadow:0 18px 40px -14px rgba(5,15,40,.6)">
+      <span style="width:46px;height:46px;border-radius:50%;background:#fff;display:grid;place-items:center"><img src="../../public/assets/marqui-mascot.png" style="width:30px;height:30px" alt=""></span>Generar link de seña · 2A
+    </div>
+    <div id="labMp" class="abs mono sky-type cap"><div class="ml"><div class="in" style="display:flex;gap:10px;align-items:center;white-space:nowrap"><img src="../../public/assets/marqui-mascot.png" style="width:22px;height:22px;filter:invert(1)" alt="">Marqui generó el link de seña</div></div></div>
+    <div id="touch" class="abs"></div>
+    <!-- 5 · the web and the list -->
+    <div id="grid" class="abs">
+      <div class="head"><b>MARQ Collection</b><span style="font-size:16px;color:rgba(0,0,0,.5)">Disponibilidad</span><span style="flex:1"></span><span id="chipWeb" class="chip">Web</span><span id="chipList" class="chip">Lista de precios</span></div>
+    </div>
+    <div id="capGrid" class="abs sky-type cap" style="width:1100px;text-align:center">
+      <div class="ml"><div class="in disp" style="font-size:58px">La 2A queda reservada <span class="ser" style="font-size:66px">sola.</span></div></div>
+    </div>
+    <!-- 6 · MARQador -->
+    <div id="mqTitle" class="abs sky-type cap" style="width:1200px;text-align:center">
+      <div class="ml"><div class="in mono" style="opacity:.85">MARQador · resumen semanal</div></div>
+      <div class="ml" style="margin-top:14px"><div class="in disp" style="font-size:80px">Lo que pide <span class="ser" style="font-size:90px">el mercado.</span></div></div>
+    </div>
+    <div id="mqPct" class="abs sky-type cap" style="width:260px;text-align:center">
+      <div class="ml"><div class="in disp" style="font-size:72px">46%</div></div>
+      <div class="ml" style="margin-top:6px"><div class="in mono" style="font-size:13px">pidió 2 dormitorios</div></div>
+    </div>
+    <div id="flock"></div>
+    <div id="barlabs"></div>
+    <!-- the traveller -->
+    <div id="main" class="abs">
+      <div class="tail" id="tail"></div>
+      <div class="face f-inc" data-f="inc">precio?<small>10:30</small></div>
+      <div class="face sug on" data-f="card2"></div>
+      <div class="face f-comp" data-f="comp"><span class="ic"></span><span class="ic" style="border-radius:8px"></span><span class="txt" id="ctxt"><span id="cl1"></span><br><span id="cl2"></span></span><span class="send"><svg width="34" height="34" viewBox="0 0 24 24" fill="#fff"><path d="M3 20.5 21 12 3 3.5l.01 6.6L15 12 3.01 13.9z"/></svg></span></div>
+      <div class="face f-out" data-f="out">¡Hola Juan! Soy Majo, de MARQ 👋 Tenemos 1, 2 y 3 dormitorios con anticipo y cuotas. ¿Cuántos buscás?<span class="meta">10:32 <svg id="ticks" width="22" height="14" viewBox="0 0 22 14" fill="none" stroke="#8696a0" stroke-width="2"><path d="M1 7l4 4 8-9M8 11l1 1 8-9"/></svg></span></div>
+      <div class="face f-mp" data-f="mp"><div class="band"><span>Mercado Pago · link de seña</span><b>Reservá tu unidad</b></div><div class="body"><div class="u">Unidad 2A</div><div class="p">MARQ Collection · seña para Juan</div><div class="link">mpago.la/marq-2a-juan</div><div class="btn" id="paybtn">Pagar seña</div></div></div>
+      <div class="face f-paid" data-f="paid"><div class="band"><span>Mercado Pago · pago aprobado</span><b style="display:flex;align-items:center;gap:12px">Seña acreditada <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg></b></div><div class="body"><div class="u">Unidad 2A</div><div class="p">MARQ Collection · Juan</div><div class="link">Marqui ya avisó al equipo</div><div class="btn">Reservada</div></div></div>
+      <div class="face f-tile" data-f="tile"><b>2A</b><span>RESERVADA</span></div>
+      <div class="face mini" data-f="mini" style="position:absolute;box-shadow:none"><i></i></div>
+      <div class="face f-q" data-f="q"><img src="../../public/assets/marqui-mascot.png" alt=""></div>
+    </div>
+    <!-- the flood: the paid card's green fills the frame and folds into 2A -->
+    <div id="flood" class="abs"><div id="floodTxt" class="disp">Seña acreditada</div></div>
+    <!-- 8 · the name -->
+    <div id="mark" class="abs disp sky-type" style="font-size:250px"></div>
+    <div id="tagline" class="abs sky-type cap" style="width:1400px;text-align:center"><div class="ml"><div class="in"><span class="disp" style="font-size:70px">Todo MARQ, </span><span class="ser" style="font-size:80px">desde WhatsApp.</span></div></div></div>
+    <div id="sig" class="abs mono sky-type cap" style="width:1400px;text-align:center;opacity:.8"><div class="ml"><div class="in">Una propuesta para MARQ · Agilidad avanzada</div></div></div>
+    <svg id="cursor" viewBox="0 0 44 52"><path d="M6 4 L6 40 L15 31 L21 46 L28 43 L22 28 L35 28 Z" fill="#fff" stroke="#0b1a33" stroke-width="3" stroke-linejoin="round"/></svg>
+  </div>
+</div>
+<div id="hud"></div>
+<script src="motion.js"></script>
+<script>
+// v2 — rebuilt after the detailed prompts on prompt-motion.com (twoclipping's "Shape morphing through UI states",
+// ultimaxbt's "Food craving launch film", Taxtello, Spotify): a 120 BPM beat grid with something on every beat,
+// a camera that fills the frame with each state and rides the caret, the cursor causing every change, a colour
+// flood instead of cuts, edges on different springs, text that rises from a mask line.
+// ══════════════════════════════════ cuts ══════════════════════════════════
+const Q = new URLSearchParams(location.search);
+const CUT = Q.get('cut') || 'film';
+const CUTS = {
+  film:      { w: 1920, h: 1080, a: 0,     b: 22.5,  zoom: 1,    pad: 0 },
+  consultas: { w: 1080, h: 1080, a: 0.25,  b: 8.85,  zoom: 0.6,  pad: 0.4, cx: 950 },
+  senas:     { w: 1080, h: 1080, a: 8.75,  b: 14.45, zoom: 0.62, pad: 0.4, cx: 955 },
+  marqador:  { w: 1080, h: 1080, a: 14.45, b: 18.4,  zoom: 0.78, pad: 0.4, cx: 960, phase: 1.55 },
+};
+const C = CUTS[CUT];
+const W = C.w, H = C.h, DUR = +(C.b - C.a + (CUT === 'film' ? 0 : 0.5)).toFixed(2);
+document.documentElement.style.width = document.body.style.width = W + 'px';
+document.documentElement.style.height = document.body.style.height = H + 'px';
+const FT = tau => C.a + Math.min(tau, C.b - C.a);
+const ENV = tau => CUT === 'film' ? 1 : OM.sstep(0, C.pad, tau) * (1 - OM.sstep(DUR - C.pad - 0.06, DUR - 0.06, tau));
+window.__meta = { dur: DUR, fps: 30, w: W, h: H, cuts: [], inFrame: CUT === 'film' ? { main: [0.6, 12.5] } : {} };
+
+// ══════════════════════════════════ beats: 120 BPM, one beat = 0.5 s ══════════════════════════════════
+const T = {
+  POP: 0.5, READ: 1.5, SPLIT: 2.0, HEAD: 2.5, PCT: 3.0, CAP1: 3.25, CLICK: 4.5, DROP: 4.75,
+  COMP: 5.0, TYPE: 5.5, SEND: 7.0, TICKS: 7.75, CAPSEND: 7.5,
+  J2: 9.0, CHIP: 9.5, CHIPCLICK: 10.0, MP: 10.0, LABMP: 10.5, TAP: 11.5, FLIP: 11.75,
+  FLOOD: 12.5, FLOOD_END: 12.85, CONTRACT: 13.0, LAND: 13.45, CHIP1: 13.75, CHIP2: 14.0, CAPGRID: 13.75,
+  LIFT: 14.5, RISE: 14.75, RISE_END: 15.85, GATHER: 16.0, GATHER_END: 16.55, MQ: 16.5, PCT2: 17.0,
+  COLLAPSE: 18.5, Q: 19.0, MARK: 19.5, TAG: 20.0, SIG: 20.5, BLINK: 21.5, END: 22.5,
+};
+const REST = [[8.05, 8.85], [14.1, 14.45], [17.55, 18.4], [21.0, 22.5]];
+const {clamp, lerp, sstep, ssstep, seg, ease, spring} = OM;
+const restW = t => REST.reduce((m, [a, b]) => Math.max(m, sstep(a - 0.25, a, t) * (1 - sstep(b, b + 0.25, t))), 0);
+
+// ══════════════════════════════════ geometry ══════════════════════════════════
+const R = {
+  inc:   { x: 810, y: 470, w: 300, h: 96, r: 26 },
+  card2: { x: 745, y: 430, w: 430, h: 250, r: 24 },
+  card1: { x: 285, y: 430, w: 430, h: 250, r: 24 },
+  card3: { x: 1205, y: 430, w: 430, h: 250, r: 24 },
+  comp:  { x: 360, y: 740, w: 1200, h: 150, r: 40 },
+  out:   { x: 1000, y: 430, w: 560, h: 150, r: 22 },
+  mp:    { x: 760, y: 300, w: 400, h: 480, r: 26 },
+};
+const GRID = { x: 550, y: 270, w: 820, h: 560 };
+const TILE = (c, r) => ({ x: GRID.x + 30 + c * 192, y: GRID.y + 92 + r * 150, w: 170, h: 110, r: 16 });
+const UNITS = [['3A', 0], ['3B', 2], ['3C', 0], ['3D', 1], ['2A', 0], ['2B', 1], ['2C', 0], ['2D', 2], ['1A', 2], ['1B', 0], ['1C', 1], ['1D', 0]];
+R.tile = TILE(0, 1);
+const BARS = [['Mono', 3], ['1 dorm', 4], ['2 dorm', 9], ['3 dorm', 5], ['Lotes', 3]];
+const BASE = -330, CELL = 50, COLX = i => 960 + (i - 2) * 132;
+const SLOTS = []; BARS.forEach(([_, n], c) => { for (let k = 0; k < n; k++) SLOTS.push({ c, k, x: COLX(c) - 38, y: BASE - (k + 1) * CELL }); });
+const MAIN_SLOT = SLOTS.findIndex(s => s.c === 2 && s.k === 4);
+const QX = 960, QY = -600;                  // where the bubbles collapse and the Q lives
+const CHIPR = { x: 340, y: 760, w: 430, h: 66 };
+const PAY = { x: 960, y: 300 + 371 };       // centre of "Pagar seña" on the card (measured from the face's layout)
+const SENDP = { x: R.comp.x + R.comp.w - 58, y: R.comp.y + R.comp.h / 2 };
+
+// ══════════════════════════════════ copy ══════════════════════════════════
+const SUG = [
+  ['01 · Pregunta primero', 38, '¡Hola Juan! Gracias por escribirnos. ¿Lo buscás para vivir o para invertir? Así te paso lo que mejor te queda.'],
+  ['02 · Contexto + pregunta', 61, '¡Hola Juan! Soy Majo, de MARQ 👋 Tenemos 1, 2 y 3 dormitorios con anticipo y cuotas. ¿Cuántos buscás?'],
+  ['03 · Propone llamada', 47, '¡Hola Juan! Te paso valores y disponibilidad. ¿Te queda bien una llamada de 10 minutos hoy?'],
+];
+// typed on two fixed lines, so the camera never chases a wrapping caret
+const LINES = ['¡Hola Juan! Soy Majo, de MARQ 👋 Tenemos 1, 2 y 3', 'dormitorios con anticipo y cuotas. ¿Cuántos buscás?'];
+const $ = id => document.getElementById(id);
+function sugHTML([tag, pct, text]) { return `<div class="top"><span class="tag">${tag}</span><span class="pct">0%</span></div>${text}`; }
+$('c1').firstElementChild.innerHTML = sugHTML(SUG[0]);
+$('c3').firstElementChild.innerHTML = sugHTML(SUG[2]);
+document.querySelector('#main [data-f=card2]').innerHTML = sugHTML(SUG[1]);
+const FACES = {}; document.querySelectorAll('#main .face').forEach(f => FACES[f.dataset.f] = f);
+const FACE_SIZE = { inc: [300, 96], card2: [430, 250], comp: [1200, 150], out: [560, 150], mp: [400, 480], paid: [400, 480], tile: [170, 110], mini: [76, 42], q: [240, 240] };
+const PCTS = [$('c1').querySelector('.pct'), FACES.card2.querySelector('.pct'), $('c3').querySelector('.pct')];
+const tileEls = UNITS.map(([u, st], i) => { const d = document.createElement('div'); d.className = 'tile' + (st === 2 ? ' sold' : ''); d.innerHTML = `<b>${u}</b><span>${['LIBRE', 'RESERVADA', 'VENDIDA'][st]}</span>`; $('grid').appendChild(d); const r = TILE(i % 4, Math.floor(i / 4)); d.style.left = (r.x - GRID.x) + 'px'; d.style.top = (r.y - GRID.y) + 'px'; return d; });
+const FLOCK_N = 24, rnd = OM.rng(7);
+const FLOCK = []; let slotPool = SLOTS.map((_, i) => i).filter(i => i !== MAIN_SLOT);
+for (let i = 0; i < FLOCK_N - 1; i++) {
+  const fromTile = i < 11 ? (i < 4 ? i : i + 1) : -1;
+  const el = document.createElement('div'); el.className = 'mini'; el.innerHTML = '<i></i>'; $('flock').appendChild(el);
+  const slot = slotPool.splice(Math.floor(rnd() * slotPool.length), 1)[0];
+  FLOCK.push({ el, fromTile, slot, cx: 960 + (rnd() - 0.5) * 1500, cy: -170 + (rnd() - 0.5) * 360, sx: 200 + rnd() * 1520, d: rnd() * 0.25, ph: rnd() * 6.28 });
+}
+BARS.forEach(([lab], c) => { const d = document.createElement('div'); d.className = 'barlab abs'; d.textContent = lab; $('barlabs').appendChild(d); });
+const markEl = $('mark'); const LET = [...'mar', ' ', ...'ui'].map(ch => { const s = document.createElement('span'); s.className = 'letter'; s.textContent = ch === ' ' ? '' : ch; if (ch === ' ') s.style.width = '226px'; markEl.appendChild(s); return s; });
+
+// typing rhythm: fast (Marqui fills the field), with small holds after spaces and punctuation; deterministic
+const CHARS = [...Array.from(LINES[0]).map(c => [0, c]), ...Array.from(LINES[1]).map(c => [1, c])];
+const CT = []; { const r = OM.rng(31); let t = T.TYPE; for (const [, c] of CHARS) { t += 0.0105 + r() * 0.006 + (c === ' ' && r() < 0.3 ? 0.035 : 0) + (/[.,!?👋]/u.test(c) ? 0.05 : 0); CT.push(t); } }
+const typedAt = t => { let n = 0; while (n < CT.length && CT[n] <= t) n++; return n; };
+let MARK_X = 0, GAP_X = 960, TXT = { x: 140, y: 36, lh: 39 }, MEAS;
+function measure() {
+  markEl.style.display = ''; markEl.style.transform = 'none'; markEl.style.opacity = 0;
+  const base = markEl.getBoundingClientRect(), gap = LET[3].getBoundingClientRect(); MARK_X = 960 - base.width / 2; GAP_X = MARK_X + (gap.left - base.left) + gap.width / 2;
+  const f = FACES.comp; f.style.display = ''; f.style.transform = 'none'; $('cl1').textContent = LINES[0]; $('cl2').textContent = LINES[1];
+  const tx = $('ctxt'); TXT = { x: tx.offsetLeft, y: tx.offsetTop, lh: tx.offsetHeight / 2 };
+  const cv = document.createElement('canvas').getContext('2d'); cv.font = getComputedStyle(tx).font; MEAS = s => cv.measureText(s).width;
+}
+function caretAt(t) {
+  const n = typedAt(t), n0 = Array.from(LINES[0]).length, line = n > n0 ? 1 : 0, s = Array.from(LINES[line]).slice(0, line ? n - n0 : n).join('');
+  return { x: R.comp.x + TXT.x + MEAS(s), y: R.comp.y + TXT.y + TXT.lh * (line + 0.5) };
+}
+
+// ══════════════════════════════════ the sky: the site's CloudShader, deterministic ══════════════════════════════════
+const PAL = [
+  { top: '#3d70c4', bottom: '#a9cdf3', cloud: '#ffffff', shade: '#9fb7d8', sun: '#fff3d9', sunPos: [0.82, 1.08], night: 0 },
+  { top: '#26386f', bottom: '#ee9f7f', cloud: '#ffe1cc', shade: '#7d6487', sun: '#ffab6b', sunPos: [0.7, 0.18], night: 0.04 },
+  { top: '#040917', bottom: '#15234a', cloud: '#33456e', shade: '#0b1430', sun: '#7f98ff', sunPos: [0.78, 0.9], night: 1 },
+].map(p => ({ ...p, ...Object.fromEntries(['top', 'bottom', 'cloud', 'shade', 'sun'].map(k => [k, hex(p[k])])) }));
+function hex(v) { const n = parseInt(v.slice(1), 16); return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255]; }
+function palAt(x) { const i = Math.min(Math.floor(clamp(x, 0, 1.999)), 1), f = clamp(x - i, 0, 1), k = f * f * (3 - 2 * f), A = PAL[i], B = PAL[i + 1];
+  const m = (a, b) => a.map((v, j) => v + (b[j] - v) * k); return { top: m(A.top, B.top), bottom: m(A.bottom, B.bottom), cloud: m(A.cloud, B.cloud), shade: m(A.shade, B.shade), sun: m(A.sun, B.sun), sunPos: m(A.sunPos, B.sunPos), night: A.night + (B.night - A.night) * k }; }
+// noon → dusk as the bubbles rise → twilight for MARQador and the name
+const phaseAt = t => ssstep(T.LIFT, T.RISE_END, t) * 1.0 + ssstep(T.RISE_END - 0.2, T.MQ, t) * 0.55;
+const FRAG = `precision highp float;uniform vec2 uRes;uniform float uTime,uCover,uNight;uniform vec3 uTop,uBottom,uCloud,uShade,uSun;uniform vec2 uSunPos,uOff;
+float hash(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);}
+float noise(vec2 p){vec2 i=floor(p),f=fract(p);vec2 u=f*f*(3.-2.*f);return mix(mix(hash(i),hash(i+vec2(1,0)),u.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),u.x),u.y);}
+float fbm(vec2 p){float v=0.,a=.5;mat2 m=mat2(1.6,1.2,-1.2,1.6);for(int i=0;i<6;i++){v+=a*noise(p);p=m*p;a*=.5;}return v;}
+float clouds(vec2 p,float t){vec2 q=vec2(fbm(p+vec2(0,t*.03)),fbm(p+vec2(5.2,1.3)-t*.02));return fbm(p+1.7*q+vec2(t*.04,0));}
+void main(){vec2 uv=gl_FragCoord.xy/uRes;float aspect=uRes.x/uRes.y;vec2 sp=vec2(uv.x*aspect,uv.y);
+vec3 sky=mix(uBottom,uTop,pow(uv.y,.85));float sd=distance(sp,vec2(uSunPos.x*aspect,uSunPos.y));sky+=uSun*(exp(-sd*3.2)*.38+exp(-sd*14.)*.22);
+vec2 grid=gl_FragCoord.xy/9.;vec2 cell=floor(grid);vec2 o=vec2(hash(cell+1.3),hash(cell+7.7))*.6+.2;float st=smoothstep(.16,0.,length(fract(grid)-o));
+sky+=vec3(step(.93,hash(cell))*st*(.6+.4*sin(uTime*1.7+hash(cell+3.1)*40.)))*uNight*smoothstep(.15,.7,uv.y);
+float t=uTime;vec2 p=sp*2.1+vec2(t*.018,0)+uOff;float c=clouds(p,t);
+float mask=.55+.6*(1.-smoothstep(0.,.75,uv.y))+.35*abs(uv.x-.5);float lo=mix(.62,.38,uCover);float d=smoothstep(lo,lo+.2,c*mask);
+vec2 ts=normalize(vec2(uSunPos.x*aspect,uSunPos.y)-sp);float lit=clamp(.62+(c-clouds(p+ts*.07,t))*4.,0.,1.);lit=mix(lit,1.,smoothstep(.75,1.,d)*.25);
+vec3 cl=mix(uShade,uCloud,lit);cl+=uSun*pow(1.-d,3.)*.18;float w=smoothstep(.52,.86,fbm(sp*vec2(1.2,4.)+vec2(t*.05,0)+uOff))*.35;
+vec3 col=mix(sky,cl,d);col=mix(col,uCloud,w*(1.-d)*(1.-uNight*.6));gl_FragColor=vec4(col,1.);}`;
+let GL, LOC;
+function initSky() {
+  const cv = $('skycv'), sc = 0.5; cv.width = Math.round(W * sc); cv.height = Math.round(H * sc);
+  const gl = GL = cv.getContext('webgl', { preserveDrawingBuffer: true, antialias: false });
+  const sh = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw gl.getShaderInfoLog(s); return s; };
+  const pr = gl.createProgram(); gl.attachShader(pr, sh(gl.VERTEX_SHADER, 'attribute vec2 a;void main(){gl_Position=vec4(a,0,1);}')); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, FRAG)); gl.linkProgram(pr); gl.useProgram(pr);
+  const b = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+  const a = gl.getAttribLocation(pr, 'a'); gl.enableVertexAttribArray(a); gl.vertexAttribPointer(a, 2, gl.FLOAT, false, 0, 0);
+  LOC = Object.fromEntries(['uRes', 'uTime', 'uCover', 'uNight', 'uTop', 'uBottom', 'uCloud', 'uShade', 'uSun', 'uSunPos', 'uOff'].map(n => [n, gl.getUniformLocation(pr, n)]));
+  gl.viewport(0, 0, cv.width, cv.height);
+}
+// cloud clock: drifts while things move, stops in the rests (integrated once, sampled)
+const SKY_HZ = 120, SKY_T = [0]; for (let i = 1; i <= 24 * SKY_HZ; i++) { const t = i / SKY_HZ; SKY_T.push(SKY_T[i - 1] + (1 - restW(t)) * 0.55 / SKY_HZ); }
+const skyClock = t => SKY_T[clamp(Math.round(t * SKY_HZ), 0, SKY_T.length - 1)];
+function drawSky(t, cam) {
+  // a lost context (long headless runs) gets a fresh canvas instead of a flat blue frame
+  if (!GL || GL.isContextLost()) { const old = $('skycv'), cv = document.createElement('canvas'); cv.id = 'skycv'; old.replaceWith(cv); initSky(); }
+  const gl = GL, p = palAt(C.phase ?? phaseAt(t)), cv = gl.canvas;
+  gl.uniform2f(LOC.uRes, cv.width, cv.height);
+  gl.uniform1f(LOC.uTime, (CUT === 'film' ? skyClock(t) : skyClock(C.a)) + 40);
+  gl.uniform1f(LOC.uCover, 0.6); gl.uniform1f(LOC.uNight, p.night);
+  for (const k of ['top', 'bottom', 'cloud', 'shade', 'sun']) gl.uniform3fv(LOC['u' + k[0].toUpperCase() + k.slice(1)], p[k]);
+  gl.uniform2fv(LOC.uSunPos, p.sunPos);
+  // the clouds slide a little with the camera (far layer): the rise reads as climbing into the sky
+  if (CUT === 'film') gl.uniform2f(LOC.uOff, (cam.x - 960) * 0.00035, -(cam.y - 540) * 0.0011); else gl.uniform2f(LOC.uOff, 0, 0);   // loops need one sky
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
+}
+
+
+
+// ══════════════════════════════════ camera ══════════════════════════════════
+const io = ease.sineInOut, ci = ease.cubicInOut, xo = ease.expoInOut;
+const KEYS = [
+  { t: 0, x: 960, y: 518, zoom: 2.3 }, { t: 1.4, x: 960, y: 518, zoom: 2.3 },
+  { t: 1.9, x: 1040, y: 505, zoom: 2.05, curve: io },
+  { t: 2.55, x: 960, y: 555, zoom: 1.32, curve: ci },
+  { t: 3.6, x: 960, y: 560, zoom: 1.37, curve: io },
+  { t: 4.45, x: 985, y: 565, zoom: 1.55, curve: io },
+  { t: 5.0, x: 985, y: 565, zoom: 1.55 },
+  { t: 7.45, x: 980, y: 505, zoom: 1.45, curve: xo },
+  { t: 8.9, x: 980, y: 505, zoom: 1.45 },
+  { t: 9.45, x: 950, y: 620, zoom: 1.38, curve: io },
+  { t: 10.0, x: 950, y: 620, zoom: 1.38 },
+  { t: 10.6, x: 960, y: 540, zoom: 1.7, curve: io },
+  { t: 12.9, x: 960, y: 540, zoom: 1.7 },
+  { t: 13.5, x: 960, y: 505, zoom: 1.22, curve: ci },
+  { t: T.LIFT, x: 960, y: 505, zoom: 1.22 },
+  { t: 15.85, x: 960, y: -360, zoom: 0.95, curve: ci },
+  { t: 16.6, x: 960, y: -590, zoom: 1.2, curve: io },
+  { t: 18.45, x: 960, y: -590, zoom: 1.2 },
+  { t: 19.25, x: 960, y: -470, zoom: 1.0, curve: io },
+];
+const HITS = [[7.45, 4, 10], [T.LAND, 9, 9], [T.GATHER_END + 0.05, 3, 9], [T.Q + 0.1, 5, 10]];
+// the ride: during typing the camera leans in and follows the caret, smoothed over a quarter second
+// it travels half as far as the caret: close enough to feel the typing, slow enough that the words stay legible
+function rideAt(t) { let x = 0, y = 0; for (let i = 0; i < 8; i++) { const c = caretAt(t - 0.05 - i * 0.06); x += c.x / 8; y += c.y / 8; }
+  const mid = R.comp.x + R.comp.w * 0.5; return { x: lerp(mid, x + 60, 0.5), y: lerp(R.comp.y + R.comp.h / 2, y, 0.6), zoom: 1.72, rot: -0.028 }; }
+function camAt(t) {
+  const c0 = OM.camera(t, KEYS), wr = ssstep(5.05, 5.6, t) * (1 - ssstep(6.95, 7.3, t));
+  const c = wr > 0 ? (r => ({ x: lerp(c0.x, r.x, wr), y: lerp(c0.y, r.y, wr), zoom: Math.exp(lerp(Math.log(c0.zoom), Math.log(r.zoom), wr)), rot: lerp(c0.rot, r.rot, wr) }))(rideAt(t)) : c0;
+  const e = (1 - restW(t)) * sstep(0.2, 0.8, t) * (1 - wr) * 3.0;
+  let x = c.x + e * (Math.sin(1.7 * t) + 0.6 * Math.sin(2.9 * t + 1)) / c.zoom, y = c.y + e * (Math.sin(1.3 * t + 2) + 0.5 * Math.sin(3.3 * t)) / c.zoom, rot = c.rot;
+  for (const [th, amp, decay] of HITS) { const s = OM.shake(t, th, { amp, decay, seed: Math.round(th * 100) }); x += s.x / c.zoom; y += s.y / c.zoom; rot += s.rot; }
+  if (C.cx) x = C.cx + (x - c.x);
+  return { x, y, zoom: c.zoom * C.zoom, rot };
+}
+
+// ══════════════════════════════════ the hand ══════════════════════════════════
+const HAND = [
+  { t: 3.35, x: 1550, y: 1200 }, { t: 3.75, x: 520, y: 590 }, { t: 4.2, x: 990, y: 600 }, { t: 4.5, x: 982, y: 588 }, { t: 4.9, x: 1010, y: 660 },
+  { t: 6.55, x: 1430, y: 900 }, { t: 6.88, x: SENDP.x + 6, y: SENDP.y + 4 }, { t: 7.0, x: SENDP.x + 3, y: SENDP.y + 2 }, { t: 7.45, x: 1600, y: 940 },
+  { t: 9.3, x: 980, y: 940 }, { t: 9.85, x: CHIPR.x + 250, y: CHIPR.y + 36 }, { t: 10.0, x: CHIPR.x + 246, y: CHIPR.y + 33 }, { t: 10.45, x: 700, y: 950 }, { t: 10.95, x: 640, y: 1350 },
+];
+const CLICKS = [T.CLICK, T.SEND, T.CHIPCLICK];
+
+// ══════════════════════════════════ shapes ══════════════════════════════════
+// a rect morph whose leading edges ride a faster spring than the trailing ones: the shape stretches as it travels
+function morphStretch(t, t0, A, B, { omega = 15, zeta = 0.85 } = {}) {
+  const tau = t - t0, kf = spring(tau, zeta - 0.07, omega * 1.35), ks = spring(tau, zeta, omega * 0.8);
+  const dx = (B.x + B.w / 2) - (A.x + A.w / 2), dy = (B.y + B.h / 2) - (A.y + A.h / 2);
+  const kl = dx < 0 ? kf : ks, kr = dx > 0 ? kf : ks, kt = dy < 0 ? kf : ks, kb = dy > 0 ? kf : ks;
+  const x0 = lerp(A.x, B.x, kl), x1 = lerp(A.x + A.w, B.x + B.w, kr), y0 = lerp(A.y, B.y, kt), y1 = lerp(A.y + A.h, B.y + B.h, kb);
+  return { x: x0, y: y0, w: x1 - x0, h: y1 - y0, r: lerp(A.r ?? 0, B.r ?? 0, ks), k: ks };
+}
+const mix3 = (a, b, k) => a.map((v, i) => lerp(v, b[i], k));
+const WHITE = [255, 255, 255], BUB = [217, 253, 211], MPBG = [242, 248, 253], GREEN = [24, 178, 107];
+function flockAt(t, start, slotI, f) {
+  const slot = SLOTS[slotI];
+  const mk = ease.smoother(seg(t, T.LIFT + f.d * 0.4, T.LIFT + 0.45 + f.d * 0.4));
+  const sx = start.x + start.w / 2, sy = start.y + start.h / 2;
+  const rk = ease.cubicInOut(seg(t, T.RISE + f.d, T.RISE_END + f.d * 0.6));
+  const g = OM.gather(t, T.GATHER, T.GATHER_END - 0.35, Math.round(f.d * 20), 6, { x: f.cx, y: f.cy }, { x: slot.x + 38, y: slot.y + 21 }, { stagger: 0.03, arc: 90, spin: 0.15 });
+  let x = lerp(sx, f.cx, rk), y = lerp(sy, f.cy, rk);
+  x += Math.sin(t * 2.3 + f.ph) * 10 * rk * (1 - g.k); y += Math.cos(t * 1.9 + f.ph) * 6 * rk * (1 - g.k);
+  if (g.k > 0) { x = g.x; y = g.y; }
+  // the collapse: every bubble folds into one point, where the Q will appear
+  const ck = ease.expoIn(seg(t, T.COLLAPSE + f.d * 0.6, T.COLLAPSE + 0.42 + f.d * 0.6));
+  x = lerp(x, QX, ck); y = lerp(y, QY, ck) - Math.sin(ck * Math.PI) * 60;
+  const w = lerp(lerp(start.w, 76, mk), 30, ck), h = lerp(lerp(start.h, 42, mk), 30, ck);
+  const hot = slot.c === 2 ? sstep(T.PCT2 - 0.1, T.PCT2 + 0.25, t) : 0;
+  return { r: { x: x - w / 2, y: y - h / 2, w, h, r: lerp(16, 15, ck) }, mk, ck, rot: (g.k > 0 ? g.rot : Math.sin(t * 1.5 + f.ph) * 0.08 * rk) * (1 - ck), hot };
+}
+function mainAt(t) {
+  if (t < T.SPLIT) { const p = OM.popIn(t, T.POP, { rise: 30, s0: 0.7, ds: 0.3, zeta: 0.55 }), im = OM.impact(t, T.POP + 0.08, { sqx: 0.08, sqy: 0.1 });
+    return { r: R.inc, face: ['inc', 'inc', 0], bg: WHITE, tail: 'l', op: t < T.POP ? 0 : p.op, dy: p.dy, s: p.s, sx: im.sx, sy: im.sy }; }
+  if (t < T.COMP) { const m = morphStretch(t, T.SPLIT, R.inc, R.card2); const pr = OM.press(t, T.CLICK, { depth: 0.06 });
+    return { r: m, face: ['inc', 'card2', sstep(0.05, 0.45, m.k)], bg: WHITE, tail: m.k < 0.4 ? 'l' : '', s: pr.s }; }
+  if (t < T.SEND) { const m = morphStretch(t, T.COMP, R.card2, R.comp);
+    return { r: m, face: ['card2', 'comp', sstep(0.1, 0.5, m.k)], bg: WHITE, tail: '' }; }
+  if (t < T.MP) { const m = morphStretch(t, T.SEND, R.comp, R.out, { omega: 17 }), im = OM.impact(t, 7.45, { sqx: 0.05, sqy: 0.07 });
+    return { r: m, face: ['comp', 'out', sstep(0.15, 0.55, m.k)], bg: mix3(WHITE, BUB, sstep(0.1, 0.6, m.k)), tail: m.k > 0.6 ? 'r' : '', sx: im.sx, sy: im.sy }; }
+  if (t < T.FLOOD + 0.12) { const m = morphStretch(t, T.MP, R.out, R.mp, { omega: 14 });
+    const flip = seg(t, T.FLIP, T.FLIP + 0.3), fx = Math.abs(Math.cos(flip * Math.PI)), paid = flip >= 0.5, tap = OM.press(t, T.TAP, { depth: 0.035 });
+    return { r: m, face: paid ? ['paid', 'paid', 0] : ['out', 'mp', sstep(0.1, 0.5, m.k)], bg: mix3(BUB, MPBG, sstep(0, 0.4, m.k)), tail: m.k < 0.25 ? 'r' : '', sx: Math.max(0.02, fx) * tap.s, sy: tap.s }; }
+  if (t < T.LAND) return { r: R.mp, face: ['paid', 'paid', 0], bg: MPBG, op: 0 };
+  if (t < T.LIFT) { const im = OM.impact(t, T.LAND, { sqx: 0.14, sqy: 0.18 }); return { r: R.tile, face: ['tile', 'tile', 0], bg: GREEN, tail: '', sx: im.sx, sy: im.sy }; }
+  if (t < T.Q) { const f = flockAt(t, R.tile, MAIN_SLOT, { cx: 1180, cy: -260, d: 0.05, ph: 1 }), k = f.mk;
+    let bg = mix3(GREEN, WHITE, k); if (f.hot) bg = mix3(bg, [255, 178, 122], f.hot * (1 - f.ck));
+    return { r: f.r, face: ['tile', 'mini', sstep(0, 0.6, k)], bg, tail: '', rot: f.rot }; }
+  const p = OM.popIn(t, T.Q, { rise: 0, s0: 0.12, ds: 0.88, zeta: 0.52, omega: 15 });
+  const mx = lerp(QX, GAP_X, ssstep(T.MARK - 0.05, T.MARK + 0.45, t));
+  return { r: { x: mx - 120, y: QY - 120, w: 240, h: 240, r: 0 }, face: ['q', 'q', 0], bg: null, tail: '', op: p.op, s: p.s };
+}
+function floodAt(t) {   // world rect of the flood, or null
+  if (t < T.FLOOD || t >= T.LAND) return null;
+  const c = { x: R.mp.x + R.mp.w / 2, y: R.mp.y + R.mp.h / 2 }, big = 760;
+  if (t < T.CONTRACT) { const r = big * ease.expoOut(seg(t, T.FLOOD, T.FLOOD_END)); return { x: c.x - r, y: c.y - r, w: 2 * r, h: 2 * r, r }; }
+  return OM.morphRect(t, T.CONTRACT, T.LAND, { x: c.x - big, y: c.y - big, w: 2 * big, h: 2 * big, r: big }, R.tile, { curve: ease.expoInOut });
+}
+
+// ══════════════════════════════════ seek ══════════════════════════════════
+let CAM = { x: 960, y: 540, zoom: 1, rot: 0 }, TRACK = {}, VIEW;
+const op = (el, v) => { el.style.opacity = v.toFixed(3); el.style.display = v <= 0.001 ? 'none' : (el.dataset.disp || ''); };
+function place(el, x, y, s = 1, o = 1, extra = '') { op(el, o); if (o > 0.001) el.style.transform = `translate(${x.toFixed(2)}px,${y.toFixed(2)}px) scale(${s.toFixed(4)}) ${extra}`; }
+function rectEl(el, r, o = 1, rot = 0, sx = 1, sy = 1) { op(el, o); if (o <= 0.001) return; el.style.width = r.w.toFixed(2) + 'px'; el.style.height = r.h.toFixed(2) + 'px'; el.style.borderRadius = (r.r ?? 0).toFixed(1) + 'px';
+  el.style.transformOrigin = '50% 50%'; el.style.transform = `translate(${r.x.toFixed(2)}px,${r.y.toFixed(2)}px) rotate(${rot.toFixed(4)}rad) scale(${sx.toFixed(4)},${sy.toFixed(4)})`; }
+// text rises out of a mask line, line by line, and leaves upward through it
+function cap(el, t, t0, x, y, out = 1e9) {
+  const on = t >= t0 - 0.01 && t < out + 0.34; el.style.display = on ? '' : 'none'; if (!on) return;
+  el.style.transform = `translate(${x.toFixed(1)}px,${y.toFixed(1)}px)`;
+  el.querySelectorAll('.ml').forEach((ml, i) => { const k = spring(t - t0 - i * 0.08, 0.78, 17), ko = ease.expoIn(seg(t, out + i * 0.04, out + 0.28 + i * 0.04));
+    ml.firstElementChild.style.transform = `translateY(${((1 - k) * 112 - ko * 112).toFixed(2)}%)`; });
+}
+function seekFilm(t) {
+  CAM = camAt(t); VIEW = OM.view(CAM, { W, H });
+  $('world').style.transform = `matrix(${VIEW.map(v => v.toFixed(5)).join(',')})`;
+  drawSky(t, CAM);
+
+  // 1 · Juan, and Marqui reading him
+  cap($('lab0'), t, T.POP + 0.2, R.inc.x, R.inc.y - 48, T.SPLIT - 0.1);
+  { const p = OM.popIn(t, T.READ, { rise: 14, s0: 0.6, ds: 0.4, zeta: 0.6 }), lo = OM.liftOut(t, T.SPLIT + 0.05, { dist: 20, blur: 6 });
+    place($('read'), R.inc.x + R.inc.w + 18, R.inc.y + 22 + p.dy + lo.dy, p.s * lo.s, t < T.READ ? 0 : p.op * lo.op); $('read').style.transformOrigin = '0 50%'; }
+
+  // 2 · the three
+  [['c1', R.card1, 1], ['c3', R.card3, 2]].forEach(([id, r, i]) => {
+    const m = morphStretch(t, T.SPLIT + 0.06 * i, R.inc, r), drop = ssstep(T.DROP, T.DROP + 0.4, t), dir = i === 1 ? -1 : 1;
+    const o = t < T.SPLIT ? 0 : sstep(0, 0.2, m.k) * (1 - drop);
+    rectEl($(id), { ...m, x: m.x + dir * drop * 60, y: m.y + drop * drop * 260 }, o, dir * drop * 0.18);
+    const face = $(id).firstElementChild; face.style.transformOrigin = '0 0'; face.style.transform = `scale(${(m.w / 430).toFixed(4)},${(m.h / 250).toFixed(4)})`;
+    const hov = i === 1 ? sstep(3.65, 3.8, t) * (1 - sstep(4.05, 4.2, t)) : 0; $(id).style.boxShadow = hov ? `0 0 0 ${(3 * hov).toFixed(1)}px rgba(255,255,255,.9), 0 24px 60px -18px rgba(8,25,60,.45)` : '';
+  });
+  cap($('head'), t, T.HEAD, 960 - 390, 336, T.DROP);
+  cap($('cap1'), t, T.CAP1, 310, 712, T.DROP);
+  PCTS.forEach((el, i) => { const k = ease.cubicOut(seg(t, T.PCT + i * 0.08, T.PCT + 0.6 + i * 0.08)); el.textContent = Math.round(SUG[i][1] * k) + '%'; });
+  FACES.card2.classList.toggle('on', t >= T.CLICK);
+
+  // 3 · composer: Marqui fills it, the camera rides the caret, the person sends
+  cap($('lab1'), t, 5.35, R.comp.x + 24, R.comp.y - 50, T.SEND);
+  { const n = typedAt(t), n0 = Array.from(LINES[0]).length, a = Array.from(LINES[0]), b = Array.from(LINES[1]), caret = t < T.SEND && (n < CT.length || Math.floor(t * 2.4) % 2 === 0) ? '<span class="caret"></span>' : '';
+    $('cl1').innerHTML = a.slice(0, Math.min(n, n0)).join('') + (n <= n0 ? caret : ''); $('cl2').innerHTML = b.slice(0, Math.max(0, n - n0)).join('') + (n > n0 ? caret : ''); }
+  { const sp = OM.press(t, T.SEND, { depth: 0.18 }); FACES.comp.querySelector('.send').style.transform = `scale(${sp.s.toFixed(3)})`; }
+  cap($('capSend'), t, T.CAPSEND, 400, 446, T.J2 - 0.3);
+  $('ticks').setAttribute('stroke', t >= T.TICKS ? '#53bdeb' : '#8696a0');
+
+  // 4 · Juan answers; the cursor asks Marqui for the link; the bubble folds into it; Juan pays
+  { const p = OM.popIn(t, T.J2, { rise: 24 }), lo = OM.liftOut(t, T.MP + 0.15, { dir: 1, dist: 40 }); place($('j2'), 340, 640 + p.dy + lo.dy, p.s, t < T.J2 ? 0 : p.op * lo.op); }
+  { const p = OM.popIn(t, T.CHIP, { rise: 20, s0: 0.85, ds: 0.15, zeta: 0.6 }), pr = OM.press(t, T.CHIPCLICK, { depth: 0.1 }), lo = OM.liftOut(t, T.CHIPCLICK + 0.15, { dir: 1, dist: 30 });
+    place($('chip'), CHIPR.x, CHIPR.y + p.dy + lo.dy, p.s * pr.s, t < T.CHIP ? 0 : p.op * lo.op); $('chip').style.background = pr.active ? '#25d366' : '#0b1a33'; }
+  cap($('labMp'), t, T.LABMP, R.mp.x + 6, R.mp.y - 46, T.FLOOD);
+  { const k = ease.cubicOut(seg(t, 11.0, T.TAP)), out = sstep(T.TAP + 0.1, T.TAP + 0.4, t);
+    const x = lerp(1180, PAY.x, k), y = lerp(1000, PAY.y, k); place($('touch'), x - 35, y - 35, (t >= T.TAP ? 0.82 : 1) * (1 + out * 0.6), t < 11.0 ? 0 : sstep(11.0, 11.15, t) * (1 - out)); }
+  { const pr = OM.press(t, T.TAP, { depth: 0.12 }); $('paybtn').style.transform = `scale(${pr.s.toFixed(3)})`; }
+
+  // the flood
+  { const f = floodAt(t), el = $('flood');
+    if (!f) el.style.display = 'none'; else { rectEl(el, f, 1); const s = f.w / 1520, tk = spring(t - (T.FLOOD + 0.05), 0.8, 16), fade = 1 - sstep(T.CONTRACT + 0.1, T.CONTRACT + 0.3, t);
+      $('floodTxt').style.transform = `translate(-50%,-50%) scale(${Math.max(s, 0.1).toFixed(3)}) translateY(${((1 - tk) * 60).toFixed(1)}px)`; $('floodTxt').style.opacity = (Math.min(1, tk * 1.4) * fade).toFixed(3); } }
+
+  // 5 · the grid (web + list)
+  { const p = OM.popIn(t, T.CONTRACT, { rise: 40, s0: 0.94, ds: 0.06 }), lo = ssstep(T.LIFT, T.LIFT + 0.5, t);
+    place($('grid'), GRID.x, GRID.y + p.dy, p.s, t < T.CONTRACT ? 0 : p.op * (1 - lo)); $('grid').style.transformOrigin = '50% 50%';
+    $('chipWeb').classList.toggle('ok', t >= T.CHIP1); $('chipList').classList.toggle('ok', t >= T.CHIP2);
+    ['chipWeb', 'chipList'].forEach((id, i) => { const im = OM.impact(t, [T.CHIP1, T.CHIP2][i], { sqx: 0.18, sqy: 0.22 }); $(id).style.display = 'inline-block'; $(id).style.transform = `scale(${im.sx.toFixed(3)},${im.sy.toFixed(3)})`; });
+    tileEls.forEach((el, i) => { el.style.visibility = i === 4 || t >= T.LIFT ? 'hidden' : 'visible'; }); }
+  cap($('capGrid'), t, T.CAPGRID, 410, 172, T.LIFT);
+
+  // 6 · the flock rises, becomes MARQador's bars, then folds into one point
+  FLOCK.forEach((f, i) => {
+    if (t < T.LIFT - 0.01 || t >= T.Q) { f.el.style.display = 'none'; return; }
+    const start = f.fromTile >= 0 ? TILE(f.fromTile % 4, Math.floor(f.fromTile / 4)) : { x: f.sx, y: 1180, w: 76, h: 42 };
+    const st = flockAt(t, start, f.slot, f), o = (f.fromTile >= 0 ? 1 : sstep(T.RISE + f.d, T.RISE + f.d + 0.2, t)) * (1 - sstep(0.85, 1, st.ck));
+    rectEl(f.el, st.r, o, st.rot);
+    f.el.style.background = st.hot ? `rgb(${mix3(WHITE, [255, 178, 122], st.hot * (1 - st.ck)).map(Math.round).join(',')})` : (st.mk < 1 ? `rgb(${Math.round(lerp(238, 255, st.mk))},${Math.round(lerp(242, 255, st.mk))},${Math.round(lerp(248, 255, st.mk))})` : '#fff');
+    f.el.firstElementChild.style.opacity = (st.mk * (1 - st.ck)).toFixed(3); TRACK['f' + i] = st.r;
+  });
+  [...$('barlabs').children].forEach((el, c) => { const w = OM.wordRise(t, T.MQ + c * 0.05, { dist: 10 }), lo = OM.liftOut(t, T.COLLAPSE, { dist: 20, blur: 0 }); place(el, COLX(c) - 50, BASE + 16 + w.y + lo.dy, 1, t < T.MQ ? 0 : w.op * lo.op); });
+  cap($('mqTitle'), t, T.MQ - 0.05, 360, -900, T.COLLAPSE);
+  cap($('mqPct'), t, T.PCT2 + 0.1, COLX(2) + 70, BASE - 7 * CELL - 30, T.COLLAPSE);
+
+  // #main
+  { const m = mainAt(t), el = $('main'), r = m.r, o = m.op ?? 1;
+    rectEl(el, { ...r, y: r.y + (m.dy ?? 0) }, o, m.rot ?? 0, (m.sx ?? 1) * (m.s ?? 1), (m.sy ?? 1) * (m.s ?? 1));
+    el.style.background = m.bg ? `rgb(${m.bg.map(Math.round).join(',')})` : 'transparent'; el.style.boxShadow = m.bg ? '' : 'none';
+    const tl = $('tail'); tl.style.display = m.tail ? '' : 'none';
+    if (m.tail === 'l') { tl.style.left = '-8px'; tl.style.right = ''; tl.style.transform = 'skewX(32deg)'; }
+    if (m.tail === 'r') { tl.style.left = ''; tl.style.right = '-8px'; tl.style.transform = 'skewX(-32deg)'; }
+    const [fa, fb, k] = m.face;
+    for (const [name, f] of Object.entries(FACES)) {
+      const vis = fa === fb ? (name === fa ? 1 : 0) : name === fb ? k : name === fa ? 1 - k : 0;
+      f.style.opacity = vis.toFixed(3); f.style.display = vis <= 0.001 ? 'none' : '';
+      // content swaps with a short blur, never a plain crossfade
+      f.style.filter = vis > 0.001 && vis < 0.999 ? `blur(${((1 - vis) * 7).toFixed(1)}px)` : 'none';
+      if (vis > 0.001) { const [fw, fh] = FACE_SIZE[name]; const s = Math.min(r.w / fw, r.h / fh); f.style.transform = `translate(${((r.w - fw * s) / 2).toFixed(2)}px,${((r.h - fh * s) / 2).toFixed(2)}px) scale(${s.toFixed(4)})`; }
+    }
+    if (t >= T.Q) { const b = seg(t, T.BLINK, T.BLINK + 0.16); FACES.q.firstElementChild.style.transform = `scaleY(${(1 - 0.12 * Math.sin(b * Math.PI)).toFixed(3)})`; }
+    TRACK.main = { x: r.x, y: r.y, w: r.w, h: r.h, op: o };
+  }
+
+  // 8 · the name: "mar" Q "ui", in the same sky as MARQador
+  { const vis = t >= T.MARK - 0.05; op(markEl, vis ? 1 : 0);
+    if (vis) { markEl.style.transform = `translate(${MARK_X.toFixed(1)}px, ${(QY - 114).toFixed(1)}px)`;
+      LET.forEach((s, i) => { const d = OM.letterDrop(t, T.MARK, i, { stagger: 0.06 }); s.style.opacity = i === 3 ? 0 : d.op; s.style.transform = `translateY(${d.y.toFixed(1)}px) scale(${d.sx.toFixed(3)},${d.sy.toFixed(3)})`; }); } }
+  cap($('tagline'), t, T.TAG, 260, QY + 245);
+  cap($('sig'), t, T.SIG, 260, QY + 372);
+
+  // the hand
+  { const cu = OM.cursor(t, HAND, CLICKS), vis = t >= HAND[0].t && t < HAND[HAND.length - 1].t; place($('cursor'), cu.x - 6, cu.y - 4, cu.s * 1.25, vis ? 1 : 0); TRACK.hand = [cu.x, cu.y]; }
+}
+
+function seek(tau) {
+  const t = FT(tau);
+  seekFilm(t);
+  $('world').style.opacity = ENV(tau).toFixed(3);
+  $('hud').textContent = `${CUT} τ=${tau.toFixed(3)} t=${t.toFixed(3)}`;
+  return document.fonts.ready;
+}
+
+// ══════════════════════════════════ contract ══════════════════════════════════
+window.__seek = async tau => { await seek(tau); return true; };
+window.__track = tau => { seek(tau); const M = VIEW, out = {}; for (const [k, v] of Object.entries(TRACK)) { if (Array.isArray(v)) out[k] = OM.project(M, v[0], v[1]); else if (k === 'main' || k === 'f0' || k === 'f9') out[k] = OM.projectBox(M, v); } return out; };
+window.__motion = (a, b) => { const pts = tau => { seek(tau); const M = VIEW, r = TRACK.main; return [[r.x, r.y], [r.x + r.w, r.y + r.h], TRACK.hand, ...FLOCK.slice(0, 6).map((_, i) => TRACK['f' + i] ? [TRACK['f' + i].x, TRACK['f' + i].y] : [0, 0])].map(p => OM.project(M, p[0], p[1])); };
+  const c0 = (seek(a), CAM), c1 = (seek(b), CAM), cm = (seek((a + b) / 2), CAM); const cam = OM.screenTravel(c0, c1, cm, { W, H });
+  const p0 = pts(a), p1 = pts(b); let d = cam; p0.forEach((p, i) => d = Math.max(d, Math.hypot(p[0] - p1[i][0], p[1] - p1[i][1]))); seek(b); return d; };
+window.__events = () => {
+  const ev = [], add = (t, kind, x = 960, y = 540, v = 1) => { if (t < C.a - 0.01 || t > C.b) return; seek(t - C.a); const p = OM.project(VIEW, x, y)[0]; ev.push({ t: +(t - C.a).toFixed(3), kind, pan: +clamp((p / W) * 2 - 1, -1, 1).toFixed(2), v }); };
+  add(T.POP, 'pop', 960, 518, 0.9); add(T.READ, 'chip', 1200, 518, 0.5);
+  add(T.SPLIT, 'split', 960, 555, 0.8); add(T.SPLIT + 0.06, 'card', 500, 555, 0.5); add(T.SPLIT + 0.12, 'card', 1420, 555, 0.5);
+  add(T.PCT + 0.6, 'tick', 960, 555, 0.35); add(3.75, 'hover', 520, 590, 0.25);
+  add(T.CLICK, 'click', 982, 588, 0.8); add(T.DROP, 'fall', 960, 555, 0.6); add(T.COMP, 'morph', 960, 700, 0.6);
+  CT.forEach((ct, i) => { if (i % 3 === 0) add(ct, 'key', caretAt(ct).x, caretAt(ct).y, 0.35); });
+  add(T.SEND, 'click', SENDP.x, SENDP.y, 0.9); add(T.SEND + 0.02, 'whoosh', 1200, 600, 0.8); add(7.45, 'land', 1280, 505, 0.7); add(T.TICKS, 'tick', 1500, 505, 0.5);
+  add(T.J2, 'pop', 620, 690, 0.7); add(T.CHIP, 'chip', 555, 793, 0.6); add(T.CHIPCLICK, 'click', 586, 793, 0.8); add(T.MP, 'morph', 960, 540, 0.7); add(10.5, 'glass', 960, 540, 0.45);
+  add(T.TAP, 'tap', PAY.x, PAY.y, 0.6); add(T.FLIP, 'flip', 960, 540, 0.6); add(T.FLIP + 0.15, 'chord', 960, 540, 0.85);
+  add(T.FLOOD, 'flood', 960, 540, 1.0); add(T.CONTRACT, 'whoosh', 960, 540, 0.6); add(T.LAND, 'hit', 650, 505, 1.0); add(T.CHIP1, 'tick', 1180, 505, 0.55); add(T.CHIP2, 'tick', 1300, 505, 0.6);
+  add(T.LIFT + 0.1, 'rise', 960, 300, 0.9);
+  for (let i = 0; i < 5; i++) add(T.GATHER + 0.1 + i * 0.09, 'bubble', COLX(i), -500, 0.45);
+  add(T.PCT2, 'glass', COLX(2), -600, 0.6);
+  add(T.COLLAPSE, 'collapse', QX, QY, 0.8); add(T.Q, 'pop', QX, QY, 1.0); add(T.MARK, 'letters', 700, QY, 0.6); add(T.TAG, 'air', 960, QY, 0.4); add(T.SIG + 0.2, 'end', 960, QY, 0.8);
+  seek(0); return { T: DUR, events: ev };
+};
+window.__ready = (window.FONTS_READY || document.fonts.ready).then(() => { initSky(); measure(); return seek(0); });
+if (Q.has('t')) __ready.then(() => seek(parseFloat(Q.get('t'))));
+if (Q.has('hud')) $('hud').style.display = 'block';
+if (Q.has('play')) __ready.then(() => { const t0 = performance.now(); (function loop() { seek(((performance.now() - t0) / 1000) % DUR); requestAnimationFrame(loop); })(); });
+</script>
+</body>
+</html>

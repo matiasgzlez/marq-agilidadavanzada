@@ -2,7 +2,7 @@
 
 Marqui es un asistente para el equipo de MARQ que vive dentro de WhatsApp. Ayuda a responder consultas, mantiene la web y los precios al día, genera links de seña y resume qué está pidiendo el mercado. No hay que instalar un sistema nuevo ni aprender a usarlo: todo se hace chateando, con texto, audios o fotos.
 
-Las dos líneas de WhatsApp de MARQ, la de pauta y la de clientes, siguen funcionando como siempre y por separado. Marqui está conectado a las dos y se usa de dos formas:
+Las líneas de WhatsApp de MARQ (la de pauta, la de clientes y las que se sumen) siguen funcionando como siempre y por separado. Marqui está conectado a las dos y se usa de dos formas:
 
 - **En la computadora, desde WhatsApp Web**, Marqui aparece integrado dentro de cada chat con un cliente.
 - **En el celular**, Marqui es un contacto más de WhatsApp: le escribís cuando necesitás algo y te responde.
@@ -15,7 +15,7 @@ Marqui no te manda avisos por cada consulta: aparece cuando abrís un chat o cua
 
 **Hoy:** las consultas llegan por dos WhatsApp distintos y por el formulario de la web. Se responden una por una, a mano, y eso lleva unas cuatro horas por día cuando hay pauta.
 
-**Con Marqui:** cuando abrís el chat de un cliente en WhatsApp Web, Marqui aparece integrado en esa misma conversación. Lee lo que escribió el cliente, sabe por qué proyecto pregunta y te propone tres respuestas, cada una con el porcentaje de conversaciones parecidas que terminaron en una reunión. Tocás la que te gusta, se escribe sola en el cuadro de texto, la corregís si querés y la enviás vos, desde la línea de siempre y con tu nombre. Desde el celular, le reenviás el mensaje del cliente a Marqui y te devuelve las mismas tres opciones.
+**Con Marqui:** cuando abrís el chat de un cliente en WhatsApp Web, Marqui aparece integrado en esa misma conversación. Lee lo que escribió el cliente, sabe por qué proyecto pregunta y te propone tres respuestas, cada una con el porcentaje de conversaciones parecidas que terminaron en una reserva, una llamada o una visita. Tocás la que te gusta, se escribe sola en el cuadro de texto, la corregís si querés y la enviás vos, desde tu WhatsApp de siempre y con tu nombre. Desde el celular, le reenviás el mensaje del cliente a Marqui y te devuelve las mismas tres opciones.
 
 El cliente nunca habla con un bot: habla con una persona de MARQ. Marqui sólo agiliza esa conversación, y con cada respuesta que elegís o corregís, aprende a escribir más como MARQ.
 
@@ -41,7 +41,7 @@ El cliente nunca habla con un bot: habla con una persona de MARQ. Marqui sólo a
 
 **Hoy:** no se pudo conectar la web para que alguien reserve o señe online.
 
-**Con Marqui:** le pedís un link de pago de Mercado Pago para una unidad y se lo mandás al interesado. Cuando el pago se acredita, Marqui te avisa y la unidad pasa sola a reservada en la web y en la lista de precios. Se puede empezar con los lotes y extenderlo a departamentos.
+**Con Marqui:** le pedís un link de pago de Mercado Pago para una unidad y se lo mandás al interesado. Cuando el pago se acredita, Marqui te avisa y la unidad pasa sola a reservada en la web y en la lista de precios. Se puede empezar con los lotes, como piloto, y después extenderlo a los departamentos.
 
 **Por ejemplo:** "Generá un link de seña de la 2A para Juan". Juan paga desde el celular, Marqui te avisa que la seña se acreditó, y la 2A queda reservada sin que toques nada más.
 
@@ -55,11 +55,27 @@ El cliente nunca habla con un bot: habla con una persona de MARQ. Marqui sólo a
 
 ## 6. Saber qué pide el mercado
 
-**Hoy:** lo que busca la gente se descubre conversando uno por uno, y no queda registrado. En Casas BDN llegaron 500 consultas y no se pudo saber cuántas personas podían pagar.
+**Hoy:** lo que busca la gente se descubre conversando uno por uno, y no queda registrado. En algunos proyectos llegaron 500 consultas y no se pudo saber cuántas personas podían pagar.
 
-**Con Marqui:** MARQador, la parte de Marqui que analiza las conversaciones, te manda por WhatsApp un resumen semanal en tres datos: qué tipologías se piden, qué frena a la gente y qué canal trae a quienes de verdad avanzan. Y le podés preguntar lo que necesites.
+**Con Marqui:** MARQador, la parte de Marqui que analiza las conversaciones, te manda por WhatsApp un resumen semanal en PDF con datos: qué tipologías se piden, qué frena a la gente y qué canal trae a quienes de verdad avanzan. Y le podés preguntar lo que necesites.
 
-**Por ejemplo** (datos ilustrativos): "Esta semana, casi la mitad pidió dos dormitorios; lo que más frena es la financiación; las recomendaciones llegan a reunión más que la campaña de Instagram". O le preguntás: "¿Qué fue lo que más preguntó la gente este mes sobre MARQ Collection?". Con eso se decide qué construir y dónde poner la pauta.
+**Por ejemplo** (datos ilustrativos): "Esta semana, casi la mitad pidió dos dormitorios; lo que más frena es la financiación (ahí se corta la conversación); las recomendaciones llegan a reunión más que la campaña de Instagram". O le preguntás: "¿Qué fue lo que más preguntó la gente este mes sobre MARQ Collection?". Con eso se decide qué construir y dónde poner la pauta.
+
+### El perfil del prospecto
+
+**Con Marqui:** al principio de cada consulta, se le piden a la persona unos pocos datos: edad, si busca para vivir o para invertir, si es comprador o inversor y cuánto puede pagar. Hay dos formas de pedirlos:
+
+- **En WhatsApp:** una encuesta corta y predeterminada, con la promesa de que una persona del equipo lo contacta enseguida.
+- **En la web:** el precio de una unidad, a cambio de responder dos o tres preguntas.
+
+El perfil queda guardado junto a la conversación y se visualiza en un tablero de Power BI. Sirve para:
+
+- Saber si la pauta está llegando al público que MARQ busca (por ejemplo, si llegan muchas personas de 25 a 35 años que todavía no pueden comprar).
+- Decidir qué construir y dónde poner la pauta.
+- Saber a quién invitar a cada evento, filtrando por proyecto, intención y forma de pago.
+- Con unas 100 consultas por día, en dos años serían unos 73.000 perfiles de personas interesadas en comprar o invertir en el Chaco. Con esa base se pueden preparar informes de mercado agregados y anónimos que pueden interesar a consultoras.
+
+Los datos se piden con consentimiento y se cuidan según la Ley 25.326 de Protección de Datos Personales. Fuera de MARQ sólo se comparten informes agregados y anónimos, nunca los datos de una persona.
 
 ## 7. El equipo y el control
 
@@ -82,8 +98,8 @@ El cliente nunca habla con un bot: habla con una persona de MARQ. Marqui sólo a
 
 - **Conexión con WhatsApp:** WhatsApp Business Platform, la API oficial de Meta, para el contacto de Marqui y para leer y enviar mensajes; y una extensión de Chrome, en JavaScript, para la integración dentro de WhatsApp Web.
 - **Servidor:** una aplicación en Node.js o Python, alojada en la nube, que recibe los mensajes y coordina todo.
-- **Inteligencia artificial:** un modelo de lenguaje por API, como Claude o GPT, para entender los mensajes y redactar las sugerencias, más un servicio de transcripción para entender los audios.
+- **Inteligencia artificial:** un modelo de lenguaje por API, como Claude o GPT, para entender los mensajes y redactar las sugerencias, más, si el equipo usa audios, un servicio de transcripción para entenderlos.
 - **Base de datos:** PostgreSQL para proyectos, unidades, precios, conversaciones e historial de cambios, con la extensión pgvector para la memoria de Marqui: encontrar conversaciones parecidas y calcular los porcentajes de éxito.
 - **Integraciones:** la web de MARQ, a través de su API según la plataforma en la que esté hecha; la lista de precios; la API de Mercado Pago para los links de seña; y un servicio de almacenamiento para fotos y planos.
-- **MARQador:** consultas a la base de datos más un resumen redactado por la IA, que se envía por WhatsApp una vez por semana mediante una tarea programada.
+- **MARQador:** consultas a la base de datos más un resumen redactado por la IA, que se envía por WhatsApp una vez por semana mediante una tarea programada. Los perfiles de prospectos se visualizan en un tablero de Power BI.
 - **Seguridad:** permisos según el número de cada integrante, registro de cada cambio y cuidado de los datos personales según la ley de protección de datos personales.

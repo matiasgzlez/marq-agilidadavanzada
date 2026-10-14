@@ -1,101 +1,65 @@
-# MARQ — Alloy & MARQUI · Agilidad avanzada
+# MARQUI · Agilidad avanzada
 
-**Dos propuestas para MARQ: presencia en la ciudad y agilidad en el equipo.**
+**Marqui te sopla la respuesta. El cliente nunca lo ve.**
 
-Este proyecto es una presentación web de **MARQ Alloy**, una propuesta para Estudio MARQ que busca transformar sus desarrollos en lugares que la ciudad reconozca, recuerde y comparta.
-
-## La idea para MARQ
-
-El desafío planteado es aumentar el reconocimiento de MARQ en Resistencia. La propuesta aprovecha una identidad propia de la ciudad: su relación con las esculturas y el arte en el espacio urbano.
-
-**Cada nuevo desarrollo incorpora una escultura de un artista regional. El edificio y la obra se presentan juntos, en una misma inauguración.** La escultura se concibe en diálogo con la arquitectura y forma parte de la identidad del proyecto desde el primer día.
-
-La intervención contempla una base de hormigón con el nombre de MARQ y la autoría de la pieza, acompañada por iluminación cálida. La participación artística podría concretarse mediante una convocatoria a artistas locales o un concurso estudiantil en un convenio a explorar con FADyCC–UNNE.
-
-*Alloy* significa «aleación»: el nombre expresa la unión de arquitectura, arte y comunidad para crear valor en la ciudad.
-
-## Qué busca generar
-
-- **Presencia cotidiana:** una obra visible en los recorridos de vecinos, residentes y visitantes.
-- **Identidad para cada proyecto:** un lugar con una historia y un punto de referencia propio.
-- **Reconocimiento de marca:** asociar el nombre de MARQ con una contribución concreta al entorno urbano.
-- **Vínculos y comunicación:** un encuentro con artistas y comunidad, y contenido para comunicar el proyecto antes, durante y después de su inauguración.
-
-Son objetivos de la propuesta, cuyo impacto deberá evaluarse al implementar un piloto.
+Presentación web de **Marqui**, un asistente con IA para el equipo de MARQ dentro del WhatsApp que ya usan, y de **MARQador**, su tablero. El alcance y las decisiones están en [docs/marqui-contexto.md](docs/marqui-contexto.md).
 
 ## Qué muestra la presentación
 
-La experiencia sigue el recorrido **Dolor → Solución → Noticias** e incluye:
+La pestaña **Solución** recorre, sobre un mismo cielo que cambia de hora:
 
-- La explicación de MARQ Alloy y sus cuatro componentes: arquitectura, arte regional, presencia y comunidad.
-- Una visualización conceptual de una escultura frente a Torre Natalini, con comparación de la imagen actual y la propuesta.
-- Google Maps integrado y un enlace a Google Earth para explorar el entorno.
-- Cuatro maquetas de noticias inspiradas en Diario Norte, Diario Chaco, Diario TAG y DataChaco, con lectura ampliada.
-- Un selector entre **Soluciones** y **Design thinking**. MARQUI ocupa la segunda solución; Design thinking mantiene su espacio reservado para una próxima etapa.
+1. **Hero:** WhatsApp Web con Marqui adentro. Demo interactiva: Juan pregunta «precio?», la tarjeta se completa sola y pasa a Interesado.
+2. **Qué es:** Marqui contra un chatbot.
+3. **Qué hace:** las seis funciones, cada una con su pantalla.
+4. **MARQador:** el tablero, con cinco pantallas (Pauta, Demanda, Contactos, Frenos y Semana).
+5. **Demo «Un día con Marqui»:** 9:00, 10:30 y 18:00. El cielo sigue la hora. Se avanza con los botones o con las flechas ← → del teclado.
+6. **Por dentro:** cómo se conecta y qué pasa si la extensión falla.
+7. **Lo que viene:** precios, señas, landings y avance de obra.
 
-### El escenario de Natalini
+La pestaña **Design thinking** queda en preparación (`?panel=thinking`).
 
-Torre Natalini ya está construida. Aquí se utiliza como referencia visual para **imaginar que el edificio y su escultura se inauguran juntos**. Ese ejercicio permite mostrar cómo se comunicaría la propuesta al aplicarla a un nuevo desarrollo de MARQ.
-
-Las noticias son textos originales y ficticios; no fueron publicadas por los medios ni representan su respaldo. La imagen de la intervención fue generada con IA. Esta presentación conceptual no es el sitio oficial de MARQ. Los acuerdos con artistas e instituciones, el emplazamiento y los permisos se definirían durante la implementación; la instalación de una obra no implica su declaración automática como patrimonio cultural.
-
-## MARQUI: todo MARQ, desde WhatsApp
-
-La segunda propuesta es un asistente para el equipo comercial y operativo de MARQ. Su identidad incorpora el personaje en forma de Q compartido por el equipo, con una paleta de verde salvia que acompaña el estilo de Alloy.
-
-La presentación incluye seis recorridos interactivos: responder consultas, crear proyectos, actualizar precios públicos, gestionar señas, compartir avances de obra y entender la demanda con MARQador. Cada función explica el pedido, la preparación y la decisión del equipo.
-
-La demo recrea WhatsApp Web con una lista ilustrativa de chats, conversaciones, sugerencias internas y un borrador editable. También permite visualizar el modo celular. Son simulaciones locales: no hay conexión a WhatsApp, pagos, publicación de proyectos ni envíos reales.
-
-Abrí `http://127.0.0.1:4173/?solution=marqui` para entrar directamente. La referencia de producto está en [docs/marqui-referencia.md](docs/marqui-referencia.md). `marqui.js` y `marqui.css` contienen la interacción y los estilos propios de esta propuesta.
+Toda la tipografía escala con el ancho de la pantalla, para que se lea desde lejos en una TV 2K. Todas las conversaciones, nombres y números son ilustrativos: no hay conexión con WhatsApp, la web de MARQ ni Mercado Pago.
 
 ## Ejecutar en tu computadora
 
-Requiere Node.js compatible con Vite 8 (20.19+ o 22.12+; se recomienda una versión LTS vigente) y npm.
+Requiere Node.js 20.19+ o 22.12+ y npm.
 
 ```sh
-git clone https://github.com/matiasgzlez/marq-agilidadavanzada.git
-cd marq-agilidadavanzada
 npm ci
 npm run dev
 ```
 
-Abrí **http://127.0.0.1:4173/**. Vite actualiza la presentación al guardar cambios. Para detener el servidor, usá `Ctrl+C`.
-
-Si el puerto está ocupado, detené el servidor anterior o elegí otro:
+Abrí **http://127.0.0.1:4173/**.
 
 ```sh
-npm run dev -- --port 4174
-```
-
-## Compilar y previsualizar
-
-```sh
-npm run build
+npm run build     # verifica tipos y compila en dist/
 npm run preview
 ```
 
-La compilación se genera en `dist/`, incluyendo los recursos y documentos de referencia. `preview` también utiliza el puerto 4173, por lo que debés detener `dev` antes de iniciarlo. Subir este repositorio a GitHub no publica automáticamente un sitio web.
-
-## Estructura del proyecto
-
-| Archivo o carpeta | Contenido |
-| --- | --- |
-| `index.html` | Estructura, textos y cards de la presentación |
-| `styles.css` | Identidad visual, diseño adaptable y animaciones |
-| `app.js` | Selectores, explorador y lecturas de noticias |
-| `background.js` | Fondo animado con shader de Paper Design |
-| `transitions.js` | Indicadores deslizantes y transiciones |
-| `assets/` | Logos, fotografías y visualización conceptual |
-| `docs/propuesta.md` | Fundamentos y criterios de implementación |
-| `docs/prompt-imagen.md` | Prompt de la imagen, disponible solo en el repo |
-| `docs/fuentes.md` | Fuentes y referencias visuales/editoriales |
-| `docs/verificacion.md` | Registro de verificaciones y limitaciones |
+`.npmrc` activa `legacy-peer-deps` por un conflicto de una dependencia opcional de `@vitejs/plugin-react` (`@babel/core` 7 contra 8).
 
 ## Diseño y tecnología
 
-La web utiliza HTML, CSS y JavaScript con Vite. El fondo es un shader GrainGradient de `@paper-design/shaders`, no un video, con una paleta de carbón, bronce y marfil. El diseño toma referencias de NLASmith y de componentes de Aceternity UI, adaptadas con código propio.
+- **Vite + React + TypeScript + Tailwind CSS v4.**
+- **shadcn/ui** (accordion, badge, tooltip) en `src/components/ui`.
+- **Arc** (`https://uiarc.dev`, vía el registro `@arc` de `components.json`): tokens, contador animado, segmented control y gráficos de barras, donut y waffle, en `src/components/arc`.
+- **CloudShader** (`src/components/ui/cloud-shader.tsx`): shader WebGL propio de nubes procedurales con la misma API que el componente de Aceternity (`<CloudShader className="…" />`). Acepta `timeOfDay` (0 mediodía, 1 atardecer, 2 noche, 3 amanecer) como número o `MotionValue`. Si conseguís el original desde 21st.dev, se puede reemplazar sin tocar el resto.
+- Tipografías: Bricolage Grotesque, Instrument Serif, Geist y Geist Mono.
+- Respeta `prefers-reduced-motion`: el cielo queda quieto y las conversaciones se muestran completas.
 
-Las animaciones respetan la preferencia de movimiento reducido y el fondo tiene un degradado CSS de respaldo. Los controles flotantes mantienen su contraste sobre las distintas secciones.
+### MCP
 
-Los logos y fotografías de terceros se incluyen como referencias dentro de esta presentación. Su inclusión no implica cesión de derechos ni afiliación; las fuentes están documentadas en [docs/fuentes.md](docs/fuentes.md).
+`.mcp.json` configura el MCP de shadcn para este proyecto. El MCP de Arc se agregó a la configuración local con `claude mcp add --transport http arc https://uiarc.dev/api/mcp` y pide iniciar sesión la primera vez que se usa.
+
+## Estructura
+
+| Ruta | Contenido |
+| --- | --- |
+| `src/App.tsx` | Composición de la página y pestañas |
+| `src/components/marqui/` | Secciones, chats simulados y el controlador del cielo |
+| `src/components/ui/` | shadcn y CloudShader |
+| `src/components/arc/` | Componentes de Arc |
+| `public/assets/` | Logo de MARQ, mascota de Marqui y favicon |
+| `public/videos/` | El film (21 s, con sonido) y los tres cortos en loop, con sus pósters |
+| `video/marqui/` | La composición de los videos y cómo volver a renderizarlos ([README](video/marqui/README.md)) |
+| `docs/` | Referencia de Marqui y documentos de la propuesta anterior (Alloy) |
