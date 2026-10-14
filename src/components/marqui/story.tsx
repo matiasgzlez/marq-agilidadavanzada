@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { FadeUp, RiseLines, Section } from "./primitives";
 import { Steps } from "./reveal";
 import { SKY } from "./sky";
+import { Race, WeekBand } from "./time-race";
 
 /** A centred section opening, like the dots page: one big line, one plain sentence. */
 export function Lead({ title, children, id, className }: { title: ReactNode[]; children?: ReactNode; id?: string; className?: string }) {
@@ -73,30 +74,12 @@ export function TimeSaved() {
         Elegir y corregir una respuesta lleva segundos. Escribirla de cero, buscando el precio y el plano, lleva minutos. Y en ventas, el primero que contesta gana.
       </Lead>
 
-      <div className="mx-auto mt-16 grid max-w-[78rem] gap-4 lg:grid-cols-[1.15fr_1fr]">
+      <FadeUp className="mx-auto mt-16 max-w-[78rem]">
+        <Race />
+      </FadeUp>
+      <div className="mx-auto mt-4 grid max-w-[78rem] gap-4 lg:grid-cols-[1.15fr_1fr]">
         <FadeUp className="h-full">
-          <div className="paper flex h-full flex-col rounded-[2rem] p-8 sm:p-10">
-            <span className="eyebrow text-teal">Para MARQ</span>
-            <p className="mt-4 text-[clamp(3.2rem,6vw,6.4rem)] font-medium leading-none tracking-[-0.045em] text-ink">
-              3 a 7 h
-            </p>
-            <p className="mt-3 text-[clamp(1.2rem,1.6vw,1.7rem)] font-medium leading-snug text-ink">menos por semana respondiendo consultas.</p>
-            <div className="mt-8 grid gap-3 border-t border-line pt-6 text-[clamp(1rem,1.2vw,1.2rem)] text-ink-2">
-              <p className="flex justify-between gap-4">
-                <span>Hoy, respondiendo a mano con pauta</span>
-                <b className="text-ink">4 h por día</b>
-              </p>
-              <p className="flex justify-between gap-4">
-                <span>Con un asistente, entre 14% y 34% más rápido</span>
-                <b className="text-ink">35 a 80 min por día</b>
-              </p>
-              <p className="flex justify-between gap-4">
-                <span>En una semana de 5 días</span>
-                <b className="text-teal">3 a 7 h</b>
-              </p>
-            </div>
-            <p className="mt-auto pt-6 text-[0.9rem] text-ink-3">Estimación: aplica los resultados del estudio de NBER a las horas que hoy dedica el equipo. Se confirma midiendo las dos primeras semanas.</p>
-          </div>
+          <WeekBand />
         </FadeUp>
         <Steps className="grid gap-4" gap={0.18}>
           {studies.map((s) => (

@@ -82,11 +82,11 @@ export function Header({ panel, onPanel }: { panel: Panel; onPanel: (p: Panel) =
               transition={{ type: "spring", stiffness: 380, damping: 20 }}
               className="block h-[68%] origin-bottom-right"
             >
-              <MarquiLive who="marqador" pose="alegria" shadow={false} className="h-full w-auto drop-shadow-[0_0.4rem_0.8rem_rgb(0_0_0/0.35)]" />
+              <MarquiLive who="marqador" pose="alegria" follow shadow={false} className="h-full w-auto drop-shadow-[0_0.4rem_0.8rem_rgb(0_0_0/0.35)]" />
             </motion.span>
           )}
         </AnimatePresence>
-        <MarquiLive pose={brand === "marqador" ? "izquierda" : "reposo"} shadow={false} className="h-full w-auto drop-shadow-[0_0.4rem_0.8rem_rgb(0_0_0/0.35)]" />
+        <MarquiLive pose="reposo" follow shadow={false} className="h-full w-auto drop-shadow-[0_0.4rem_0.8rem_rgb(0_0_0/0.35)]" />
       </a>
     </motion.header>
   );

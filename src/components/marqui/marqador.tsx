@@ -2,7 +2,7 @@ import { useState, type ReactNode } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { ArrowDownRight, ArrowUpRight, Clock, Download, FileText, MessageCircle, Minus, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { BrowserFrame, FadeUp, Illustrative, RiseLines, Section, ease } from "./primitives";
+import { BrowserFrame, FadeUp, RiseLines, Section, ease } from "./primitives";
 import { Brothers } from "./brothers";
 import { MarqadorIntro } from "./marqador-intro";
 import { MarqadorMark } from "./marqador-mark";
@@ -14,7 +14,7 @@ import { SKY } from "./sky";
 
 export type ScreenId = "pauta" | "demanda" | "contactos" | "frenos" | "semana";
 
-const screens: { id: ScreenId; label: string; question: string }[] = [
+export const screens: { id: ScreenId; label: string; question: string }[] = [
   { id: "pauta", label: "Pauta", question: "¿Dónde conviene poner la plata?" },
   { id: "demanda", label: "Demanda", question: "¿Qué piden y cómo piensan pagar?" },
   { id: "contactos", label: "Contactos", question: "¿A quién llamo o invito?" },
@@ -76,7 +76,9 @@ export function Marqador({ initial = "pauta", className }: { initial?: ScreenId;
           </span>
           <span className="rounded-full bg-teal-soft px-3 py-1 text-[0.85rem] font-semibold text-teal">Módulo de MARQui</span>
           <span className="text-[0.95rem] text-ink-3">Semana del 6 al 12 de octubre · Líneas de pauta y clientes</span>
-          <Illustrative className="ml-auto" />
+          <a href="/?app=marqador" target="_blank" rel="noreferrer" className="ml-auto inline-flex items-center gap-1.5 rounded-full bg-ink px-4 py-2 text-[0.9rem] font-medium text-white transition-transform hover:-translate-y-0.5">
+            Abrir en una pestaña ↗
+          </a>
         </div>
         <div role="tablist" aria-label="Pantallas de MARQador" className="no-scrollbar flex gap-1 overflow-x-auto border-b border-line px-3 sm:px-6">
           {screens.map((s) => (
@@ -124,7 +126,7 @@ function Bar({ pct, lit, max = 100, label, delay = 0 }: { pct: number; lit?: boo
           transition={{ duration: 0.9, delay, ease }}
         />
       </span>
-      <span className={cn("w-[3.6rem] shrink-0 text-right text-[1.05rem] tabular-nums", lit ? "font-bold text-ink" : "text-ink-2")}>{label}</span>
+      <span className={cn("min-w-[3.6rem] shrink-0 whitespace-nowrap text-right text-[1.05rem] tabular-nums", lit ? "font-bold text-ink" : "text-ink-2")}>{label}</span>
     </span>
   );
 }
@@ -376,7 +378,7 @@ function Semana() {
         <div className="rounded-2xl bg-paper-2 p-6 ring-1 ring-ink/5">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
             <h4 className="text-[1.2rem] font-bold">Tiempo ahorrado con MARQui</h4>
-            <span className="font-display text-[clamp(1.4rem,2vw,2rem)] font-bold tracking-[-0.03em] text-orange-deep">≈ 9 h esta semana</span>
+            <span className="font-display text-[clamp(1.4rem,2vw,2rem)] font-bold tracking-[-0.03em] text-orange-deep">≈ 5 h esta semana</span>
           </div>
           <p className="mt-1 text-[0.95rem] text-ink-3">Tiempo promedio por respuesta, desde que abrís el chat hasta que enviás.</p>
           <div className="mt-5 grid gap-4">
@@ -390,7 +392,7 @@ function Semana() {
               </div>
             ))}
           </div>
-          <p className="mt-4 text-[0.85rem] text-ink-3">214 respuestas × 2 min 30 s ahorrados. Se compara con las 2 semanas de medición sin sugerencias.</p>
+          <p className="mt-4 text-[0.85rem] text-ink-3">126 respuestas con sugerencia × 2 min 30 s ≈ 5 h, dentro de lo que muestran los estudios. Se compara con las 2 semanas de medición sin sugerencias.</p>
         </div>
 
         <div className="grid gap-4">
@@ -420,7 +422,7 @@ function Semana() {
   );
 }
 
-const views: Record<ScreenId, ReactNode> = {
+export const views: Record<ScreenId, ReactNode> = {
   pauta: <Pauta />,
   demanda: <Demanda />,
   contactos: <Contactos />,

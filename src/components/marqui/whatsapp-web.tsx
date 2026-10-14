@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useInView, useReducedMotion } from "motion/react";
-import { ArrowUpRight, CheckCheck, Megaphone, MoreVertical, Paperclip, RotateCcw, Search, SendHorizontal, Smile } from "lucide-react";
+import { ArrowUpRight, CheckCheck, CircleDashed, Megaphone, MessageSquareText, MessagesSquare, Mic, MoreVertical, Plus, RotateCcw, Search, SendHorizontal, Settings, Smile, SquarePen, Users, Video } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { MarqadorMark } from "./marqador-mark";
 import { useMarquiLife, type Pose } from "./marqui-character";
@@ -194,18 +194,20 @@ export function WhatsAppWeb({ className, autoplay = true, showSidebar = true, he
           </span>
         }
       >
-        <div className={cn("grid grid-cols-1 text-[#111b21]", height, showSidebar && "lg:grid-cols-[minmax(17rem,22rem)_1fr]")}>
+        <div className={cn("wa-font grid grid-cols-1 text-[#111b21]", height, showSidebar && "lg:grid-cols-[3.75rem_minmax(17rem,24rem)_1fr]")}>
+          {showSidebar && <Rail />}
           {showSidebar && <Sidebar />}
 
           <section className="relative flex min-w-0 flex-col" aria-label="Chat de ejemplo con Juan">
-            <header className="flex items-center gap-3 border-b border-black/[0.07] bg-wa-panel px-4 py-2.5">
+            <header className="flex items-center gap-4 border-b border-black/[0.06] bg-[#f0f2f5] px-4 py-2.5">
               <span className="grid size-10 shrink-0 place-items-center rounded-full bg-gradient-to-br from-[#c7d3e6] to-[#9fb3d4] font-semibold text-white">J</span>
               <span className="min-w-0 flex-1 leading-tight">
                 <span className="block text-[1rem] font-semibold">Juan</span>
                 <span className="block truncate text-[0.8rem] text-black/55">{typing ? <span className="text-wa-deep">escribiendo…</span> : "Línea de pauta · llegó por un anuncio"}</span>
               </span>
-              <Search className="size-5 text-black/45" aria-hidden />
-              <MoreVertical className="size-5 text-black/45" aria-hidden />
+              <Video className="size-5 text-[#54656f]" aria-hidden />
+              <Search className="size-5 text-[#54656f]" aria-hidden />
+              <MoreVertical className="size-5 text-[#54656f]" aria-hidden />
             </header>
 
             {/* MARQui's card: only the team sees it. */}
@@ -241,32 +243,40 @@ export function WhatsAppWeb({ className, autoplay = true, showSidebar = true, he
             />
 
             <form
-              className="flex items-end gap-2 bg-wa-panel px-3 py-2.5"
+              className="flex items-end gap-2 bg-[#f0f2f5] px-3 py-2.5"
               onSubmit={(e) => {
                 e.preventDefault();
                 send();
               }}
             >
-              <Smile className="mb-2.5 size-6 shrink-0 text-black/45 max-sm:hidden" aria-hidden />
-              <Paperclip className="mb-2.5 size-5 shrink-0 text-black/45 max-sm:hidden" aria-hidden />
-              <label className="sr-only" htmlFor={`wa-draft-${run}`}>
-                Tu respuesta para Juan
-              </label>
-              <textarea
-                id={`wa-draft-${run}`}
-                rows={2}
-                value={draft}
-                onChange={(e) => {
-                  clear();
-                  setTouched(true);
-                  setDraft(e.target.value);
-                }}
-                placeholder="Elegí una sugerencia o escribí"
-                className="max-h-28 min-h-11 flex-1 resize-none rounded-lg bg-white px-3 py-2.5 text-[0.95rem] leading-snug outline-none placeholder:text-black/40 focus-visible:ring-2 focus-visible:ring-wa/50"
-              />
-              <button type="submit" disabled={!draft.trim()} aria-label="Enviar (simulado)" className="mb-0.5 grid size-11 shrink-0 place-items-center rounded-full bg-wa text-white transition-opacity disabled:opacity-40">
-                <SendHorizontal className="size-5" />
-              </button>
+              <div className="flex min-h-12 flex-1 items-end gap-1 rounded-[1.6rem] bg-white px-2 py-1.5 shadow-[0_1px_0.5px_rgb(11_20_26/0.08)]">
+                <Plus className="mb-1.5 size-6 shrink-0 text-[#54656f]" aria-hidden />
+                <Smile className="mb-1.5 size-6 shrink-0 text-[#54656f] max-sm:hidden" aria-hidden />
+                <label className="sr-only" htmlFor={`wa-draft-${run}`}>
+                  Tu respuesta para Juan
+                </label>
+                <textarea
+                  id={`wa-draft-${run}`}
+                  rows={1}
+                  value={draft}
+                  onChange={(e) => {
+                    clear();
+                    setTouched(true);
+                    setDraft(e.target.value);
+                  }}
+                  placeholder="Escribe un mensaje"
+                  className="max-h-28 min-h-9 flex-1 resize-none bg-transparent px-2 py-2 text-[0.95rem] leading-snug outline-none [field-sizing:content] placeholder:text-[#667781]"
+                />
+              </div>
+              {draft.trim() ? (
+                <button type="submit" aria-label="Enviar (simulado)" className="grid size-12 shrink-0 place-items-center rounded-full bg-[#00a884] text-white">
+                  <SendHorizontal className="size-5" />
+                </button>
+              ) : (
+                <span className="grid size-12 shrink-0 place-items-center text-[#54656f]" aria-hidden>
+                  <Mic className="size-6" />
+                </span>
+              )}
             </form>
           </section>
         </div>
@@ -278,19 +288,21 @@ export function WhatsAppWeb({ className, autoplay = true, showSidebar = true, he
 function Sidebar() {
   return (
     <aside className="hidden flex-col border-r border-black/[0.07] bg-white lg:flex" aria-label="Chats de ejemplo">
-      <div className="flex items-center justify-between px-4 pb-2 pt-4">
-        <span className="text-[1.35rem] font-bold tracking-[-0.02em]">Chats</span>
+      <div className="flex items-center gap-2 px-4 pb-2 pt-4">
+        <span className="mr-auto text-[1.4rem] font-bold tracking-[-0.01em] text-[#00a884]">WhatsApp</span>
+        <SquarePen className="size-5 text-[#54656f]" aria-hidden />
+        <MoreVertical className="size-5 text-[#54656f]" aria-hidden />
         {/* The extension adds one button: MARQador opens in a new tab. */}
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-ink py-1.5 pl-2 pr-3 text-[0.78rem] font-semibold text-white">
+        <a href="/?app=marqador" title="Abrir MARQador en una pestaña nueva" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 rounded-full bg-ink py-1.5 pl-2 pr-3 text-[0.78rem] font-semibold text-white transition-transform hover:-translate-y-0.5">
           <MarqadorMark className="size-4.5" /> MARQador <ArrowUpRight className="size-3.5" />
-        </span>
+        </a>
       </div>
-      <div className="mx-3 mb-2 flex h-9 items-center gap-2 rounded-lg bg-wa-panel px-3 text-[0.85rem] text-black/45">
-        <Search className="size-4" /> Buscar
+      <div className="mx-3 mb-2 flex h-10 items-center gap-3 rounded-full bg-[#f0f2f5] px-4 text-[0.88rem] text-[#667781]">
+        <Search className="size-4" /> Buscar un chat o iniciar uno nuevo
       </div>
-      <div className="mb-1 flex gap-1.5 px-3 text-[0.8rem]">
-        {["Todos", "Pauta", "Clientes"].map((f, i) => (
-          <span key={f} className={cn("rounded-full px-3 py-1", i === 0 ? "bg-wa-bubble font-semibold text-wa-deep" : "bg-wa-panel text-black/60")}>
+      <div className="mb-1 flex gap-1.5 px-3 text-[0.82rem]">
+        {["Todos", "No leídos", "Favoritos", "Grupos"].map((f, i) => (
+          <span key={f} className={cn("rounded-full px-3 py-1.5", i === 0 ? "bg-[#d9fdd3] font-medium text-[#008069]" : "border border-[#e9edef] text-[#54656f]")}>
             {f}
           </span>
         ))}
@@ -423,5 +435,24 @@ function Suggestions({ replies, visible, picked, onPick, onReset, done, pose }: 
         </AnimatePresence>
       </div>
     </div>
+  );
+}
+
+/** WhatsApp Web's left rail: chats, status, channels, communities, settings, profile. */
+function Rail() {
+  const top = [MessageSquareText, CircleDashed, MessagesSquare, Users];
+  return (
+    <nav className="hidden flex-col items-center gap-2 border-r border-black/[0.06] bg-[#f0f2f5] py-3 lg:flex" aria-hidden>
+      {top.map((Icon, i) => (
+        <span key={i} className={cn("relative grid size-10 place-items-center rounded-full text-[#54656f]", i === 0 && "bg-[#d9dbdf] text-[#111b21]")}>
+          <Icon className="size-5" />
+          {i === 0 && <i className="absolute -right-0.5 -top-0.5 grid h-4 min-w-4 place-items-center rounded-full bg-[#25d366] px-1 text-[0.6rem] font-semibold not-italic text-white">3</i>}
+        </span>
+      ))}
+      <span className="mt-auto grid size-10 place-items-center text-[#54656f]">
+        <Settings className="size-5" />
+      </span>
+      <span className="grid size-8 place-items-center rounded-full bg-ink text-[0.7rem] font-semibold text-white">MQ</span>
+    </nav>
   );
 }

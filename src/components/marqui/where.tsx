@@ -46,7 +46,7 @@ export function Where() {
             {tab === "web" && (
               <div className="relative">
                 <WhatsAppWeb />
-                <Character className="-left-6 -top-16 hidden w-[9rem] xl:block" pose="guino" />
+                <Character className="-bottom-12 -right-10 hidden w-[9rem] xl:block" pose="guino" />
               </div>
             )}
             {tab === "cel" && (

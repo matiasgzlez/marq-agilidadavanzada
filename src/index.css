@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "./components/arc/foundation.css";
 
 /* ——— MARQUI · un solo cielo ———
    The page sits on one CloudShader. Headlines are white on the sky; every
@@ -160,3 +161,31 @@ body {
   transition: top 0.2s;
 }
 .skip-link:focus { top: 1rem; }
+
+/* WhatsApp Web's own type: system faces, so the replica reads as the real thing. */
+.wa-font {
+  font-family: "Segoe UI", "Helvetica Neue", Helvetica, "Lucida Grande", Arial, Ubuntu, Cantarell, "Fira Sans", sans-serif;
+}
+
+/* Arc components, dressed in MARQ: our type, and the accent of whoever owns the surface. */
+:root {
+  --font-display: "Geist", ui-sans-serif, sans-serif;
+  --font-body: "Geist", ui-sans-serif, sans-serif;
+  --accent: #008c7e;
+  --accent-strong: #014645;
+  --accent-subtle: rgb(0 140 126 / 0.12);
+  --accent-foreground: #ffffff;
+  --control-on: #014645;
+}
+/* MARQador's surfaces speak orange. */
+.arc-marqador {
+  --accent: #e96f2d;
+  --accent-strong: #b45521;
+  --accent-subtle: rgb(233 111 45 / 0.13);
+  --accent-foreground: #ffffff;
+  --control-on: #06231f;
+  --series-1: #e96f2d;
+  --series-2: #f2b48d;
+  --series-3: #b45521;
+  --series-4: #06231f;
+}
