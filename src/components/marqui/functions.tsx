@@ -1,26 +1,21 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { AnimatePresence, animate, motion, useInView, useReducedMotion } from "motion/react";
-import { ArrowLeft, BookOpen, Check, CheckCheck, FileSpreadsheet, Info, Megaphone, MessageCircle, MessagesSquare, PenLine, Sunrise, Tag } from "lucide-react";
+import { ArrowLeft, CheckCheck, Info, Megaphone, MessageCircle, PenLine, Sunrise, Tag } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Pose } from "./marqui-character";
 import { FadeUp, MarquiAvatar, Section, ease } from "./primitives";
 import { Lead } from "./story";
-import { Phone } from "./phone";
 import { MarquiMark } from "./marqui-mark";
 import { SKY } from "./sky";
 import { FollowVisual } from "./follow";
-import { BUBBLE, ChatHeader, ChatWindow, Composer, Cursor, Face, Tail, Time } from "./wa-kit";
+import { AskVisual } from "./ask";
+import { LearnText, LearnVisual } from "./learn";
+import { MobileLimits, MobileSteps, MobileVisual } from "./mobile";
+import { BUBBLE, ChatHeader, ChatWindow, Composer, Cursor, Face, SuggestionTray, Tail, Time } from "./wa-kit";
 
 /** `wide`: the visual is a full WhatsApp Web window (chat list + chat) and takes the larger column. */
-type Feature = { title: string; text: string; visual: ReactNode; tint?: string; pose: Pose; wide?: boolean };
-
-/* Soft brand gradients for the cards, like the coloured panels on the dots page. */
-const TINTS = {
-  mint: "bg-[linear-gradient(140deg,#eefaf6_0%,#bfe9df_55%,#86d1c1_100%)]",
-  sand: "bg-[linear-gradient(140deg,#fff7e8_0%,#f8deb4_55%,#efb57a_100%)]",
-  sea: "bg-[linear-gradient(140deg,#e3f6fb_0%,#a9dfe6_55%,#5fbcc4_100%)]",
-  coral: "bg-[linear-gradient(140deg,#ffe9df_0%,#f9b493_55%,#e8784a_100%)]",
-};
+/** `center`: the visual sits in the middle of the page, the text on its left, and `aside` under the text. */
+type Feature = { title: string; text: ReactNode; visual: ReactNode; tint?: string; pose: Pose; wide?: boolean; center?: boolean; aside?: ReactNode; after?: ReactNode };
 
 const features: Feature[] = [
   {
@@ -50,42 +45,24 @@ const features: Feature[] = [
   },
   {
     title: "Le preguntás lo que necesites",
-    text: "«¿Cuántas consultas trajo Collection esta semana?». «Pasame los que buscan invertir». Le escribís como a un compañero y te contesta con datos, o con la lista lista en Excel.",
-    visual: (
-      <Phone
-        messages={[
-          { kind: "out", time: "17:40", text: "¿Cuántas consultas hubo por MARQ Collection esta semana?" },
-          { kind: "in", time: "17:40", text: <><b>41 de 112</b> (37%). 9 ya son interesados y 2 reservaron.</> },
-          { kind: "out", time: "17:41", text: "Pasame los interesados que buscan invertir" },
-          { kind: "file", from: "in", name: "Interesados · Collection.xlsx", meta: "9 contactos · Excel", type: "xlsx", time: "17:41" },
-        ]}
-      />
-    ),
-    tint: TINTS.sand,
+    text: "Le escribís o le mandás un audio, como a un compañero. Te contesta con los números de un vistazo, o con la lista: cada nombre abre su chat, y viene en Excel si la necesitás.",
+    visual: <AskVisual />,
     pose: "alegria",
   },
   {
     title: "Aprende cómo trabaja MARQ",
-    text: "MARQui aprende de las charlas, de los documentos que ya tienen y de lo que le contás. Nadie tiene que cargar nada en otro sistema.",
+    text: <LearnText />,
     visual: <LearnVisual />,
-    tint: TINTS.sea,
+    wide: true,
     pose: "derecha",
   },
   {
     title: "También en el celular",
-    text: "MARQui es un contacto más de WhatsApp. Le reenviás el mensaje de un cliente desde el celular de la línea y te devuelve las tres respuestas.",
-    visual: (
-      <Phone
-        messages={[
-          { kind: "out", forwarded: true, time: "19:05", text: "Hola, ¿los lotes de Fontana tienen financiación?" },
-          { kind: "in", time: "19:05", text: <><b>1.</b> ¡Hola! Sí, financiamos hasta 36 cuotas en pesos. ¿Te paso el plano con los lotes disponibles?</> },
-          { kind: "in", time: "19:05", text: <><b>2.</b> ¡Sí! Anticipo del 30% y el resto en cuotas. ¿Lo pensás para construir ya o como inversión?</> },
-          { kind: "in", time: "19:05", text: <><b>3.</b> Sí, tenemos financiación propia. ¿Te llamo mañana y lo vemos?</> },
-        ]}
-        stagger={0.35}
-      />
-    ),
-    tint: TINTS.coral,
+    text: "En el celular, MARQui es un contacto más: le preguntás y te contesta, o le reenviás el mensaje de un cliente y te devuelve tres respuestas para copiar.",
+    visual: <MobileVisual />,
+    center: true,
+    aside: <MobileLimits />,
+    after: <MobileSteps />,
     pose: "inclinado",
   },
 ];
@@ -100,16 +77,22 @@ export function Functions() {
 
       <div className="mx-auto mt-20 grid max-w-[84rem] gap-24 sm:gap-32">
         {features.map((f, i) => (
-          <article key={f.title} className={cn("grid items-center gap-8 lg:gap-16", f.wide ? (i % 2 === 1 ? "lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.6fr)]" : "lg:grid-cols-[minmax(0,1.6fr)_minmax(0,0.8fr)]") : "lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]")}>
-            <FadeUp className={cn("min-w-0", i % 2 === 1 && "lg:order-2")}>
+          <article key={f.title} className={cn("grid items-center gap-8 lg:gap-16", f.center ? "lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:gap-12" : f.wide ? (i % 2 === 1 ? "lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)]" : "lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]") : "lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]")}>
+            <FadeUp className={cn("min-w-0", (i % 2 === 1 || f.center) && "lg:order-2")}>
               <div className={cn("relative grid min-h-[30rem] grid-cols-[minmax(0,1fr)] place-items-center text-ink", f.tint ? "overflow-hidden rounded-[2.5rem] p-6 sm:p-12" : "items-start lg:min-h-[36rem]", f.tint)}>
                 {f.visual}
               </div>
             </FadeUp>
-            <FadeUp delay={0.1} className={cn("grid gap-4", i % 2 === 1 && "lg:order-1")}>
+            <FadeUp delay={0.1} className={cn("grid gap-4", (i % 2 === 1 || f.center) && "lg:order-1")}>
               <h3 className="display sky-type text-[clamp(2.4rem,4vw,4.4rem)] font-bold!">{f.title}</h3>
               <p className="sky-type text-[clamp(1.25rem,1.75vw,1.85rem)] font-medium leading-[1.45] text-white/90">{f.text}</p>
+              {f.aside && <div className="mt-3">{f.aside}</div>}
             </FadeUp>
+            {f.after && (
+              <FadeUp delay={0.2} className="min-w-0 lg:order-3">
+                {f.after}
+              </FadeUp>
+            )}
           </article>
         ))}
       </div>
@@ -172,38 +155,7 @@ function RepliesVisual() {
           </div>
         </div>
 
-        {/* MARQui's tray: three replies, numbered like shortcuts. The one you tap turns solid. */}
-        <div className="border-t border-black/[0.06] bg-white px-2.5 pb-2.5 pt-2.5">
-          <div className="mb-2 flex items-center gap-1.5 px-1">
-            <MarquiMark tone="teal" className="size-4" />
-            <span className="text-[0.78rem] font-semibold tracking-[-0.005em] text-[#111b21]">MARQui</span>
-            <span className="text-[0.78rem] text-[#667781]">sugiere</span>
-          </div>
-          <div className="grid gap-1.5">
-            {replies.map((r, i) => {
-              const on = picked === i;
-              return (
-                <motion.div
-                  key={i}
-                  initial={reduce ? false : { opacity: 0, y: 8 }}
-                  animate={inView || reduce ? { opacity: 1, y: 0, scale: on && !reduce ? [1, 0.975, 1] : 1 } : undefined}
-                  transition={{ opacity: { duration: 0.5, delay: 0.35 + i * 0.12, ease }, y: { duration: 0.5, delay: 0.35 + i * 0.12, ease }, scale: { duration: 0.35, ease } }}
-                  className={cn(
-                    "relative flex items-start gap-2.5 rounded-[0.7rem] py-2 pl-2 pr-3 text-[0.8rem] leading-[1.38] transition-colors duration-300",
-                    on ? "bg-[#008c7e] text-white shadow-[0_6px_16px_-6px_rgb(0_140_126/0.6)]" : "bg-[#f3f5f6] text-[#3b4a54]",
-                  )}
-                >
-                  <span className={cn("mt-px grid size-[1.15rem] shrink-0 place-items-center rounded-[0.3rem] text-[0.66rem] font-semibold tabular-nums transition-colors duration-300", on ? "bg-white/20 text-white" : "bg-white text-[#667781] shadow-[0_0_0_1px_rgb(0_0_0/0.06)]")}>
-                    {i + 1}
-                  </span>
-                  <span className="flex-1">{r}</span>
-                  <Check className={cn("mt-0.5 size-3.5 shrink-0 transition-opacity duration-300", on ? "opacity-100" : "opacity-0")} strokeWidth={3} aria-hidden />
-                  {i === pick && !reduce && <Cursor play={inView} />}
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
+        <SuggestionTray replies={replies} picked={picked} show={inView} cursorAt={pick} cursor={<Cursor play={inView} />} />
 
         <Composer draft={draft} typing={typing} />
       </ChatWindow>
@@ -288,7 +240,7 @@ function CardVisual() {
           en línea
         </ChatHeader>
 
-        <div className="flex h-[19.5rem] flex-col">
+        <div className="flex h-[27rem] flex-col">
         <div className="wa-paper flex min-h-0 flex-1 flex-col justify-end gap-1.5 overflow-hidden px-4 pb-3 pt-3">
           <span className={cn("mx-auto mb-1 rounded-md bg-white px-2.5 py-1 text-[0.68rem] font-medium uppercase tracking-wide text-[#54656f]", BUBBLE)}>Hoy</span>
           <motion.div layout transition={{ duration: 0.45, ease }} className={cn("relative w-fit max-w-[78%] rounded-[0.55rem] rounded-tl-none bg-white px-2.5 py-1.5 text-[0.86rem] leading-[1.35]", BUBBLE)}>
@@ -297,34 +249,6 @@ function CardVisual() {
             <Time>11:12</Time>
           </motion.div>
           <AnimatePresence initial={false} mode="popLayout">
-            {step === 0 && (
-              /* MARQui's candidate reply, and why it carries one more question. */
-              <motion.div
-                key={`suggestion-${run}`}
-                initial={reduce ? false : { opacity: 0, y: 12 }}
-                animate={inView || reduce ? { opacity: 1, y: 0 } : undefined}
-                exit={{ opacity: 0, y: 8, scale: 0.97 }}
-                transition={{ duration: 0.45, delay: reduce ? 0 : 0.3, ease }}
-                className="relative mt-1 rounded-[0.8rem] bg-white text-[0.8rem] leading-[1.38] shadow-[0_0_0_1.5px_#008c7e,0_8px_20px_-8px_rgb(0_140_126/0.45)]"
-              >
-                <div className="flex items-center gap-1.5 px-3 pt-2.5">
-                  <MarquiMark tone="teal" className="size-3.5" />
-                  <span className="text-[0.74rem] font-semibold text-[#111b21]">MARQui</span>
-                  <span className="text-[0.74rem] text-[#667781]">sugiere</span>
-                </div>
-                <p className="px-3 pb-2.5 pt-1 text-[#3b4a54]">
-                  ¡Qué bueno que volviste, Marta! La 3B sigue disponible.{" "}
-                  <mark className="rounded-[0.25rem] bg-[#008c7e]/12 px-0.5 font-medium text-[#00594f]">¿La pensás con crédito o de contado?</mark>
-                </p>
-                <p className="flex items-start gap-1.5 rounded-b-[0.8rem] border-t border-black/[0.06] bg-[#f6f8f8] px-3 py-2 text-[0.72rem] leading-snug text-[#3b4a54]">
-                  <Info className="mt-px size-3.5 shrink-0 text-[#008c7e]" aria-hidden />
-                  <span>
-                    <b className="font-semibold text-[#111b21]">Faltaba saber cómo paga.</b> Por eso sumé la pregunta al final.
-                  </span>
-                </p>
-                {!reduce && <Cursor play={inView} />}
-              </motion.div>
-            )}
             {step >= 3 && (
               <motion.div key={`sent-${run}`} layout {...pop} className={cn("relative ml-auto w-fit max-w-[82%] rounded-[0.55rem] rounded-tr-none bg-wa-bubble px-2.5 py-1.5 text-[0.86rem] leading-[1.35]", BUBBLE)}>
                 <Tail out />
@@ -349,6 +273,33 @@ function CardVisual() {
             )}
           </AnimatePresence>
         </div>
+        <AnimatePresence initial={false}>
+          {step === 0 && (
+            /* Three replies; the first carries the question that was missing. */
+            <motion.div key={`tray-${run}`} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.4, ease }} className="overflow-hidden">
+              <SuggestionTray
+                replies={[
+                  <>
+                    ¡Qué bueno que volviste, Marta! La 3B sigue disponible. <mark className="rounded-[0.25rem] bg-[#008c7e]/12 px-0.5 font-medium text-[#00594f]">¿La pensás con crédito o de contado?</mark>
+                  </>,
+                  "¡Hola Marta! Sí, la 3B sigue libre. ¿Querés venir a verla esta semana?",
+                  "¡Hola Marta! Sigue disponible. Te paso el plano y los valores actualizados.",
+                ]}
+                show={inView}
+                cursorAt={0}
+                cursor={<Cursor play={inView} />}
+                note={
+                  <span className="flex items-start gap-1.5">
+                    <Info className="mt-px size-3.5 shrink-0 text-[#008c7e]" aria-hidden />
+                    <span>
+                      <b className="font-semibold text-[#111b21]">Faltaba saber cómo paga.</b> Por eso la 1 suma la pregunta al final.
+                    </span>
+                  </span>
+                }
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
         <Composer draft={draft} typing={step === 1 && draft !== reply} cursor={step === 2 && <Cursor key={run} play delay={0} />} />
         </div>
       </ChatWindow>
@@ -369,7 +320,7 @@ type Pending = {
   tags: { label: string; value: string | null }[];
   message: string;
   time: string;
-  suggestion: string;
+  suggestions: [string, string, string];
   /** The last time they talked, if there was one. */
   before?: { day: string; msgs: { out?: boolean; text: string; time: string }[] };
 };
@@ -391,7 +342,11 @@ const pending: Pending[] = [
     tags: [{ label: "Proyecto", value: "MARQ Collection" }, { label: "Busca", value: "3 dorm · vivir" }, { label: "Paga", value: null }],
     message: "¡Hola! ¿Sigue disponible la 3B? Ahora sí estamos para mudarnos 🙂",
     time: "21:48",
-    suggestion: "¡Qué bueno que volviste, Marta! La 3B sigue disponible. ¿La pensás con crédito o de contado?",
+    suggestions: [
+      "¡Qué bueno que volviste, Marta! La 3B sigue disponible. ¿La pensás con crédito o de contado?",
+      "¡Hola Marta! Sí, la 3B sigue libre. ¿Querés venir a verla esta semana?",
+      "¡Hola Marta! Sigue disponible. Te paso el plano y los valores actualizados.",
+    ],
     before: {
       day: "5 de septiembre",
       msgs: [
@@ -410,7 +365,11 @@ const pending: Pending[] = [
     tags: [{ label: "Proyecto", value: "Fontana" }, { label: "Busca", value: "Lote" }, { label: "Paga", value: null }],
     message: "Hola, me pasó tu contacto Pablo Sosa. ¿Puedo ir a ver los lotes de Fontana el sábado?",
     time: "19:20",
-    suggestion: "¡Hola Sofía! Qué bueno que te recomendó Pablo. El sábado a las 10 te esperamos en Fontana, ¿te queda bien?",
+    suggestions: [
+      "¡Hola Sofía! Qué bueno que te recomendó Pablo. El sábado a las 10 te esperamos en Fontana, ¿te queda bien?",
+      "¡Hola Sofía! Sí, el sábado abrimos de 10 a 13. ¿A qué hora te queda mejor?",
+      "¡Hola Sofía! Te paso el plano de Fontana con los lotes libres, así elegís antes de venir.",
+    ],
   },
   {
     id: "juan",
@@ -421,7 +380,11 @@ const pending: Pending[] = [
     tags: [{ label: "Proyecto", value: "MARQ Collection" }, { label: "Busca", value: null }, { label: "Paga", value: null }],
     message: "precio?",
     time: "18:40",
-    suggestion: "¡Hola Juan! Perdón la demora. Los valores arrancan en USD 68.000, con anticipo y cuotas. ¿Lo pensás para vivir o para invertir?",
+    suggestions: [
+      "¡Hola Juan! Perdón la demora. Los valores arrancan en USD 68.000, con anticipo y cuotas. ¿Lo pensás para vivir o para invertir?",
+      "¡Hola Juan! Perdón la demora. Hay de 1, 2 y 3 dormitorios desde USD 68.000. ¿Cuántos buscás?",
+      "¡Hola Juan! Perdón la demora. Te paso la lista con valores y disponibilidad. ¿Te llamo hoy?",
+    ],
   },
 ];
 
@@ -621,7 +584,6 @@ function Count({ to, play }: { to: number; play: boolean }) {
 
 /** The chat you land in from the brief: the person's tags on top, their message, and MARQui's reply waiting. */
 function PersonChat({ p, onBack }: { p: Pending; onBack: () => void }) {
-  const reduce = useReducedMotion();
   return (
     <>
       <ChatHeader
@@ -677,64 +639,9 @@ function PersonChat({ p, onBack }: { p: Pending; onBack: () => void }) {
           {p.message}
           <Time>{p.time}</Time>
         </div>
-        <motion.div
-          initial={reduce ? false : { opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45, delay: reduce ? 0 : 0.55, ease }}
-          className="relative mt-2 rounded-[0.8rem] bg-white text-[0.8rem] leading-[1.38] shadow-[0_0_0_1.5px_#008c7e,0_8px_20px_-8px_rgb(0_140_126/0.45)]"
-        >
-          <div className="flex items-center gap-1.5 px-3 pt-2.5">
-            <MarquiMark tone="teal" className="size-3.5" />
-            <span className="text-[0.74rem] font-semibold">MARQui</span>
-            <span className="text-[0.74rem] text-[#667781]">sugiere</span>
-          </div>
-          <p className="px-3 pb-2.5 pt-1 text-[#3b4a54]">{p.suggestion}</p>
-        </motion.div>
       </div>
+      <SuggestionTray replies={p.suggestions} />
       <Composer />
     </>
-  );
-}
-
-function LearnVisual() {
-  const reduce = useReducedMotion();
-  const sources = [
-    { icon: MessagesSquare, title: "Las conversaciones", text: "Los últimos 180 días de chats de las dos líneas" },
-    { icon: FileSpreadsheet, title: "Los documentos", text: "Lista de precios, folletos y la web" },
-    { icon: BookOpen, title: "Lo que le contás", text: "«Collection ahora financia en 36 cuotas»" },
-  ];
-  return (
-    <div className="grid w-full max-w-[34rem] gap-3">
-      {sources.map((s, i) => (
-        <motion.div
-          key={s.title}
-          initial={reduce ? false : { opacity: 0, x: -20 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 + i * 0.15, ease }}
-          className="flex items-center gap-4 rounded-2xl bg-white p-4 shadow-[0_1rem_2rem_-1rem_rgb(1_30_27/0.3)]"
-        >
-          <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-blue-soft text-blue">
-            <s.icon className="size-6" />
-          </span>
-          <span className="leading-snug">
-            <b className="block text-[1.1rem] text-ink">{s.title}</b>
-            <span className="text-[0.95rem] text-ink-3">{s.text}</span>
-          </span>
-        </motion.div>
-      ))}
-      <motion.div
-        initial={reduce ? false : { opacity: 0, y: 12 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6, delay: 0.75, ease }}
-        className="flex items-start gap-3 rounded-2xl bg-ink p-4 text-white"
-      >
-        <MarquiAvatar tone="light" className="size-10" />
-        <p className="text-[1rem] leading-snug">
-          Anotado. Antes decía <b>24 cuotas</b>. ¿Reemplazo el dato por <b>36 cuotas</b>?
-        </p>
-      </motion.div>
-    </div>
   );
 }

@@ -110,6 +110,47 @@ body {
   font-weight: 500;
 }
 
+/* "MARQui" in the hero: heavier, with the brand's light moving through it. */
+.marqui-shine {
+  font-weight: 800;
+  background: linear-gradient(90deg, #ffffff 0%, #9ff3df 25%, #ffffff 50%, #ffd2ae 75%, #ffffff 100%) 0 50% / 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: none;
+  filter: drop-shadow(0 0.04em 0.3em rgb(1 30 27 / 0.3));
+  animation: marqui-shine 6s linear infinite;
+}
+/* "MARQador": the same shine in his own orange, glowing on the night sky. */
+.marqador-shine {
+  font-weight: 800;
+  background: linear-gradient(90deg, #ff7a1a 0%, #ffc08a 25%, #fff1e4 50%, #ffa04d 75%, #ff7a1a 100%) 0 50% / 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: none;
+  animation: marqui-shine 6s linear infinite;
+}
+@keyframes marqui-shine {
+  /* One whole tile (size 200% → position -200%), so the loop has no seam. */
+  to { background-position: -200% 50%; }
+}
+/* "MARQador": his brother's shine, in MARQador's oranges. */
+.marqador-shine {
+  font-weight: 800;
+  background: linear-gradient(90deg, #ffd2ae 0%, #ff8a3d 22%, #fff1e4 45%, #f4661a 70%, #ffd2ae 100%) 0 50% / 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: none;
+  filter: drop-shadow(0 0.04em 0.3em rgb(80 25 0 / 0.35));
+  animation: marqui-shine 10s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .marqui-shine,
+  .marqador-shine { animation: none; }
+}
+
 .eyebrow {
   font-family: var(--font-mono);
   font-size: 0.8125rem;

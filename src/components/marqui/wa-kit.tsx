@@ -1,8 +1,9 @@
 import type { ReactNode } from "react";
-import { motion } from "motion/react";
-import { CheckCheck, Mic, MoreVertical, Plus, Search, SendHorizontal, Smile, Video } from "lucide-react";
+import { motion, useReducedMotion } from "motion/react";
+import { Check, CheckCheck, Mic, MoreVertical, Plus, Search, SendHorizontal, Smile, Video } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ease } from "./primitives";
+import { MarquiMark } from "./marqui-mark";
 
 /* ——— WhatsApp Web pieces shared by the mockups ——— */
 
@@ -44,6 +45,9 @@ export const FACES: Record<string, string> = {
   "Laura Gómez": "/assets/clientes/laura.jpg",
   "Pablo Sosa": "/assets/clientes/pablo.jpg",
   Cande: "/assets/clientes/cande.jpg",
+  "Valeria Paz": "/assets/clientes/valeria.jpg",
+  "Martín Duarte": "/assets/clientes/martin.jpg",
+  "Graciela Benítez": "/assets/clientes/graciela.jpg",
 };
 
 export function Face({ name, className }: { name: string; className?: string }) {
@@ -119,5 +123,56 @@ export function Cursor({ play, delay = 1.1 }: { play: boolean; delay?: number })
     >
       <path d="M5.5 3.2v15.6l4.1-3.9 2.6 6.1 2.6-1.1-2.6-6h5.7z" fill="#111" stroke="#fff" strokeWidth="1.4" strokeLinejoin="round" />
     </motion.svg>
+  );
+}
+
+/**
+ * MARQui's tray: always three replies, numbered like shortcuts, between the chat and
+ * the text box. The one you tap turns solid. `show` plays the entrance; `note` explains a pick.
+ */
+export function SuggestionTray({ replies, picked = null, show = true, cursorAt, cursor, note }: { replies: ReactNode[]; picked?: number | null; show?: boolean; cursorAt?: number; cursor?: ReactNode; note?: ReactNode }) {
+  const reduce = useReducedMotion();
+  return (
+    <div className="border-t border-black/[0.06] bg-white px-2.5 pb-2.5 pt-2.5">
+      <div className="mb-2 flex items-center gap-1.5 px-1">
+        <MarquiMark tone="teal" className="size-4" />
+        <span className="text-[0.78rem] font-semibold tracking-[-0.005em] text-[#111b21]">MARQui</span>
+        <span className="text-[0.78rem] text-[#667781]">sugiere</span>
+      </div>
+      <div className="grid gap-1.5">
+        {replies.map((r, i) => {
+          const on = picked === i;
+          return (
+            <motion.div
+              key={i}
+              initial={reduce ? false : { opacity: 0, y: 8 }}
+              animate={show || reduce ? { opacity: 1, y: 0, scale: on && !reduce ? [1, 0.975, 1] : 1 } : undefined}
+              transition={{ opacity: { duration: 0.5, delay: 0.35 + i * 0.12, ease }, y: { duration: 0.5, delay: 0.35 + i * 0.12, ease }, scale: { duration: 0.35, ease } }}
+              className={cn(
+                "relative flex items-start gap-2.5 rounded-[0.7rem] py-2 pl-2 pr-3 text-[0.8rem] leading-[1.38] transition-colors duration-300",
+                on ? "bg-[#008c7e] text-white shadow-[0_6px_16px_-6px_rgb(0_140_126/0.6)]" : "bg-[#f3f5f6] text-[#3b4a54]",
+              )}
+            >
+              <span className={cn("mt-px grid size-[1.15rem] shrink-0 place-items-center rounded-[0.3rem] text-[0.66rem] font-semibold tabular-nums transition-colors duration-300", on ? "bg-white/20 text-white" : "bg-white text-[#667781] shadow-[0_0_0_1px_rgb(0_0_0/0.06)]")}>
+                {i + 1}
+              </span>
+              <span className="flex-1">{r}</span>
+              <Check className={cn("mt-0.5 size-3.5 shrink-0 transition-opacity duration-300", on ? "opacity-100" : "opacity-0")} strokeWidth={3} aria-hidden />
+              {i === cursorAt && !reduce && cursor}
+            </motion.div>
+          );
+        })}
+      </div>
+      {note && (
+        <motion.p
+          initial={reduce ? false : { opacity: 0 }}
+          animate={show || reduce ? { opacity: 1 } : undefined}
+          transition={{ duration: 0.5, delay: 0.8, ease }}
+          className="mt-2 px-1 text-[0.72rem] leading-snug text-[#3b4a54]"
+        >
+          {note}
+        </motion.p>
+      )}
+    </div>
   );
 }

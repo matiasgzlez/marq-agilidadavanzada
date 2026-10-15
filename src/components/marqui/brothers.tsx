@@ -43,31 +43,34 @@ export function Brothers() {
         </div>
 
         <div className="grid gap-6">
-          <h2 id="el-plus-title" className="display sky-type text-[clamp(2.2rem,5.8vw,7.4rem)]">
-            <span className="block">Un módulo</span>
-            <span className="block">
-              <em>de MARQui.</em>
-            </span>
+          {/* His name, painted with his own light: the orange of the brand moving through it. */}
+          <h2 id="el-plus-title" className="display sky-type text-[clamp(3rem,7.5vw,9rem)] font-bold!">
+            <span className="marqador-shine inline-block">MARQador</span>
           </h2>
-          <div className="paper grid gap-4 rounded-[1.75rem] p-6 sm:p-8">
+          <div className="paper grid gap-5 rounded-[1.75rem] p-6 sm:p-8">
             <p className="text-[clamp(1.1rem,1.5vw,1.5rem)] leading-[1.4] text-ink">
-              <b>MARQador</b> no es otra solución: es el hermanito de MARQui. Viene con él, usa lo mismo que él aprende y no hay que instalar nada más.
+              Es <b>un módulo de MARQui</b>, no otra solución: viene incluido, usa las mismas conversaciones y lo que MARQui ya aprendió, y no hay que instalar nada más.
+            </p>
+            <p className="text-[clamp(1.02rem,1.3vw,1.3rem)] leading-[1.45] text-ink-2">
+              Es su tablero. Junta todas las charlas de las dos líneas y te muestra <b className="text-ink">qué pide el mercado</b>: qué anuncio trae gente que avanza, qué buscan, cómo piensan pagar y qué los frena.
             </p>
             <ul className="grid gap-2.5 text-[clamp(1.02rem,1.3vw,1.3rem)] text-ink-2">
               <li className="flex items-start gap-3">
                 <span className="mt-[0.45em] size-2.5 shrink-0 rounded-full bg-teal" />
                 <span>
-                  <b className="text-ink">MARQui</b> ayuda en cada charla, una por una.
+                  <b className="text-ink">MARQui</b> ayuda en cada charla, una por una, y va armando la ficha de cada cliente.
                 </span>
               </li>
               <li className="flex items-start gap-3">
                 <span className="mt-[0.45em] size-2.5 shrink-0 rounded-full bg-orange" />
                 <span>
-                  <b className="text-ink">MARQador</b> mira todas las charlas juntas y te muestra qué pide el mercado.
+                  <b className="text-ink">MARQador</b> mira todas esas fichas juntas y las convierte en números para decidir.
                 </span>
               </li>
             </ul>
-            <p className="rounded-xl bg-paper-2 px-4 py-3 text-[clamp(0.98rem,1.15vw,1.15rem)] text-ink-2">Uno conversa, el otro observa. Mismos datos, mismo WhatsApp.</p>
+            <p className="rounded-xl bg-paper-2 px-4 py-3 text-[clamp(0.98rem,1.15vw,1.15rem)] text-ink-2">
+              Se abre en una pestaña desde WhatsApp Web, y el resumen de la semana te llega por WhatsApp. Uno conversa, el otro observa: mismos datos, mismo WhatsApp.
+            </p>
           </div>
         </div>
       </div>
