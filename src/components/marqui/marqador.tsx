@@ -47,7 +47,7 @@ export function MarqadorSection() {
 
         <FadeUp className="mt-10 grid gap-4 lg:grid-cols-[1.3fr_1fr]">
           <p className="paper rounded-[1.5rem] px-6 py-5 text-[clamp(1.1rem,1.5vw,1.5rem)] leading-[1.45] sm:px-8 sm:py-6">
-            Hoy, para saber qué pide el mercado hay que leer chat por chat. MARQador lo junta todo en un tablero que se abre <b>en una pestaña nueva</b> desde WhatsApp Web. Cada pantalla responde una pregunta del negocio.
+            En un proyecto llegaron 500 consultas y nadie supo cuántos podían pagar: para saberlo había que leer chat por chat. MARQador lo junta todo en un tablero que se abre <b>en una pestaña nueva</b> desde WhatsApp Web. Cada pantalla responde una pregunta del negocio.
           </p>
           <div className="paper flex flex-col justify-center gap-3 rounded-[1.5rem] px-6 py-5 sm:px-8">
             <span className="eyebrow text-ink-3">También llega por WhatsApp</span>

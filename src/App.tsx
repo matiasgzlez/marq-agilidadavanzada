@@ -6,7 +6,7 @@ import { Header, type Panel } from "@/components/marqui/header";
 import { Hero } from "@/components/marqui/hero";
 import { Inside } from "@/components/marqui/inside";
 import { MarqadorSection } from "@/components/marqui/marqador";
-import { Control, Pain, TimeSaved } from "@/components/marqui/story";
+import { Control, TimeSaved } from "@/components/marqui/story";
 import { Where } from "@/components/marqui/where";
 import { SkyBackground, SkyProvider } from "@/components/marqui/sky";
 
@@ -33,10 +33,9 @@ export function App() {
         {panel === "solucion" ? (
           <div id="panel-solucion" role="tabpanel" aria-label="La solución: Marqui">
             <Hero />
-            <Pain />
             <Functions />
-            <Control />
             <TimeSaved />
+            <Control />
             <Day />
             <Where />
             <MarqadorSection />

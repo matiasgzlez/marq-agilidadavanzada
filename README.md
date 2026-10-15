@@ -9,10 +9,9 @@ Presentación web de **Marqui**, un asistente con IA para el equipo de MARQ dent
 La pestaña **MARQui** sigue la estructura de la página de [dots](https://chatgpt.com/es-ES/features/dots/) y cuenta todo como dolor → solución, sobre un cielo que cambia de hora:
 
 1. **Te presentamos MARQui:** el personaje vivo (sigue el cursor) y una frase.
-2. **Hoy:** el dolor, con los números del equipo.
+2. **Lo que gana el equipo** (va después de las funciones): el dolor y el tiempo que devuelve MARQui (carrera de una respuesta, 2,9 a 6,7 h por semana), con estudios de NBER (2023) y HBR (2011).
 3. **Empezá con MARQui:** qué es, y las seis funciones en tarjetas, cada una con su «Hoy…».
 4. **De tu lado, bajo tu control:** no es un bot, no hay encuestas, decidís vos.
-5. **Más tiempo para vender:** 3 a 7 h por semana, con estudios de NBER (2023) y HBR (2011).
 6. **Un día con MARQui:** línea de tiempo de 9:00 a 18:30 (flechas ← → para presentar).
 7. **Justo donde lo necesitás:** WhatsApp Web (demo interactiva), celular y MARQador.
 8. **MARQador:** su presentación animada, «Un módulo de MARQui» y el tablero.

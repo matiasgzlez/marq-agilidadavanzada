@@ -61,7 +61,7 @@ export function Hero() {
           Te presentamos MARQui
         </motion.h1>
         <motion.p {...enter(0.7)} className="sky-type mt-6 max-w-[46rem] text-balance text-[clamp(1.2rem,2vw,2.1rem)] font-medium leading-[1.3] text-white/85">
-          Un compañero que trabaja con el equipo dentro del WhatsApp de MARQ: te sopla la respuesta, conoce a cada interesado y te cuenta qué pide el mercado. El cliente nunca lo ve.
+          Un asistente que trabaja con el equipo dentro del WhatsApp de MARQ: te propone tres respuestas para cada consulta, conoce cada conversación, le podés preguntar lo que necesites y te cuenta qué están pidiendo los clientes potenciales.
         </motion.p>
         <motion.div {...enter(0.9)} className="mt-10 flex flex-wrap justify-center gap-3">
           <a href="#un-dia" className="inline-flex h-14 items-center rounded-full bg-ink px-7 text-[1.1rem] font-medium text-white transition-transform hover:-translate-y-0.5">

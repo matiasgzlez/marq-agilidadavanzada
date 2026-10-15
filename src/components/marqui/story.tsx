@@ -1,12 +1,10 @@
-import { useRef, type ReactNode } from "react";
-import { useInView } from "motion/react";
-import { SlotText } from "@/components/arc/slot-text/slot-text";
+import type { ReactNode } from "react";
 import { Ban, Hand, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { FadeUp, RiseLines, Section } from "./primitives";
 import { Steps } from "./reveal";
 import { SKY } from "./sky";
-import { Race, WeekBand } from "./time-race";
+import { ResultsBento } from "./results";
 
 /** A centred section opening, like the dots page: one big line, one plain sentence. */
 export function Lead({ title, children, id, className }: { title: ReactNode[]; children?: ReactNode; id?: string; className?: string }) {
@@ -22,76 +20,21 @@ export function Lead({ title, children, id, className }: { title: ReactNode[]; c
   );
 }
 
-/* ——— Hoy ———
-   The pain, in the team's own numbers, before anything else. */
-
-const today = [
-  { value: "4 h", n: 4, unit: " h", label: "por día respondiendo a mano cuando hay pauta" },
-  { value: "2 + 1", n: 3, unit: "", label: "dos WhatsApp y un formulario, cada uno por su lado" },
-  { value: "500", n: 500, unit: "", label: "consultas en un proyecto, sin saber cuántos podían pagar" },
-];
-
-export function Pain() {
-  return (
-    <Section sky={SKY.noon} id="hoy" className="py-28 sm:py-40" aria-labelledby="hoy-title">
-      <Lead id="hoy-title" title={["Hoy, cada consulta", <em key="e">se responde a mano.</em>]}>
-        La misma pregunta, cien veces por día, en dos WhatsApp. Lo que busca cada persona se pierde en el chat, y nadie sabe qué está pidiendo el mercado.
-      </Lead>
-      <Steps className="mx-auto mt-16 grid max-w-[72rem] gap-4 md:grid-cols-3" gap={0.15}>
-        {today.map((t) => (
-          <div key={t.value} data-step className="paper rounded-[2rem] p-8">
-            <span className="flex h-[clamp(3.6rem,6vw,6.6rem)] items-center text-[clamp(3rem,5vw,5.5rem)] font-medium leading-none tracking-[-0.04em] text-orange-deep">{t.value === "2 + 1" ? t.value : <InViewSlot value={t.n} suffix={t.unit} />}</span>
-            <span className="mt-4 block text-[clamp(1.05rem,1.3vw,1.35rem)] leading-snug text-ink-2">{t.label}</span>
-          </div>
-        ))}
-      </Steps>
-      <p className="mx-auto mt-6 w-fit rounded-full bg-ink px-5 py-2.5 text-center text-[0.95rem] text-white/80">Datos que nos dio el equipo de MARQ.</p>
-    </Section>
-  );
-}
-
 /* ——— Tiempo ———
    What the team gets back, grounded in published studies, with the math
    shown so nobody has to take it on faith. */
 
-const studies = [
-  {
-    big: "+14%",
-    text: "consultas resueltas por hora cuando el equipo de atención trabaja con un asistente de IA que sugiere respuestas. +34% en quienes recién empiezan.",
-    source: "Brynjolfsson, Li y Raymond · «Generative AI at Work» · NBER, 2023 · 5.179 agentes",
-    href: "https://www.nber.org/papers/w31161",
-  },
-  {
-    big: "×7",
-    text: "más chances de avanzar con un interesado si se le responde dentro de la primera hora, frente a responderle una hora más tarde.",
-    source: "Oldroyd, McElheran y Elkington · «The Short Life of Online Sales Leads» · Harvard Business Review, 2011",
-    href: "https://scholarsarchive.byu.edu/facpub/9711",
-  },
-];
 
 export function TimeSaved() {
   return (
-    <Section sky={SKY.noon} id="tiempo" className="py-28 sm:py-40" aria-labelledby="tiempo-title">
-      <Lead id="tiempo-title" title={["Más tiempo", <em key="e">para vender.</em>]}>
-        Elegir y corregir una respuesta lleva segundos. Escribirla de cero, buscando el precio y el plano, lleva minutos. Y en ventas, el primero que contesta gana.
+    <Section sky={SKY.noon} id="tiempo" className="py-24 sm:py-32" aria-labelledby="tiempo-title">
+      {/* Pain and gain in one place: today's hours, then what MARQui gives back. */}
+      <Lead id="tiempo-title" title={["Lo que gana", <em key="e">el equipo.</em>]}>
+        Hoy se van 4 horas por día respondiendo la misma pregunta, en dos WhatsApp y un formulario. Con MARQui, esto es lo que cambia.
       </Lead>
 
-      <FadeUp className="mx-auto mt-16 max-w-[78rem]">
-        <Race />
-      </FadeUp>
-      <div className="mx-auto mt-4 grid max-w-[78rem] gap-4 lg:grid-cols-[1.15fr_1fr]">
-        <FadeUp className="h-full">
-          <WeekBand />
-        </FadeUp>
-        <Steps className="grid gap-4" gap={0.18}>
-          {studies.map((s) => (
-            <a key={s.big} data-step href={s.href} target="_blank" rel="noreferrer" className="paper group grid gap-3 rounded-[2rem] p-8 transition-transform hover:-translate-y-0.5">
-              <span className="text-[clamp(2.6rem,4.4vw,4.6rem)] font-medium leading-none tracking-[-0.04em] text-orange-deep">{s.big}</span>
-              <span className="text-[clamp(1.05rem,1.3vw,1.35rem)] leading-snug text-ink">{s.text}</span>
-              <span className="text-[0.88rem] text-ink-3 group-hover:text-ink-2">{s.source} ↗</span>
-            </a>
-          ))}
-        </Steps>
+      <div className="mt-12">
+        <ResultsBento />
       </div>
     </Section>
   );
@@ -121,17 +64,5 @@ export function Control() {
         ))}
       </Steps>
     </Section>
-  );
-}
-
-/** A number that spins into place on Arc's slot reels when it scrolls into view. */
-function InViewSlot({ value, suffix = "" }: { value: number; suffix?: string }) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const seen = useInView(ref, { once: true, amount: 0.6 });
-  return (
-    <span ref={ref} className="inline-flex items-center">
-      <SlotText value={seen ? value : 0} spins={2} />
-      {suffix && <span className="ml-[0.22em]">{suffix.trim()}</span>}
-    </span>
   );
 }
