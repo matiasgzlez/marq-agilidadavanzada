@@ -10,7 +10,7 @@ Estado: **alcance definido** (2026-10-14), a la espera de que el equipo lo confi
 
 Un asistente con IA para el **equipo** de MARQ que vive en WhatsApp: sugiere respuestas, arma la ficha de cada prospecto y, con su tablero **MARQador**, muestra qué pide el mercado. El cliente nunca se entera de que existe. Precios, señas, landings y avances de obra quedan como próximas integraciones.
 
-> "Marqui es el compañero que te sopla la respuesta. El cliente nunca lo ve."
+> "Marqui es el compañero que te sugiere la respuesta. El cliente nunca lo ve."
 
 ## 2. Reglas que no se negocian
 
@@ -179,7 +179,7 @@ Productos que ya resolvieron partes de lo que queremos mostrar, y qué tomar de 
 
 **Cómo comunicarlo de forma sencilla (propuesta para D16):**
 
-1. **Una frase de posicionamiento:** "Marqui es el compañero que te sopla la respuesta. El cliente nunca lo ve."
+1. **Una frase de posicionamiento:** "Marqui es el compañero que te sugiere la respuesta. El cliente nunca lo ve."
 2. **Un día con Marqui, en 3 momentos**, cada uno con una sola pantalla:
    - **9:00 · Resumen diario.** Llega al contacto Marqui: "Ayer entraron 23 consultas, 4 sin responder. Ojo: Marta reaparece después de 40 días."
    - **10:30 · Juan escribe "precio?"** desde un anuncio. Abrís su chat en WhatsApp Web y ves la tarjeta (MARQ Collection · ¿Busca? · ¿Paga? · Consultó) y 3 sugerencias como en Gmail. Tocás una, la ajustás y la mandás vos. La tarjeta se completa sola a medida que Juan responde.

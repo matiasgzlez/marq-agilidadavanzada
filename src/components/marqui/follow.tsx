@@ -4,7 +4,7 @@ import { BellRing, CalendarClock, Clock, FileText, ListChecks, MessageCircle, Me
 import { cn } from "@/lib/utils";
 import { MarquiAvatar, ease } from "./primitives";
 import { MarquiMark } from "./marqui-mark";
-import { BUBBLE, ChatHeader, ChatWindow, Composer, Cursor, Face, Tail, Time } from "./wa-kit";
+import { BUBBLE, ChatHeader, ChatWindow, Composer, Cursor, Face, SuggestionTray, Tail, Time } from "./wa-kit";
 
 type ChatId = "marqui" | "laura";
 type Aim = "seguir" | "list-marqui" | "reglas" | "abrir" | null;
@@ -212,9 +212,15 @@ function ChatList({ s, aim, onOpen }: { s: Scene; aim: Aim; onOpen: (id: ChatId)
                 <button
                   type="button"
                   onClick={() => onOpen(r.open!)}
-                  className={cn("relative flex w-full cursor-pointer items-center gap-3 px-3 py-2 text-left transition-colors focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[#008069]", on ? "bg-[#f0f2f5]" : "hover:bg-[#f5f6f6]")}
+                  className={cn(
+                    "relative flex w-full cursor-pointer items-center gap-3 px-3 py-2 text-left transition-colors duration-500 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[#008069]",
+                    r.star ? (on ? "bg-[#fde9ad]" : "bg-[#fff6d9] hover:bg-[#fdefc3]") : on ? "bg-[#f0f2f5]" : "hover:bg-[#f5f6f6]",
+                  )}
                   aria-current={on ? "true" : undefined}
                 >
+                  <AnimatePresence>
+                    {r.star && <motion.i initial={{ scaleY: 0 }} animate={{ scaleY: 1 }} exit={{ scaleY: 0 }} transition={{ duration: 0.4, ease }} className="absolute inset-y-1.5 left-0 w-[3px] rounded-r-full bg-[#f5b301]" aria-hidden />}
+                  </AnimatePresence>
                   {body}
                   {aim === "list-marqui" && r.id === "marqui" && <Cursor play delay={0} />}
                 </button>
@@ -326,22 +332,18 @@ function LauraChat({ s, aim, onFollow }: { s: Scene; aim: Aim; onFollow: () => v
               ¿El sábado se puede ir a ver la 2A? 🙌
               <Time>16:20</Time>
             </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.45, delay: 0.5, ease }}
-              className="mt-1.5 rounded-[0.8rem] bg-white text-[0.8rem] leading-[1.38] shadow-[0_0_0_1.5px_#008c7e,0_8px_20px_-8px_rgb(0_140_126/0.45)]"
-            >
-              <div className="flex items-center gap-1.5 px-3 pt-2.5">
-                <MarquiMark tone="teal" className="size-3.5" />
-                <span className="text-[0.74rem] font-semibold">MARQui</span>
-                <span className="text-[0.74rem] text-[#667781]">sugiere</span>
-              </div>
-              <p className="px-3 pb-2.5 pt-1 text-[#3b4a54]">¡Hola Laura! Sí, el sábado abrimos de 10 a 13. ¿Les reservo a las 11 para verla juntos?</p>
-            </motion.div>
           </>
         )}
       </div>
+      {s.notified && (
+        <SuggestionTray
+          replies={[
+            "¡Hola Laura! Sí, el sábado abrimos de 10 a 13. ¿Les reservo a las 11 para verla juntos?",
+            "¡Hola Laura! Claro. ¿Qué horario les queda mejor el sábado? Así los espero.",
+            "¡Sí! ¿Pudieron ver el plano? El sábado les muestro la 2A y también la 2B, que tiene más luz.",
+          ]}
+        />
+      )}
       <Composer />
     </>
   );

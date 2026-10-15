@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { cn } from "@/lib/utils";
-import { Marqador } from "./marqador";
-import { MarquiLive } from "./marqui-live";
 import { Phone } from "./phone";
 import { Section, ease } from "./primitives";
 import { SKY } from "./sky";
@@ -15,9 +13,8 @@ import { WhatsAppWeb } from "./whatsapp-web";
    line underneath. */
 
 const places = [
-  { id: "web", label: "WhatsApp Web", title: "En cada chat", text: "En la computadora, MARQui aparece dentro del chat que abrís: la tarjeta del interesado arriba y tres respuestas abajo. Probalo: tocá una y enviala." },
-  { id: "cel", label: "Celular", title: "En el celular de la línea", text: "MARQui es un contacto más. Le reenviás un mensaje o le mandás un audio y te contesta al toque, también fuera de la oficina." },
-  { id: "tab", label: "MARQador", title: "En una pestaña aparte", text: "Un botón en WhatsApp Web abre MARQador, su hermanito, con todo lo que pide el mercado. Como la app de Gasti: el chat para hacer, la pestaña para mirar." },
+  { id: "web", label: "WhatsApp Web", title: "En cada chat", text: "Donde el equipo trabaja el 80% del tiempo. MARQui aparece dentro de cada chat: la ficha del cliente arriba, tres respuestas abajo y la estrella para seguirlo. Probalo: tocá una respuesta y enviala." },
+  { id: "cel", label: "Celular", title: "En el celular de la línea", text: "MARQui es un contacto más. Te llegan el resumen y los avisos, y le preguntás lo que necesites, también fuera de la oficina." },
 ] as const;
 
 type Place = (typeof places)[number]["id"];
@@ -28,7 +25,7 @@ export function Where() {
   return (
     <Section sky={SKY.noon} id="donde" className="py-28 sm:py-40" aria-labelledby="donde-title">
       <Lead id="donde-title" title={["Justo donde lo necesitás"]}>
-        Escribile a MARQui desde la computadora o el celular de cada línea, o abrí MARQador en una pestaña. Cuando algo merece tu atención, te avisa.
+        En la computadora, dentro de cada chat. En el celular, como un contacto más. Cuando algo merece tu atención, te avisa.
       </Lead>
 
       <div role="tablist" aria-label="Dónde está MARQui" className="mx-auto mt-12 flex w-fit gap-1 rounded-full bg-ink/85 p-1.5">
@@ -46,7 +43,6 @@ export function Where() {
             {tab === "web" && (
               <div className="relative">
                 <WhatsAppWeb />
-                <Character className="-bottom-12 -right-10 hidden w-[9rem] xl:block" pose="guino" />
               </div>
             )}
             {tab === "cel" && (
@@ -54,21 +50,15 @@ export function Where() {
                 <Phone
                   title="MARQui"
                   messages={[
-                    { kind: "out", forwarded: true, time: "19:05", text: "Hola, ¿los lotes de Fontana tienen financiación?" },
-                    { kind: "in", time: "19:05", text: <><b>1.</b> ¡Hola! Sí, financiamos hasta 36 cuotas. ¿Te paso el plano con los lotes disponibles?</> },
-                    { kind: "in", time: "19:05", text: <><b>2.</b> ¡Sí! Anticipo del 30% y el resto en cuotas. ¿Lo pensás para construir o para invertir?</> },
-                    { kind: "out", time: "19:06", text: "🎤 Audio · 0:08" },
-                    { kind: "in", time: "19:06", text: "Listo, mandale la 2. Ya le anoté «Lotes Fontana» a su tarjeta." },
+                    { kind: "day", text: "Hoy" },
+                    { kind: "in", time: "9:00", text: <><b>☀️ Buen día, Cande.</b> Ayer entraron 23 consultas y 4 quedaron sin responder.</> },
+                    { kind: "file", from: "in", name: "Resumen · viernes 17.pdf", meta: "2 páginas · PDF", type: "pdf", time: "9:00" },
+                    { kind: "in", time: "16:20", text: <><b>⭐ Laura Gómez, que seguís, te escribió:</b> «¿El sábado se puede ir a ver la 2A?»</> },
+                    { kind: "out", time: "16:21", text: "¿Qué horario tenemos el sábado?" },
+                    { kind: "in", time: "16:21", text: <>De 10 a 13. Podés contestarle: <i>«¡Hola Laura! El sábado abrimos de 10 a 13. ¿Les reservo a las 11?»</i></> },
                   ]}
-                  stagger={0.3}
+                  stagger={0.35}
                 />
-                <Character className="-right-2 bottom-10 w-[clamp(7rem,12vw,10rem)] sm:right-[4%]" pose="alegria" />
-              </div>
-            )}
-            {tab === "tab" && (
-              <div className="relative">
-                <Marqador />
-                <Character className="-right-6 -top-16 hidden w-[8.5rem] xl:block" pose="alegria" who="marqador" />
               </div>
             )}
           </motion.div>
@@ -82,13 +72,5 @@ export function Where() {
         </motion.div>
       </AnimatePresence>
     </Section>
-  );
-}
-
-function Character({ className, pose, who }: { className?: string; pose: "guino" | "alegria"; who?: "marqador" }) {
-  return (
-    <motion.div className={cn("pointer-events-none absolute z-10", className)} initial={{ opacity: 0, scale: 0.6, rotate: -10 }} animate={{ opacity: 1, scale: 1, rotate: 0 }} transition={{ type: "spring", stiffness: 260, damping: 16, delay: 0.3 }}>
-      <MarquiLive pose={pose} who={who} />
-    </motion.div>
   );
 }

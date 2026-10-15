@@ -1,6 +1,6 @@
 # MARQUI · Agilidad avanzada
 
-**Marqui te sopla la respuesta. El cliente nunca lo ve.**
+**Marqui te sugiere la respuesta. El cliente nunca lo ve.**
 
 Presentación web de **Marqui**, un asistente con IA para el equipo de MARQ dentro del WhatsApp que ya usan, y de **MARQador**, su tablero. El alcance y las decisiones están en [docs/marqui-contexto.md](docs/marqui-contexto.md).
 
@@ -8,7 +8,7 @@ Presentación web de **Marqui**, un asistente con IA para el equipo de MARQ dent
 
 La pestaña **MARQui** sigue la estructura de la página de [dots](https://chatgpt.com/es-ES/features/dots/) y cuenta todo como dolor → solución, sobre un cielo que cambia de hora:
 
-1. **Te presentamos MARQui:** el personaje vivo (sigue el cursor) y una frase.
+1. **Presentamos MARQui:** el personaje vivo (sigue el cursor) y una frase.
 2. **Lo que gana el equipo** (va después de las funciones): el dolor y el tiempo que devuelve MARQui (carrera de una respuesta, 2,9 a 6,7 h por semana), con estudios de NBER (2023) y HBR (2011).
 3. **¿Qué podés hacer con MARQui?:** las siete funciones, cada una con una demo animada en WhatsApp Web que se puede tocar: sugerencias, ficha, resumen de cada mañana (con botón para abrir el chat de cada persona), seguimiento y reglas, preguntas, aprendizaje y celular. Las fotos de los clientes son caras generadas con IA (`public/assets/clientes/`): no son personas reales.
 4. **De tu lado, bajo tu control:** no es un bot, no hay encuestas, decidís vos.

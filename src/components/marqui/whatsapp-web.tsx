@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useInView, useReducedMotion } from "motion/react";
-import { ArrowUpRight, CheckCheck, CircleDashed, Megaphone, MessageSquareText, MessagesSquare, Mic, MoreVertical, Plus, RotateCcw, Search, SendHorizontal, Settings, Smile, SquarePen, Users, Video } from "lucide-react";
+import { ArrowUpRight, Check, CheckCheck, CircleDashed, Megaphone, MessageSquareText, MessagesSquare, Mic, MoreVertical, Pin, Plus, RotateCcw, Search, SendHorizontal, Settings, Smile, SquarePen, Star, Users, Video } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { MarqadorMark } from "./marqador-mark";
 import { TextShimmer } from "@/components/arc/text-shimmer/text-shimmer";
 import { useMarquiLife, type Pose } from "./marqui-character";
 import { BrowserFrame, MarquiAvatar, Mascot } from "./primitives";
+import { Face } from "./wa-kit";
 
 /* ——— The story ———
    Juan writes "precio?" from an ad. Each time he answers, MARQui fills his
@@ -65,12 +66,13 @@ const initialCard: Card = { proyecto: "MARQ Collection", etapa: "Consultó" };
 
 type Msg = { from: "juan" | "me"; text: string; time: string };
 
-const chats = [
+type Row = { name: string; line?: string; preview: string; time: string; unread?: number; active?: boolean; pinned?: boolean; followed?: boolean; mark?: string };
+const chats: Row[] = [
+  { name: "MARQui", preview: "☀️ Buen día, Cande. Ayer entraron 23…", time: "9:00", pinned: true },
   { name: "Juan", line: "Pauta", preview: "precio?", time: "10:30", unread: 1, active: true },
-  { name: "Lucía Benítez", line: "Clientes", preview: "¡Gracias! El sábado paso por la obra", time: "10:12" },
-  { name: "Martín", line: "Pauta", preview: "Buen día, ¿tienen lotes?", time: "9:48", unread: 2 },
-  { name: "Inmobiliaria Norte", line: "Clientes", preview: "¿Me pasás la lista actualizada?", time: "9:20" },
-  { name: "Carla", line: "Pauta", preview: "🎤 Audio · 0:42", time: "Ayer" },
+  { name: "Laura Gómez", line: "Pauta", preview: "Genial, lo veo con mi pareja 🙂", time: "10:12", followed: true },
+  { name: "Marta Ríos", line: "Clientes", preview: "¿Sigue disponible la 3B?", time: "9:48", unread: 2, mark: "Reaparece" },
+  { name: "Sofía Acosta", line: "Clientes", preview: "Me pasó tu contacto Pablo Sosa", time: "9:20", mark: "Referida" },
 ];
 
 const clock = (turn: number, mine: boolean) => `10:${String(30 + turn * 4 + (mine ? 2 : 0)).padStart(2, "0")}`;
@@ -89,6 +91,7 @@ export function WhatsAppWeb({ className, autoplay = true, showSidebar = true, he
   const [draft, setDraft] = useState("");
   const [typing, setTyping] = useState(false);
   const [touched, setTouched] = useState(false);
+  const [following, setFollowing] = useState(false);
   const [run, setRun] = useState(0);
   const done = turn >= turns.length - 1 && msgs.at(-1)?.from === "me";
   // MARQui's face follows the chat: thinking while Juan writes, happy when he learns something or Juan moves up.
@@ -197,17 +200,32 @@ export function WhatsAppWeb({ className, autoplay = true, showSidebar = true, he
       >
         <div className={cn("wa-font grid grid-cols-1 text-[#111b21]", height, showSidebar && "lg:grid-cols-[3.75rem_minmax(17rem,24rem)_1fr]")}>
           {showSidebar && <Rail />}
-          {showSidebar && <Sidebar />}
+          {showSidebar && <Sidebar juanFollowed={following} />}
 
           <section className="relative flex min-w-0 flex-col" aria-label="Chat de ejemplo con Juan">
             <header className="flex items-center gap-4 border-b border-black/[0.06] bg-[#f0f2f5] px-4 py-2.5">
-              <span className="grid size-10 shrink-0 place-items-center rounded-full bg-gradient-to-br from-[#c7d3e6] to-[#9fb3d4] font-semibold text-white">J</span>
+              <Face name="Juan" className="size-10" />
               <span className="min-w-0 flex-1 leading-tight">
                 <span className="block text-[1rem] font-semibold">Juan</span>
                 <span className="block truncate text-[0.8rem] text-black/55">{typing ? <TextShimmer className="text-[#008069]">escribiendo…</TextShimmer> : "Línea de pauta · llegó por un anuncio"}</span>
               </span>
-              <Video className="size-5 text-[#54656f]" aria-hidden />
-              <Search className="size-5 text-[#54656f]" aria-hidden />
+              {/* The extension's button: follow this client, and MARQui tells you the moment they write. */}
+              <button
+                type="button"
+                onClick={() => setFollowing((f) => !f)}
+                aria-pressed={following}
+                className={cn(
+                  "inline-flex h-9 cursor-pointer items-center gap-1.5 rounded-full px-3.5 text-[0.82rem] font-semibold transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#008069]",
+                  following ? "bg-[#f5b301] text-[#3d2c00] shadow-[0_4px_12px_-4px_rgb(245_179_1/0.7)]" : "bg-white text-[#54656f] shadow-[0_0_0_1px_rgb(0_0_0/0.12)] hover:bg-[#fff8e1]",
+                )}
+              >
+                <motion.span key={String(following)} initial={{ scale: 0.4, rotate: -60 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", stiffness: 500, damping: 16 }} className="grid">
+                  <Star className={cn("size-4", following && "fill-current")} aria-hidden />
+                </motion.span>
+                <span className="max-sm:sr-only">{following ? "Siguiendo" : "Seguir"}</span>
+              </button>
+              <Video className="size-5 text-[#54656f] max-sm:hidden" aria-hidden />
+              <Search className="size-5 text-[#54656f] max-sm:hidden" aria-hidden />
               <MoreVertical className="size-5 text-[#54656f]" aria-hidden />
             </header>
 
@@ -286,7 +304,7 @@ export function WhatsAppWeb({ className, autoplay = true, showSidebar = true, he
   );
 }
 
-function Sidebar() {
+function Sidebar({ juanFollowed }: { juanFollowed: boolean }) {
   return (
     <aside className="hidden flex-col border-r border-black/[0.07] bg-white lg:flex" aria-label="Chats de ejemplo">
       <div className="flex items-center gap-2 px-4 pb-2 pt-4">
@@ -309,24 +327,41 @@ function Sidebar() {
         ))}
       </div>
       <ul className="flex-1 overflow-hidden">
-        {chats.map((c) => (
-          <li key={c.name} className={cn("flex items-center gap-3 px-3 py-2.5", c.active && "bg-wa-panel")}>
-            <span className="grid size-11 shrink-0 place-items-center rounded-full bg-gradient-to-br from-[#c7d3e6] to-[#9fb3d4] text-[0.95rem] font-semibold text-white">{c.name[0]}</span>
+        {chats.map((c) => {
+          const followed = c.followed || (c.name === "Juan" && juanFollowed);
+          return (
+          <motion.li
+            key={c.name}
+            layout
+            className={cn("relative flex items-center gap-3 px-3 py-2.5 transition-colors duration-500", followed ? (c.active ? "bg-[#fde9ad]" : "bg-[#fff6d9]") : c.active && "bg-wa-panel")}
+          >
+            {/* Followed chats wear amber, findable at a glance. */}
+            {followed && <i className="absolute inset-y-2 left-0 w-[3px] rounded-r-full bg-[#f5b301]" aria-hidden />}
+            {c.pinned ? <MarquiAvatar className="size-11" /> : <Face name={c.name} className="size-11" />}
             <span className="min-w-0 flex-1 border-b border-black/[0.05] pb-2.5">
               <span className="flex items-baseline justify-between gap-2">
-                <span className="truncate text-[0.95rem] font-medium">{c.name}</span>
+                <span className="flex min-w-0 items-center gap-1">
+                  <span className="truncate text-[0.95rem] font-medium">{c.name}</span>
+                  {followed && <Star className="size-3.5 shrink-0 fill-[#f5b301] text-[#f5b301]" aria-label="Seguido" />}
+                  {c.mark && <span className={cn("shrink-0 rounded-full px-1.5 py-px text-[0.6rem] font-semibold", c.mark === "Referida" ? "bg-[#d7f3ec] text-[#00594f]" : "bg-[#ffecc7] text-[#7a4a00]")}>{c.mark}</span>}
+                </span>
                 <span className={cn("text-[0.72rem]", c.unread ? "font-semibold text-[#1daa61]" : "text-black/45")}>{c.time}</span>
               </span>
               <span className="flex items-center justify-between gap-2">
                 <span className="truncate text-[0.82rem] text-black/55">
-                  <span className="mr-1 rounded bg-black/[0.05] px-1 text-[0.66rem] font-semibold uppercase tracking-wide text-black/50">{c.line}</span>
+                  {c.line && <span className="mr-1 rounded bg-black/[0.05] px-1 text-[0.66rem] font-semibold uppercase tracking-wide text-black/50">{c.line}</span>}
                   {c.preview}
                 </span>
-                {c.unread && <span className="grid size-5 shrink-0 place-items-center rounded-full bg-wa text-[0.7rem] font-semibold text-white">{c.unread}</span>}
+                {c.unread ? (
+                  <span className="grid size-5 shrink-0 place-items-center rounded-full bg-wa text-[0.7rem] font-semibold text-white">{c.unread}</span>
+                ) : (
+                  c.pinned && <Pin className="size-3.5 shrink-0 rotate-45 text-[#8696a0]" aria-label="Fijado" />
+                )}
               </span>
             </span>
-          </li>
-        ))}
+          </motion.li>
+          );
+        })}
       </ul>
     </aside>
   );
@@ -403,7 +438,8 @@ function Suggestions({ replies, visible, picked, onPick, onReset, done, pose }: 
     <div className="border-t border-ink/10 bg-teal-soft px-3 pb-2 pt-2">
       <div className="mb-1.5 flex items-center gap-2 px-1">
         <MarquiAvatar className="size-7" pose={pose} />
-        <span className="text-[0.8rem] font-semibold text-ink">MARQui sugiere</span>
+        <span className="text-[0.8rem] font-semibold text-ink">MARQui</span>
+        <span className="text-[0.8rem] text-ink-3">sugiere</span>
         <span className="text-[0.75rem] text-ink-3">· solo vos lo ves</span>
         <button type="button" onClick={onReset} className="ml-auto inline-flex items-center gap-1 rounded-full px-2 py-1 text-[0.75rem] font-medium text-ink-3 hover:bg-ink/5" aria-label="Reiniciar la demo">
           <RotateCcw className="size-3.5" /> Reiniciar
@@ -420,17 +456,19 @@ function Suggestions({ replies, visible, picked, onPick, onReset, done, pose }: 
                   onClick={() => onPick(i)}
                   aria-pressed={picked === i}
                   className={cn(
-                    "w-[15rem] shrink-0 snap-start rounded-xl border-2 bg-white p-2.5 text-left text-[0.82rem] leading-snug text-ink-2 transition-[border-color,transform,box-shadow] duration-300 ease-out-expo hover:-translate-y-0.5 md:w-auto",
-                    picked === i ? "border-teal shadow-[0_0_0_4px_rgb(0_140_126/0.18)]" : "border-transparent shadow-[0_1px_3px_rgb(6_35_31/0.12)]",
+                    "flex w-[15rem] shrink-0 cursor-pointer snap-start items-start gap-2 rounded-xl p-2.5 text-left text-[0.82rem] leading-snug transition-[background-color,color,transform,box-shadow] duration-300 ease-out-expo hover:-translate-y-0.5 md:w-auto",
+                    picked === i ? "bg-[#008c7e] text-white shadow-[0_8px_18px_-8px_rgb(0_140_126/0.7)]" : "bg-white text-[#3b4a54] shadow-[0_1px_3px_rgb(6_35_31/0.12)]",
                   )}
                 >
-                  <span className="line-clamp-4">{r}</span>
+                  <span className={cn("mt-px grid size-[1.15rem] shrink-0 place-items-center rounded-[0.3rem] text-[0.66rem] font-semibold tabular-nums", picked === i ? "bg-white/20 text-white" : "bg-[#f3f5f6] text-[#667781]")}>{i + 1}</span>
+                  <span className="line-clamp-4 flex-1">{r}</span>
+                  {picked === i && <Check className="mt-0.5 size-3.5 shrink-0" strokeWidth={3} aria-hidden />}
                 </button>
               ))}
             </motion.div>
           ) : (
             <motion.p key={done ? "done" : "wait"} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="grid h-[5.2rem] place-items-center rounded-xl border border-dashed border-ink/15 text-center text-[0.85rem] text-ink-3">
-              {done ? "Juan pasó a Interesado y ya tiene visita. Todo lo envió una persona." : <TextShimmer>MARQui espera la respuesta de Juan…</TextShimmer>}
+              {done ? "Juan pasó a Interesado y ya tiene visita. Seguilo con ☆ para que MARQui te avise apenas escriba." : <TextShimmer>MARQui espera la respuesta de Juan…</TextShimmer>}
             </motion.p>
           )}
         </AnimatePresence>
@@ -453,7 +491,7 @@ function Rail() {
       <span className="mt-auto grid size-10 place-items-center text-[#54656f]">
         <Settings className="size-5" />
       </span>
-      <span className="grid size-8 place-items-center rounded-full bg-ink text-[0.7rem] font-semibold text-white">MQ</span>
+      <Face name="Cande" className="size-8" />
     </nav>
   );
 }

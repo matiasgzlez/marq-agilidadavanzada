@@ -37,7 +37,7 @@ export function Outro() {
   return (
     <Section sky={SKY.dawn} id="cierre" className="overflow-hidden pt-24 sm:pt-32">
       <div className="mx-auto grid max-w-[64rem] place-items-center text-center">
-        <RiseLines lines={["El equipo responde.", <em key="e">MARQui sopla.</em>]} className="display sky-type text-[clamp(2.6rem,7vw,8.4rem)]" />
+        <RiseLines lines={["El equipo responde.", <em key="e">MARQui lo respalda.</em>]} className="display sky-type text-[clamp(2.6rem,7vw,8.4rem)]" />
         <FadeUp className="mt-10 flex flex-wrap justify-center gap-3">
           <a href="#inicio" className="inline-flex h-14 items-center rounded-full bg-ink px-7 text-[1.1rem] font-medium text-white transition-transform hover:-translate-y-0.5">
             Volver a empezar

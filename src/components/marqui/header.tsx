@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { MarquiLive } from "./marqui-live";
@@ -13,6 +13,7 @@ type Brand = "marqui" | "marqador";
  */
 export function Header({ panel, onPanel }: { panel: Panel; onPanel: (p: Panel) => void }) {
   const [brand, setBrand] = useState<Brand>("marqui");
+  const pill = usePillVisible();
 
   useEffect(() => {
     let raf = 0;
@@ -51,7 +52,15 @@ export function Header({ panel, onPanel }: { panel: Panel; onPanel: (p: Panel) =
         <MarqLogo className="h-7 max-w-full drop-shadow-[0_0.15rem_0.6rem_rgb(1_30_27/0.55)] sm:h-[clamp(2.2rem,3vw,3.2rem)]" />
       </a>
 
-      <div role="tablist" aria-label="Partes de la presentación" className="pointer-events-auto flex rounded-full bg-ink/90 p-1 shadow-[0_0.75rem_2rem_-0.75rem_rgb(0_0_0/0.5)] ring-1 ring-white/15 backdrop-blur-sm">
+      <motion.div
+        role="tablist"
+        aria-label="Partes de la presentación"
+        initial={false}
+        animate={pill.visible ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: -14, scale: 0.97 }}
+        transition={pill.visible ? { duration: 0.7, ease } : { duration: 0.35, ease: "easeIn" }}
+        {...pill.handlers}
+        className={cn(pill.visible ? "pointer-events-auto" : "pointer-events-none", "flex rounded-full bg-ink/90 p-1 shadow-[0_0.75rem_2rem_-0.75rem_rgb(0_0_0/0.5)] ring-1 ring-white/15 backdrop-blur-sm")}
+      >
         {(["solucion", "thinking"] as const).map((p) => (
           <button
             key={p}
@@ -68,7 +77,7 @@ export function Header({ panel, onPanel }: { panel: Panel; onPanel: (p: Panel) =
             <span className="relative">{p === "solucion" ? "MARQui" : "Design thinking"}</span>
           </button>
         ))}
-      </div>
+      </motion.div>
 
       {/* MARQui is always here; in MARQador's sections his little brother joins him, side by side. */}
       <a href={brand === "marqador" ? "#marqador" : "#inicio"} onClick={() => onPanel("solucion")} className="pointer-events-auto ml-auto flex h-14 items-end gap-0.5 sm:h-16 lg:h-[4.5rem]" aria-label={brand === "marqador" ? "MARQui y MARQador" : "MARQui"}>
@@ -90,4 +99,58 @@ export function Header({ panel, onPanel }: { panel: Panel; onPanel: (p: Panel) =
       </a>
     </motion.header>
   );
+}
+
+/**
+ * The switch stays out of the way: it hides while you scroll down or sit
+ * still, and fades back in when you scroll up. It is always there at the very
+ * top, and it stays while the pointer is on it or it has keyboard focus.
+ */
+function usePillVisible() {
+  const [visible, setVisible] = useState(true);
+  const held = useRef(false);
+  const idle = useRef(0);
+
+  useEffect(() => {
+    let last = window.scrollY;
+    const hideLater = () => {
+      clearTimeout(idle.current);
+      idle.current = window.setTimeout(() => {
+        if (!held.current && window.scrollY > 40) setVisible(false);
+      }, 1800);
+    };
+    const onScroll = () => {
+      const y = window.scrollY;
+      const dy = y - last;
+      last = y;
+      if (y <= 40) {
+        clearTimeout(idle.current);
+        setVisible(true);
+      } else if (dy < -2) {
+        setVisible(true);
+        hideLater();
+      } else if (dy > 2 && !held.current) {
+        clearTimeout(idle.current);
+        setVisible(false);
+      }
+    };
+    // Reloaded halfway down the page: show it for a moment, then tuck it away.
+    if (last > 40) hideLater();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      clearTimeout(idle.current);
+    };
+  }, []);
+
+  const hold = (on: boolean) => () => {
+    held.current = on;
+    if (on) {
+      clearTimeout(idle.current);
+      setVisible(true);
+    } else if (window.scrollY > 40) {
+      idle.current = window.setTimeout(() => !held.current && setVisible(false), 1800);
+    }
+  };
+  return { visible, handlers: { onPointerEnter: hold(true), onPointerLeave: hold(false), onFocus: hold(true), onBlur: hold(false) } };
 }

@@ -1,77 +1,67 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { useMarquiLife, type Pose } from "./marqui-character";
-import { MarquiLive } from "./marqui-live";
+import { IntroControls, IntroTitle, Typed } from "./intro-text";
+import { INTRO_END, MarqIntro } from "./marq-intro";
 import { Section, ease } from "./primitives";
 import { SKY } from "./sky";
 
-/* ——— Te presentamos MARQui ———
-   Like the dots page: the character first, centred and alive, then one big
-   line, one plain sentence and two ways in. He jumps in, lands happy and
-   says hi. */
+/* ——— Presentamos MARQui ———
+   Opens like Pixar: the MARQ logo, MARQui hops in, crushes the Q and stays
+   in its place. The title comes in while he is still the Q, the sentence
+   types itself out and then the two ways in appear. */
+
+const COPY =
+  "Un asistente que trabaja con el equipo dentro del WhatsApp de MARQ: te propone tres respuestas para cada consulta, conoce cada conversación, le podés preguntar lo que necesites y te cuenta qué están pidiendo los clientes potenciales.";
 
 export function Hero() {
   const reduce = useReducedMotion();
-  const [reaction, setReaction] = useState<Pose | null>(reduce ? null : "salto");
-  const [alive, setAlive] = useState(false);
-  const pose = useMarquiLife({ active: alive, override: reaction });
+  const [play, setPlay] = useState(() => ({ id: 0, from: reduce ? INTRO_END : 0 }));
+  const [step, setStep] = useState(0);
+  const [reaction, setReaction] = useState<Pose | null>(null);
+  const pose = useMarquiLife({ active: step === 3, override: reaction });
+  // Skipped (or reduced motion): the text is simply there.
+  const instant = play.from >= INTRO_END;
+  const [typed, setTyped] = useState(false);
   const timers = useRef<number[]>([]);
-
-  useEffect(() => {
-    if (reduce) {
-      setAlive(true);
-      return;
-    }
-    const at = (ms: number, fn: () => void) => timers.current.push(window.setTimeout(fn, ms));
-    at(900, () => setReaction("alegria"));
-    at(2100, () => {
-      setReaction(null);
-      setAlive(true);
-    });
-    return () => timers.current.forEach(clearTimeout);
-  }, [reduce]);
 
   const cheer = () => {
     if (reduce) return;
+    timers.current.forEach(clearTimeout);
     setReaction("salto");
     timers.current.push(window.setTimeout(() => setReaction("alegria"), 420));
     timers.current.push(window.setTimeout(() => setReaction(null), 1700));
   };
+  const restart = (from: number) => {
+    setReaction(null);
+    setPlay((p) => ({ id: p.id + 1, from }));
+  };
 
-  const enter = (delay: number) => (reduce ? {} : { initial: { opacity: 0, y: 24 }, animate: { opacity: 1, y: 0 }, transition: { duration: 1, delay, ease } });
+  const show = (on: boolean) => ({
+    initial: false as const,
+    animate: on ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 },
+    transition: { duration: reduce || instant ? 0 : 0.8, ease },
+  });
 
   return (
-    <Section sky={SKY.noon} id="inicio" className="grid min-h-[100svh] place-items-center pb-16 pt-28">
-      <div className="mx-auto grid max-w-[64rem] justify-items-center text-center">
-        <motion.button
-          type="button"
-          onClick={cheer}
-          onPointerEnter={() => alive && setReaction((r) => r ?? "sorpresa")}
-          onPointerLeave={() => setReaction((r) => (r === "sorpresa" ? null : r))}
-          aria-label="Saludar a MARQui"
-          className="cursor-pointer rounded-[3rem] outline-offset-8"
-          initial={reduce ? false : { y: 140, scale: 0.6, opacity: 0 }}
-          animate={{ y: 0, scale: 1, opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.2, ease }}
-        >
-          <MarquiLive pose={pose} className="w-[min(46vw,30svh,17rem)]" />
-        </motion.button>
+    <Section sky={SKY.noon} id="inicio" className="grid min-h-[100svh] place-items-center overflow-x-clip pb-16 pt-28">
+      <div className="mx-auto grid w-full max-w-[64rem] justify-items-center text-center">
+        <MarqIntro play={play} livePose={pose} onStep={setStep} onCharClick={cheer} className="w-[min(59vw,38rem,calc((100svh-17rem)*1.3))]" />
 
-        <motion.h1 {...enter(0.5)} className="display sky-type mt-4 text-[clamp(2.8rem,7.4vw,8.4rem)]">
-          Te presentamos MARQui
-        </motion.h1>
-        <motion.p {...enter(0.7)} className="sky-type mt-6 max-w-[46rem] text-balance text-[clamp(1.2rem,2vw,2.1rem)] font-medium leading-[1.3] text-white/85">
-          Un asistente que trabaja con el equipo dentro del WhatsApp de MARQ: te propone tres respuestas para cada consulta, conoce cada conversación, le podés preguntar lo que necesites y te cuenta qué están pidiendo los clientes potenciales.
-        </motion.p>
-        <motion.div {...enter(0.9)} className="mt-10 flex flex-wrap justify-center gap-3">
-          <a href="#un-dia" className="inline-flex h-14 items-center rounded-full bg-ink px-7 text-[1.1rem] font-medium text-white transition-transform hover:-translate-y-0.5">
+        <IntroTitle lead="Presentamos" name="MARQui" shine="marqui-shine" shown={step >= 1} instant={instant} className="mt-6" />
+        <Typed key={play.id} text={COPY} start={step >= 2} instant={instant} onDone={setTyped} />
+        <motion.div {...show(typed)} className="mt-10 flex flex-wrap justify-center gap-3">
+          <a href="#un-dia" tabIndex={typed ? undefined : -1} className="inline-flex h-14 items-center rounded-full bg-ink px-7 text-[1.1rem] font-medium text-white transition-transform hover:-translate-y-0.5">
             Ver un día con MARQui
           </a>
-          <a href="#marqador" className="inline-flex h-14 items-center rounded-full bg-white px-7 text-[1.1rem] font-medium text-ink transition-transform hover:-translate-y-0.5">
+          <a href="#marqador" tabIndex={typed ? undefined : -1} className="inline-flex h-14 items-center rounded-full bg-white px-7 text-[1.1rem] font-medium text-ink transition-transform hover:-translate-y-0.5">
             Conocer MARQador
           </a>
         </motion.div>
       </div>
+
+      {!reduce && <IntroControls done={step === 3} onSkip={() => restart(INTRO_END)} onReplay={() => restart(0)} />}
     </Section>
   );
 }
+
