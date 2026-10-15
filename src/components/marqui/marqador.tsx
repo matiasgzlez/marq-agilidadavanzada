@@ -4,6 +4,7 @@ import { Clock, Download, FileText, MessageCircle, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BrowserFrame, FadeUp, RiseLines, Section, ease } from "./primitives";
 import { Brothers } from "./brothers";
+import { MarqadorBoard } from "./marqador-board";
 import { MarqadorIntro } from "./marqador-intro";
 import { MarqadorMark } from "./marqador-mark";
 import { BarChart } from "@/components/arc/bar-chart/bar-chart";
@@ -47,20 +48,20 @@ export function MarqadorSection() {
 
         <FadeUp className="mt-10 grid gap-4 lg:grid-cols-[1.3fr_1fr]">
           <p className="paper rounded-[1.5rem] px-6 py-5 text-[clamp(1.1rem,1.5vw,1.5rem)] leading-[1.45] sm:px-8 sm:py-6">
-            En un proyecto llegaron 500 consultas y nadie supo cuántos podían pagar: para saberlo había que leer chat por chat. MARQador lo junta todo en un tablero que se abre <b>en una pestaña nueva</b> desde WhatsApp Web. Cada pantalla responde una pregunta del negocio.
+            Hoy, las decisiones de pauta y de producto se toman sin datos: en un lanzamiento llegaron 500 consultas y no hubo forma de saber cuántas personas podían comprar sin revisar los chats uno por uno. <b>MARQador convierte esas conversaciones en información</b>: un tablero que se abre en una pestaña desde WhatsApp Web, donde cada pantalla responde una pregunta del negocio.
           </p>
           <div className="paper flex flex-col justify-center gap-3 rounded-[1.5rem] px-6 py-5 sm:px-8">
             <span className="eyebrow text-ink-3">También llega por WhatsApp</span>
             <ul className="grid gap-2 text-[clamp(1.02rem,1.3vw,1.3rem)] font-medium">
-              <li className="flex items-center gap-3"><Clock className="size-5 text-orange-deep" /> Resumen cada mañana</li>
-              <li className="flex items-center gap-3"><FileText className="size-5 text-orange-deep" /> Reporte semanal y mensual en PDF</li>
-              <li className="flex items-center gap-3"><MessageCircle className="size-5 text-orange-deep" /> Respuestas a lo que le preguntes</li>
+              <li className="flex items-center gap-3"><FileText className="size-5 text-orange-deep" /> Resumen semanal en PDF, con tus seguidos</li>
+              <li className="flex items-center gap-3"><Clock className="size-5 text-orange-deep" /> Reporte mensual, guardado en MARQador</li>
+              <li className="flex items-center gap-3"><MessageCircle className="size-5 text-orange-deep" /> Y cualquier dato, preguntándole a MARQui</li>
             </ul>
           </div>
         </FadeUp>
 
         <FadeUp className="mt-10">
-          <Marqador />
+          <MarqadorBoard />
         </FadeUp>
       </div>
     </Section>

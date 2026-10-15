@@ -10,7 +10,9 @@ import { Control, TimeSaved } from "@/components/marqui/story";
 import { Where } from "@/components/marqui/where";
 import { SkyBackground, SkyProvider } from "@/components/marqui/sky";
 
-const initialPanel = (): Panel => (new URLSearchParams(window.location.search).get("panel") === "thinking" ? "thinking" : "solucion");
+/* Design thinking isn't presented yet: its tab and the header switch stay hidden. Flip to bring them back. */
+const SHOW_THINKING = false;
+const initialPanel = (): Panel => (SHOW_THINKING && new URLSearchParams(window.location.search).get("panel") === "thinking" ? "thinking" : "solucion");
 
 export function App() {
   const [panel, setPanel] = useState<Panel>(initialPanel);
@@ -28,7 +30,7 @@ export function App() {
         Saltar al contenido
       </a>
       <SkyBackground />
-      <Header panel={panel} onPanel={setPanel} />
+      <Header panel={panel} onPanel={setPanel} showPanels={SHOW_THINKING} />
       <main id="contenido">
         {panel === "solucion" ? (
           <div id="panel-solucion" role="tabpanel" aria-label="La solución: Marqui">

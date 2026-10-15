@@ -11,7 +11,8 @@ type Brand = "marqui" | "marqador";
  * Three things, floating: MARQ on the left, the switch in the middle, and on
  * the right whoever is on stage, MARQui or, inside his sections, MARQador.
  */
-export function Header({ panel, onPanel }: { panel: Panel; onPanel: (p: Panel) => void }) {
+/** `showPanels`: the MARQui / Design thinking switch. Off until Design thinking is presented. */
+export function Header({ panel, onPanel, showPanels = false }: { panel: Panel; onPanel: (p: Panel) => void; showPanels?: boolean }) {
   const [brand, setBrand] = useState<Brand>("marqui");
   const pill = usePillVisible();
 
@@ -52,6 +53,7 @@ export function Header({ panel, onPanel }: { panel: Panel; onPanel: (p: Panel) =
         <MarqLogo className="h-7 max-w-full drop-shadow-[0_0.15rem_0.6rem_rgb(1_30_27/0.55)] sm:h-[clamp(2.2rem,3vw,3.2rem)]" />
       </a>
 
+      {showPanels ? (
       <motion.div
         role="tablist"
         aria-label="Partes de la presentación"
@@ -78,6 +80,9 @@ export function Header({ panel, onPanel }: { panel: Panel; onPanel: (p: Panel) =
           </button>
         ))}
       </motion.div>
+      ) : (
+        <span aria-hidden />
+      )}
 
       {/* MARQui is always here; in MARQador's sections his little brother joins him, side by side. */}
       <a href={brand === "marqador" ? "#marqador" : "#inicio"} onClick={() => onPanel("solucion")} className="pointer-events-auto ml-auto flex h-14 items-end gap-0.5 sm:h-16 lg:h-[4.5rem]" aria-label={brand === "marqador" ? "MARQui y MARQador" : "MARQui"}>
