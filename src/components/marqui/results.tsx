@@ -1,6 +1,6 @@
-import { useEffect, useRef, type ReactNode } from "react";
-import { animate, motion, useInView, useMotionValue, useReducedMotion, useTransform } from "motion/react";
-import { Star } from "lucide-react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { AnimatePresence, animate, motion, useInView, useMotionValue, useReducedMotion, useTransform } from "motion/react";
+import { Calculator, Star, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /* ——— Results ———
@@ -73,9 +73,9 @@ export function ResultsBento() {
         <Tile className="sm:col-span-2 lg:col-span-3" delay={0.08}>
           <div className="grid h-full items-center gap-6 sm:grid-cols-[1fr_1fr]">
             <div>
-              <Num value={0} from={6} tone="orange" className="text-[clamp(4.4rem,7vw,7.6rem)]" />
-              <p className={cn(lead, "mt-2")}>clientes importantes esperando.</p>
-              <p className={sub}>Los que seguís: MARQui te avisa apenas escriben.</p>
+              <Num value={100} suffix="%" tone="orange" className="text-[clamp(4.4rem,7vw,7.6rem)]" />
+              <p className={cn(lead, "mt-2")}>de tus clientes importantes, avisados al instante.</p>
+              <p className={sub}>Los marcás con una estrella y MARQui te avisa apenas escriben. Ninguno se enfría.</p>
             </div>
             <Followed />
           </div>
@@ -83,9 +83,7 @@ export function ResultsBento() {
 
         {/* 3 to 5 · Typographic, like Apple's spec tiles. */}
         <Tile className="lg:col-span-2" delay={0.12}>
-          <Num value={8} suffix=" h" className="text-[clamp(3.6rem,5.4vw,5.8rem)]" />
-          <p className={cn(lead, "mt-3")}>por semana para vender.</p>
-          <p className={sub}>Una jornada entera de trabajo que vuelve.</p>
+          <HoursMath />
         </Tile>
         <Tile className="lg:col-span-2" delay={0.18}>
           <Num value={7} prefix="×" tone="orange" className="text-[clamp(3.6rem,5.4vw,5.8rem)]" />
@@ -225,5 +223,60 @@ function Followed() {
         </motion.div>
       ))}
     </div>
+  );
+}
+
+/**
+ * The 8 h tile. Tap it and it turns over to show where the number comes from,
+ * in four lines, for when someone asks.
+ */
+function HoursMath() {
+  const [open, setOpen] = useState(false);
+  const rows = [
+    { label: "Respondiendo consultas", value: "4 h por día" },
+    { label: "La mitad son repetidas", value: "2 h por día" },
+    { label: "Con MARQui, 5× más rápido", value: "24 min" },
+    { label: "Ahorro por día", value: "1 h 36 min" },
+  ];
+  return (
+    <button
+      type="button"
+      onClick={() => setOpen((o) => !o)}
+      aria-expanded={open}
+      aria-label={open ? "Volver" : "Ver de dónde salen las 8 horas"}
+      className="relative -m-5 flex h-[calc(100%+2.5rem)] min-h-[15rem] cursor-pointer flex-col p-5 text-left sm:-m-6 sm:h-[calc(100%+3rem)] sm:p-6"
+    >
+      <AnimatePresence mode="wait" initial={false}>
+        {!open ? (
+          <motion.span key="front" className="flex h-full flex-col" initial={{ opacity: 0, rotateX: -12 }} animate={{ opacity: 1, rotateX: 0 }} exit={{ opacity: 0, rotateX: 12 }} transition={{ duration: 0.3, ease: out }}>
+            <Num value={8} suffix=" hs" className="text-[clamp(3.6rem,5.4vw,5.8rem)]" />
+            <span className={cn(lead, "mt-3 block")}>ganadas por semana, para concentrarse en vender.</span>
+            <span className={cn(sub, "block")}>Una jornada entera por persona que MARQui le devuelve al equipo.</span>
+            <span className="mt-auto inline-flex w-fit items-center gap-1.5 pt-4 text-[0.85rem] font-semibold text-teal">
+              <Calculator className="size-4" aria-hidden /> ¿De dónde salen?
+            </span>
+          </motion.span>
+        ) : (
+          <motion.span key="back" className="flex h-full flex-col" initial={{ opacity: 0, rotateX: 12 }} animate={{ opacity: 1, rotateX: 0 }} exit={{ opacity: 0, rotateX: -12 }} transition={{ duration: 0.3, ease: out }}>
+            <span className="flex items-center justify-between">
+              <b className="text-[1.05rem] font-semibold">De dónde salen las 8 hs</b>
+              <X className="size-4 text-ink-3" aria-hidden />
+            </span>
+            <span className="mt-3 grid gap-1.5">
+              {rows.map((r, i) => (
+                <motion.span key={r.label} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.35, delay: 0.05 + i * 0.08, ease: out }} className={cn("flex items-baseline justify-between gap-3 border-b border-black/[0.06] pb-1.5 text-[0.95rem]", i === 3 && "border-0 font-semibold text-ink")}>
+                  <span className={i === 3 ? "" : "text-ink-2"}>{r.label}</span>
+                  <b className="shrink-0 tabular-nums">{r.value}</b>
+                </motion.span>
+              ))}
+            </span>
+            <motion.span initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.4, ease: out }} className="mt-auto flex items-baseline justify-between rounded-xl bg-[#e7f6f2] px-3 py-2">
+              <span className="text-[0.9rem] text-[#00594f]">× 5 días hábiles</span>
+              <b className="font-display text-[1.6rem] font-bold tracking-[-0.03em] text-teal">= 8 hs</b>
+            </motion.span>
+          </motion.span>
+        )}
+      </AnimatePresence>
+    </button>
   );
 }
