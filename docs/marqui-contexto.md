@@ -108,6 +108,8 @@ Requisito: las dos líneas tienen que ser **WhatsApp Business app** (no WhatsApp
 - ✅ **D12 · MARQador se abre en una pestaña nueva, como Gasti** (2026-10-14). El botón de Marqui en WhatsApp Web abre MARQador en una pestaña nueva del navegador (no encima de WhatsApp Web). Además, MARQador llega por chat (resumen diario, avisos, PDF y respuestas) y por link en el celular.
 - ✅ **D13 · Reportes por WhatsApp y en MARQador** (2026-10-14). El semanal y el mensual llegan como PDF por WhatsApp y quedan guardados en MARQador.
 - ✅ **D11 · En el celular, desde el teléfono de la línea** (2026-10-14). El contacto Marqui se agenda en los celulares de las líneas compartidas. Marqui no distingue qué integrante le escribe, porque no hace falta: las líneas son compartidas.
+- 🟨 **D4b · Seguidos: un cuarto aviso inmediato, que elige el equipo** (2026-10-15, a confirmar). Amplía D4. En el chat de un prospecto importante, el botón «Seguir» de la extensión (o pedírselo a Marqui: "seguí a Laura") lo marca como seguido. Cuando un seguido escribe, Marqui avisa al instante para que se le conteste rápido. El resumen semanal suma un apartado «Seguidos»: quién escribió y quién está callado hace mucho. Se deja de seguir con la misma estrella o pidiéndoselo.
+- 🟨 **D18 · Reglas de Marqui, a la vista** (2026-10-15, a confirmar). Se le pueden pedir tareas que se repiten, chateando: "todos los días a las 18 pasame la lista de los que preguntaron por Fontana y MARQ Collection". Marqui confirma ("Listo, regla creada ✓") y desde ese día manda la lista, con un botón para abrir cada chat. Todas las reglas (resumen diario, avisos al instante, resumen semanal, las que pida el equipo) y los seguidos se ven en un panel «Reglas», al lado del nombre de Marqui en WhatsApp Web (lo agrega la extensión). Desde ahí se pausan o se borran; para crear o cambiar una, se le pide en el chat (R4). Inspirado en las tareas programadas de Grok y las reglas de ChatGPT dots.
 
 ### Marqui y MARQador: qué hace cada uno
 
@@ -122,7 +124,8 @@ La frontera: **Marqui es el asistente con el que se habla; MARQador es el tabler
 5. Reconoce a quien ya es cliente, a quien reaparece después de 30 días o más y a quien viene referido.
 6. Muestra la tarjeta del prospecto arriba del chat (D7).
 7. Aprende el tono de MARQ con cada sugerencia que se elige o se corrige.
-8. Manda el resumen diario y los 3 avisos urgentes (D4).
+8. Manda el resumen diario y los 3 avisos urgentes (D4), más el aviso cuando escribe alguien que seguís (D4b).
+11. Cumple las reglas que le pide el equipo, como una lista diaria por proyecto, y las muestra en su panel «Reglas» (D18).
 9. Responde preguntas sobre los datos ("¿cuántas consultas por MARQ Collection esta semana?") y devuelve listas para difusión en Excel.
 10. En el celular funciona como contacto: le reenviás el mensaje y te devuelve las 3 opciones.
 
@@ -188,7 +191,7 @@ Productos que ya resolvieron partes de lo que queremos mostrar, y qué tomar de 
 
 ## 10. Decisiones pendientes
 
-Ninguna: D1 a D17 están cerradas. Lo que falta son verificaciones de hechos (sección 11), que no cambian el alcance pero sí cómo se construye.
+D1 a D17 están cerradas. D4b (seguidos) y D18 (reglas) están armadas en la presentación y falta que el equipo las confirme. Lo que falta son verificaciones de hechos (sección 11), que no cambian el alcance pero sí cómo se construye.
 
 ## 11. Verificaciones pendientes (hechos, no decisiones)
 

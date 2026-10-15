@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { AnimatePresence, motion, useInView, useReducedMotion } from "motion/react";
-import { BookOpen, Check, CheckCheck, FileSpreadsheet, Info, Megaphone, MessagesSquare, Mic, MoreVertical, PenLine, Plus, Search, SendHorizontal, Smile, Tag, Video } from "lucide-react";
+import { AnimatePresence, animate, motion, useInView, useReducedMotion } from "motion/react";
+import { ArrowLeft, BookOpen, Check, CheckCheck, FileSpreadsheet, Info, Megaphone, MessageCircle, MessagesSquare, PenLine, Sunrise, Tag } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Pose } from "./marqui-character";
 import { FadeUp, MarquiAvatar, Section, ease } from "./primitives";
@@ -8,8 +8,11 @@ import { Lead } from "./story";
 import { Phone } from "./phone";
 import { MarquiMark } from "./marqui-mark";
 import { SKY } from "./sky";
+import { FollowVisual } from "./follow";
+import { BUBBLE, ChatHeader, ChatWindow, Composer, Cursor, Face, Tail, Time } from "./wa-kit";
 
-type Feature = { title: string; text: string; visual: ReactNode; tint?: string; pose: Pose };
+/** `wide`: the visual is a full WhatsApp Web window (chat list + chat) and takes the larger column. */
+type Feature = { title: string; text: string; visual: ReactNode; tint?: string; pose: Pose; wide?: boolean };
 
 /* Soft brand gradients for the cards, like the coloured panels on the dots page. */
 const TINTS = {
@@ -33,20 +36,17 @@ const features: Feature[] = [
     pose: "pensando",
   },
   {
-    title: "Te avisa solo lo importante",
-    text: "Un resumen cada mañana y un aviso al instante cuando vuelve un cliente, reaparece alguien después de un mes o llega un referido. Nada de una notificación por consulta.",
-    visual: (
-      <Phone
-        messages={[
-          { kind: "day", text: "Hoy" },
-          { kind: "in", time: "9:00", text: <><b>☀️ Buen día. Ayer:</b><br />23 consultas · 4 sin responder<br />2 nuevos interesados</> },
-          { kind: "in", time: "11:14", text: <><b>🔁 Reaparece:</b> Marta Ríos volvió a escribir después de 40 días. Pregunta por la 3B.</> },
-          { kind: "in", time: "12:02", text: <><b>⭐ Cliente:</b> Pablo Sosa, que invirtió en Torre Natalini, consulta por lotes.</> },
-        ]}
-      />
-    ),
-    tint: TINTS.mint,
+    title: "Tu día, resumido cada mañana",
+    text: "A las 9 te llega lo que pasó ayer y lo que no puede esperar hoy. Tocás un nombre y abrís su chat. Durante el día, solo te escribe si vuelve un cliente, reaparece alguien, llega un referido o te escribe alguien que seguís.",
+    visual: <BriefVisual />,
     pose: "sorpresa",
+  },
+  {
+    title: "Seguí a los que importan",
+    text: "Marcás a un potencial cliente importante y MARQui te avisa apenas te escribe, para que no espere. Y le podés dar tareas que se repiten, como una lista diaria por proyecto. Todo queda a la vista en sus reglas.",
+    visual: <FollowVisual />,
+    wide: true,
+    pose: "guino",
   },
   {
     title: "Le preguntás lo que necesites",
@@ -94,15 +94,15 @@ export function Functions() {
   return (
     <Section sky={SKY.noon} id="funciones" className="py-28 sm:py-40" aria-labelledby="funciones-title">
       <Lead id="funciones-title" title={["¿Qué podés hacer", <em key="e">con MARQui?</em>]}>
-        Seis cosas que cambian el día a día del equipo, sin salir de WhatsApp.
+        Siete cosas que cambian el día a día del equipo, sin salir de WhatsApp.
       </Lead>
 
 
       <div className="mx-auto mt-20 grid max-w-[84rem] gap-24 sm:gap-32">
         {features.map((f, i) => (
-          <article key={f.title} className="grid items-center gap-8 lg:grid-cols-[1.3fr_1fr] lg:gap-16">
-            <FadeUp className={cn(i % 2 === 1 && "lg:order-2")}>
-              <div className={cn("relative grid min-h-[30rem] place-items-center text-ink", f.tint ? "overflow-hidden rounded-[2.5rem] p-6 sm:p-12" : "items-start lg:min-h-[36rem]", f.tint)}>
+          <article key={f.title} className={cn("grid items-center gap-8 lg:gap-16", f.wide ? (i % 2 === 1 ? "lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.6fr)]" : "lg:grid-cols-[minmax(0,1.6fr)_minmax(0,0.8fr)]") : "lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]")}>
+            <FadeUp className={cn("min-w-0", i % 2 === 1 && "lg:order-2")}>
+              <div className={cn("relative grid min-h-[30rem] grid-cols-[minmax(0,1fr)] place-items-center text-ink", f.tint ? "overflow-hidden rounded-[2.5rem] p-6 sm:p-12" : "items-start lg:min-h-[36rem]", f.tint)}>
                 {f.visual}
               </div>
             </FadeUp>
@@ -211,26 +211,6 @@ function RepliesVisual() {
         <PenLine className="size-4" /> Se escribe en tu cuadro de texto. La enviás vos.
       </p>
     </div>
-  );
-}
-
-/** A macOS pointer that glides in, taps the reply, and leaves. */
-function Cursor({ play, delay = 1.1 }: { play: boolean; delay?: number }) {
-  return (
-    <motion.svg
-      viewBox="0 0 24 24"
-      className="pointer-events-none absolute right-[16%] top-[50%] z-10 size-7 drop-shadow-[0_3px_4px_rgb(0_0_0/0.35)]"
-      initial={{ opacity: 0, x: 110, y: 140 }}
-      animate={play ? { opacity: [0, 1, 1, 0], x: [110, 0, 0, 0, 8], y: [140, 0, 0, 0, 12], scale: [1, 1, 0.8, 1, 1] } : undefined}
-      transition={{
-        delay,
-        opacity: { delay, duration: 2.6, times: [0, 0.12, 0.85, 1] },
-        default: { delay, duration: 2.6, times: [0, 0.45, 0.52, 0.6, 1], ease },
-      }}
-      aria-hidden
-    >
-      <path d="M5.5 3.2v15.6l4.1-3.9 2.6 6.1 2.6-1.1-2.6-6h5.7z" fill="#111" stroke="#fff" strokeWidth="1.4" strokeLinejoin="round" />
-    </motion.svg>
   );
 }
 
@@ -379,80 +359,340 @@ function CardVisual() {
   );
 }
 
-/* ——— WhatsApp Web pieces shared by the mockups ——— */
+type Mark = "reaparece" | "referido" | "pendiente";
+type Pending = {
+  id: string;
+  name: string;
+  mark: Mark;
+  markText: string;
+  why: string;
+  tags: { label: string; value: string | null }[];
+  message: string;
+  time: string;
+  suggestion: string;
+  /** The last time they talked, if there was one. */
+  before?: { day: string; msgs: { out?: boolean; text: string; time: string }[] };
+};
 
-const BUBBLE = "shadow-[0_1px_0.5px_rgb(11_20_26/0.13)]";
+const MARKS: Record<Mark, string> = {
+  reaparece: "bg-[#ffecc7] text-[#7a4a00]",
+  referido: "bg-[#d7f3ec] text-[#00594f]",
+  pendiente: "bg-[#ffe3dc] text-[#9a2f17]",
+};
 
-function ChatWindow({ children }: { children: ReactNode }) {
+/* What can't wait today. Each one opens its chat, with the tags and a reply already waiting. */
+const pending: Pending[] = [
+  {
+    id: "marta",
+    name: "Marta Ríos",
+    mark: "reaparece",
+    markText: "Reaparece · 40 días",
+    why: "Volvió a escribir anoche. Pregunta si sigue la 3B.",
+    tags: [{ label: "Proyecto", value: "MARQ Collection" }, { label: "Busca", value: "3 dorm · vivir" }, { label: "Paga", value: null }],
+    message: "¡Hola! ¿Sigue disponible la 3B? Ahora sí estamos para mudarnos 🙂",
+    time: "21:48",
+    suggestion: "¡Qué bueno que volviste, Marta! La 3B sigue disponible. ¿La pensás con crédito o de contado?",
+    before: {
+      day: "5 de septiembre",
+      msgs: [
+        { text: "Buenas, ¿cuánto sale la 3B de Collection?", time: "16:02" },
+        { out: true, text: "¡Hola Marta! La 3B está en USD 92.000. ¿Te paso el plano?", time: "16:10" },
+        { text: "Dale, lo vemos con mi marido y te aviso 👍", time: "16:31" },
+      ],
+    },
+  },
+  {
+    id: "sofia",
+    name: "Sofía Acosta",
+    mark: "referido",
+    markText: "Referida · Pablo Sosa",
+    why: "La recomendó un cliente de Torre Natalini. Quiere ver Fontana.",
+    tags: [{ label: "Proyecto", value: "Fontana" }, { label: "Busca", value: "Lote" }, { label: "Paga", value: null }],
+    message: "Hola, me pasó tu contacto Pablo Sosa. ¿Puedo ir a ver los lotes de Fontana el sábado?",
+    time: "19:20",
+    suggestion: "¡Hola Sofía! Qué bueno que te recomendó Pablo. El sábado a las 10 te esperamos en Fontana, ¿te queda bien?",
+  },
+  {
+    id: "juan",
+    name: "Juan",
+    mark: "pendiente",
+    markText: "Sin responder · 14 h",
+    why: "Preguntó el precio de MARQ Collection por el anuncio.",
+    tags: [{ label: "Proyecto", value: "MARQ Collection" }, { label: "Busca", value: null }, { label: "Paga", value: null }],
+    message: "precio?",
+    time: "18:40",
+    suggestion: "¡Hola Juan! Perdón la demora. Los valores arrancan en USD 68.000, con anticipo y cuotas. ¿Lo pensás para vivir o para invertir?",
+  },
+];
+
+/**
+ * MARQui's morning brief, in its own chat: yesterday in three numbers and today's
+ * short list. Every name opens that person's chat. It plays itself while on screen
+ * (the cursor opens Marta, then Sofía); the first real click hands you the wheel.
+ */
+function BriefVisual() {
+  const reduce = useReducedMotion();
+  const root = useRef<HTMLDivElement>(null);
+  const inView = useInView(root, { amount: 0.55 });
+  const [arrived, setArrived] = useState(!!reduce);
+  const [open, setOpen] = useState<string | null>(null);
+  const [seen, setSeen] = useState<string[]>([]);
+  const [aim, setAim] = useState<string | null>(null);
+  const [manual, setManual] = useState(false);
+  const [run, setRun] = useState(0);
+
+  useEffect(() => {
+    if (!inView || reduce || manual) return;
+    setArrived(false);
+    setOpen(null);
+    setSeen([]);
+    setAim(null);
+    const ids: number[] = [];
+    const at = (ms: number, fn: () => void) => ids.push(window.setTimeout(fn, ms));
+    const visit = (id: string, start: number) => {
+      // The cursor needs ~1.35 s to glide in and press.
+      at(start, () => setAim(id));
+      at(start + 1450, () => {
+        setAim(null);
+        setOpen(id);
+        setSeen((s) => [...s, id]);
+      });
+      at(start + 5600, () => setOpen(null));
+    };
+    at(1100, () => setArrived(true));
+    visit("marta", 4200);
+    visit("sofia", 11400);
+    at(19800, () => setRun((r) => r + 1));
+    return () => ids.forEach(clearTimeout);
+  }, [inView, reduce, manual, run]);
+
+  const take = () => {
+    setManual(true);
+    setAim(null);
+    setArrived(true);
+  };
+  const openChat = (id: string) => {
+    take();
+    setOpen(id);
+    setSeen((s) => (s.includes(id) ? s : [...s, id]));
+  };
+  const person = pending.find((p) => p.id === open);
+  const slide = reduce ? { duration: 0 } : { duration: 0.55, ease };
+
   return (
-    <div className="overflow-hidden rounded-[1rem] bg-white shadow-[0_1px_2px_rgb(1_30_27/0.1),0_0.75rem_1.75rem_-0.5rem_rgb(1_30_27/0.28),0_2.5rem_5rem_-1.5rem_rgb(1_30_27/0.5)] ring-1 ring-black/[0.08]">
-      {children}
+    <div ref={root} className="wa-font relative w-full max-w-[31rem] text-[#111b21]">
+      <ChatWindow>
+        {/* The brief stays put underneath; a chat slides over it, like a screen pushed on a phone. */}
+        <div className="relative h-[40rem] overflow-hidden sm:h-[34.5rem]">
+          <motion.div className="absolute inset-0 flex flex-col bg-white" animate={{ x: person ? -40 : 0, opacity: person ? 0.55 : 1 }} transition={slide} inert={!!person} aria-hidden={!!person}>
+            <ChatHeader name="MARQui" avatar={<MarquiAvatar className="size-9 shrink-0" />}>
+              {arrived ? "Asistente de MARQ" : <span className="text-[#00a884]">escribiendo…</span>}
+            </ChatHeader>
+            <div className="wa-paper no-scrollbar flex min-h-0 flex-1 flex-col gap-1.5 overflow-y-auto px-3.5 pb-3 pt-3">
+              <span className={cn("mx-auto mb-auto rounded-md bg-white px-2.5 py-1 text-[0.68rem] font-medium uppercase tracking-wide text-[#54656f]", BUBBLE)}>Hoy</span>
+              <AnimatePresence mode="popLayout" initial={false}>
+                {arrived ? (
+                  <Brief key={`brief-${run}`} play={!reduce} seen={seen} aim={aim} onOpen={openChat} />
+                ) : (
+                  <motion.span key={`typing-${run}`} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ duration: 0.3, ease }} className={cn("relative flex w-fit gap-1 rounded-[0.55rem] rounded-tl-none bg-white px-3 py-2.5", BUBBLE)} aria-label="MARQui está escribiendo">
+                    <Tail />
+                    {[0, 1, 2].map((d) => (
+                      <motion.i key={d} className="size-1.5 rounded-full bg-black/35" animate={{ y: [0, -3, 0] }} transition={{ duration: 0.9, repeat: Infinity, delay: d * 0.15 }} />
+                    ))}
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </div>
+            <Composer />
+          </motion.div>
+          <AnimatePresence initial={false}>
+            {person && (
+              <motion.div
+                key={person.id}
+                className="absolute inset-0 flex flex-col bg-white shadow-[-1rem_0_2rem_-1rem_rgb(1_30_27/0.35)]"
+                initial={{ x: "100%" }}
+                animate={{ x: 0 }}
+                exit={{ x: "100%" }}
+                transition={slide}
+              >
+                <PersonChat p={person} onBack={() => (take(), setOpen(null))} />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </ChatWindow>
+      <p className="sky-type mt-4 flex items-center justify-center gap-2 text-[0.9rem] font-medium text-white/85">
+        <Sunrise className="size-4" /> Llega a las 9:00. Tocá un nombre y abrís su chat.
+      </p>
     </div>
   );
 }
 
-function ChatHeader({ name, children, below }: { name: string; children: ReactNode; below?: ReactNode }) {
+function Brief({ play, seen, aim, onOpen }: { play: boolean; seen: string[]; aim: string | null; onOpen: (id: string) => void }) {
+  // Sections land one after the other, the way a long message reads top to bottom.
+  const rise = (i: number) => (play ? { initial: { opacity: 0, y: 10 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.5, delay: 0.15 + i * 0.14, ease } } : {});
+  const stats = [
+    { n: 23, label: "consultas" },
+    { n: 2, label: "interesados nuevos" },
+    { n: 4, label: "sin responder", alert: true },
+  ];
   return (
-    <header className="border-b border-black/[0.06] bg-[#f0f2f5] px-3.5 py-2">
-      <div className="flex items-center gap-3">
-        <span className="grid size-9 shrink-0 place-items-center rounded-full bg-gradient-to-br from-[#c7d3e6] to-[#9fb3d4] text-[0.9rem] font-semibold text-white">{name[0]}</span>
-        <span className="min-w-0 flex-1 leading-tight">
-          <span className="block text-[0.95rem] font-medium">{name}</span>
-          <span className="block truncate text-[0.74rem] text-[#667781]">{children}</span>
-        </span>
-        <Video className="size-[1.15rem] text-[#54656f]" aria-hidden />
-        <Search className="size-[1.15rem] text-[#54656f]" aria-hidden />
-        <MoreVertical className="size-[1.15rem] text-[#54656f]" aria-hidden />
+    <motion.div
+      initial={play ? { opacity: 0, y: 14, scale: 0.98 } : false}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.45, ease }}
+      className={cn("relative w-[94%] origin-top-left rounded-[0.6rem] rounded-tl-none bg-white px-3 pb-1.5 pt-2.5 text-[0.84rem] leading-[1.35]", BUBBLE)}
+    >
+      <Tail />
+      <motion.p {...rise(0)} className="text-[0.95rem] font-semibold tracking-[-0.01em]">
+        ☀️ Buen día, Cande
+      </motion.p>
+      <motion.p {...rise(0)} className="text-[0.76rem] text-[#667781]">
+        Tu resumen de las dos líneas
+      </motion.p>
+
+      <motion.p {...rise(1)} className="mt-3 text-[0.66rem] font-semibold uppercase tracking-[0.08em] text-[#008069]">
+        Ayer
+      </motion.p>
+      <motion.div {...rise(1)} className="mt-1.5 grid grid-cols-3 gap-1.5">
+        {stats.map((s) => (
+          <div key={s.label} className="rounded-[0.55rem] bg-[#f3f5f6] px-2.5 py-2">
+            <b className={cn("block text-[1.35rem] font-semibold leading-none tracking-[-0.02em] tabular-nums", s.alert && "text-[#c4381b]")}>
+              <Count to={s.n} play={play} />
+            </b>
+            <span className="mt-1 block text-[0.68rem] leading-tight text-[#667781]">{s.label}</span>
+          </div>
+        ))}
+      </motion.div>
+
+      <motion.p {...rise(2)} className="mt-3.5 text-[0.66rem] font-semibold uppercase tracking-[0.08em] text-[#008069]">
+        Hoy, lo importante
+      </motion.p>
+      <ul className="mt-1 divide-y divide-black/[0.06]">
+        {pending.map((p, i) => {
+          const done = seen.includes(p.id);
+          return (
+            <motion.li key={p.id} {...rise(3 + i)} className="flex items-center gap-2.5 py-2">
+              <Face name={p.name} className="size-8" />
+              <span className="min-w-0 flex-1">
+                <span className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
+                  <b className="text-[0.84rem] font-semibold">{p.name}</b>
+                  <span className={cn("inline-flex h-[1.15rem] items-center rounded-full px-1.5 text-[0.62rem] font-semibold leading-none", MARKS[p.mark])}>{p.markText}</span>
+                </span>
+                <span className="block text-[0.74rem] leading-snug text-[#54656f]">{p.why}</span>
+              </span>
+              <button
+                type="button"
+                onClick={() => onOpen(p.id)}
+                aria-label={`Abrir el chat de ${p.name}`}
+                className={cn(
+                  "relative inline-flex h-7 shrink-0 cursor-pointer items-center gap-1 rounded-full px-2.5 text-[0.72rem] font-semibold transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#008069]",
+                  done ? "bg-transparent text-[#667781] hover:bg-[#f3f5f6]" : "bg-[#e7f6f2] text-[#00705f] hover:bg-[#d2eee7]",
+                  aim === p.id && "bg-[#d2eee7]",
+                )}
+              >
+                {done ? <CheckCheck className="size-3.5 text-[#53bdeb]" aria-hidden /> : <MessageCircle className="size-3.5" aria-hidden />}
+                {done ? "Visto" : "Abrir chat"}
+                {aim === p.id && <Cursor play delay={0} />}
+              </button>
+            </motion.li>
+          );
+        })}
+      </ul>
+
+      <motion.p {...rise(6)} className="pt-1 text-[0.72rem] text-[#667781]">
+        Lo demás va al resumen del viernes.
+        <Time>9:00</Time>
+      </motion.p>
+    </motion.div>
+  );
+}
+
+/** Rolls a number up from zero when the brief lands. */
+function Count({ to, play }: { to: number; play: boolean }) {
+  const [n, setN] = useState(play ? 0 : to);
+  useEffect(() => {
+    if (!play) return;
+    const c = animate(0, to, { duration: 0.9, delay: 0.45, ease, onUpdate: (v) => setN(Math.round(v)) });
+    return () => c.stop();
+  }, [play, to]);
+  return <>{n}</>;
+}
+
+/** The chat you land in from the brief: the person's tags on top, their message, and MARQui's reply waiting. */
+function PersonChat({ p, onBack }: { p: Pending; onBack: () => void }) {
+  const reduce = useReducedMotion();
+  return (
+    <>
+      <ChatHeader
+        name={p.name}
+        back={
+          <button type="button" onClick={onBack} aria-label="Volver al resumen" className="-ml-1.5 -mr-1.5 grid size-8 shrink-0 cursor-pointer place-items-center rounded-full text-[#54656f] transition-colors hover:bg-black/[0.06] focus-visible:outline-2 focus-visible:outline-[#008069]">
+            <ArrowLeft className="size-[1.15rem]" />
+          </button>
+        }
+        below={
+          <div className="flex flex-wrap items-center gap-1 pb-0.5 pl-1 pt-2">
+            <MarquiMark tone="teal" className="mr-0.5 size-3.5" title="Etiquetas de MARQui" />
+            {p.tags.map((t) => (
+              <span
+                key={t.label}
+                className={cn("inline-flex h-[1.35rem] items-center gap-1 rounded-full px-2 text-[0.68rem] leading-none", t.value ? "bg-white shadow-[0_0_0_1px_rgb(0_0_0/0.07)]" : "border border-dashed border-black/25 text-[#667781]")}
+              >
+                <span className="text-[#667781]">{t.label}</span>
+                <b className="font-semibold">{t.value ?? "?"}</b>
+              </span>
+            ))}
+            {p.mark !== "pendiente" && <span className={cn("inline-flex h-[1.35rem] items-center rounded-full px-2 text-[0.68rem] font-semibold leading-none", MARKS[p.mark])}>{p.markText}</span>}
+          </div>
+        }
+      >
+        últ. vez ayer a las {p.time}
+      </ChatHeader>
+      <div className="wa-paper flex min-h-0 flex-1 flex-col justify-end gap-1.5 overflow-hidden px-4 pb-3 pt-3">
+        {p.before ? (
+          <>
+            <span className={cn("mx-auto mb-1 rounded-md bg-white px-2.5 py-1 text-[0.68rem] font-medium uppercase tracking-wide text-[#54656f]", BUBBLE)}>{p.before.day}</span>
+            {p.before.msgs.map((m) => (
+              <div key={m.text} className={cn("relative w-fit max-w-[80%] rounded-[0.55rem] px-2.5 py-1.5 text-[0.86rem] leading-[1.35]", BUBBLE, m.out ? "ml-auto bg-wa-bubble" : "bg-white")}>
+                {m.text}
+                <Time read={m.out}>{m.time}</Time>
+              </div>
+            ))}
+            {/* Forty days of silence, then she's back. */}
+            <span className="my-1 flex items-center gap-2 text-[0.66rem] font-medium text-[#8a6a2f]">
+              <i className="h-px flex-1 bg-[#e8c98f]" />
+              40 días sin escribir
+              <i className="h-px flex-1 bg-[#e8c98f]" />
+            </span>
+          </>
+        ) : (
+          <span className={cn("mx-auto mb-auto max-w-[88%] rounded-md bg-[#ffeecd] px-3 py-1.5 text-center text-[0.68rem] leading-snug text-[#54656f]", BUBBLE)}>
+            🔒 Los mensajes y las llamadas están cifrados de extremo a extremo.
+          </span>
+        )}
+        <span className={cn("mx-auto my-1 rounded-md bg-white px-2.5 py-1 text-[0.68rem] font-medium uppercase tracking-wide text-[#54656f]", BUBBLE)}>Ayer</span>
+        <div className={cn("relative w-fit max-w-[80%] rounded-[0.55rem] rounded-tl-none bg-white px-2.5 py-1.5 text-[0.86rem] leading-[1.35]", BUBBLE)}>
+          <Tail />
+          {p.message}
+          <Time>{p.time}</Time>
+        </div>
+        <motion.div
+          initial={reduce ? false : { opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, delay: reduce ? 0 : 0.55, ease }}
+          className="relative mt-2 rounded-[0.8rem] bg-white text-[0.8rem] leading-[1.38] shadow-[0_0_0_1.5px_#008c7e,0_8px_20px_-8px_rgb(0_140_126/0.45)]"
+        >
+          <div className="flex items-center gap-1.5 px-3 pt-2.5">
+            <MarquiMark tone="teal" className="size-3.5" />
+            <span className="text-[0.74rem] font-semibold">MARQui</span>
+            <span className="text-[0.74rem] text-[#667781]">sugiere</span>
+          </div>
+          <p className="px-3 pb-2.5 pt-1 text-[#3b4a54]">{p.suggestion}</p>
+        </motion.div>
       </div>
-      {below}
-    </header>
-  );
-}
-
-/** The little hook on the first bubble of a run. */
-function Tail({ out = false }: { out?: boolean }) {
-  return out ? (
-    <svg viewBox="0 0 8 13" className="absolute -right-2 top-0 h-[13px] w-2 fill-wa-bubble" aria-hidden>
-      <path d="M5.188 1H0v11.193l6.467-8.625C7.526 2.156 6.958 1 5.188 1z" />
-    </svg>
-  ) : (
-    <svg viewBox="0 0 8 13" className="absolute -left-2 top-0 h-[13px] w-2 fill-white" aria-hidden>
-      <path d="M1.533 3.568 8 12.193V1H2.812C1.042 1 .474 2.156 1.533 3.568z" />
-    </svg>
-  );
-}
-
-function Time({ children, read = false }: { children: ReactNode; read?: boolean }) {
-  return (
-    <span className="float-right -mb-1 ml-2.5 mt-1.5 inline-flex items-center gap-0.5 text-[0.64rem] leading-none text-[#667781]">
-      {children}
-      {read && <CheckCheck className="size-3.5 text-[#53bdeb]" />}
-    </span>
-  );
-}
-
-function Composer({ draft = "", typing = false, cursor }: { draft?: string; typing?: boolean; cursor?: ReactNode }) {
-  return (
-    <div className="flex items-end gap-2 bg-[#f0f2f5] px-2.5 py-2">
-      <div className="flex min-h-10 flex-1 items-center gap-1.5 rounded-[1.4rem] bg-white py-1.5 pl-2.5 pr-3">
-        <Plus className="size-5 shrink-0 self-end text-[#54656f]" aria-hidden />
-        <Smile className="size-5 shrink-0 self-end text-[#54656f]" aria-hidden />
-        <p className="min-w-0 flex-1 py-0.5 pl-1 text-[0.84rem] leading-[1.35]">
-          {draft ? (
-            <>
-              {draft}
-              {typing && <i className="ml-px inline-block h-[1.05em] w-px translate-y-[0.18em] animate-pulse bg-[#00a884]" />}
-            </>
-          ) : (
-            <span className="text-[#667781]">Escribe un mensaje</span>
-          )}
-        </p>
-      </div>
-      <span className={cn("relative grid size-10 shrink-0 place-items-center rounded-full transition-colors duration-300", draft ? "bg-[#00a884] text-white" : "text-[#54656f]")} aria-hidden>
-        {draft ? <SendHorizontal className="size-[1.15rem]" /> : <Mic className="size-5" />}
-        {cursor}
-      </span>
-    </div>
+      <Composer />
+    </>
   );
 }
 
