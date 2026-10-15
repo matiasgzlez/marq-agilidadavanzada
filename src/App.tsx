@@ -46,7 +46,12 @@ export function App() {
             <Outro />
           </div>
         ) : (
-          <Thinking />
+          <Thinking
+            onGoToSolution={() => {
+              setPanel("solucion");
+              window.scrollTo({ top: 0, behavior: "instant" });
+            }}
+          />
         )}
       </main>
     </SkyProvider>

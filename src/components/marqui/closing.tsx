@@ -35,14 +35,4 @@ export function Outro() {
   );
 }
 
-export function Thinking() {
-  return (
-    <Section sky={SKY.dawn} id="panel-thinking" role="tabpanel" className="grid min-h-[100svh] place-items-center pb-20 pt-32">
-      <div className="paper max-w-[44rem] rounded-[2rem] p-10 text-center sm:p-14">
-        <span className="eyebrow text-blue">Design thinking</span>
-        <h1 className="mt-5 font-display text-[clamp(1.8rem,3vw,3rem)] font-bold leading-none tracking-[-0.03em]">En preparación.</h1>
-        <p className="mt-5 text-[1.25rem] leading-snug text-ink-2">Acá va a estar el proceso que nos llevó a MARQui. Por ahora, mirá la solución.</p>
-      </div>
-    </Section>
-  );
-}
+export { ThinkingPanel as Thinking } from "./thinking";
