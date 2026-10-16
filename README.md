@@ -29,11 +29,17 @@ Además, el equipo no quiere aprender un sistema nuevo: trabaja en WhatsApp Web 
 
 MARQui es **un compañero de trabajo que vive en el WhatsApp que el equipo ya usa**. Lee cada consulta, prepara la respuesta y avisa lo importante, pero **nunca le habla al cliente**: el que responde siempre es una persona de MARQ.
 
+<p align="center">
+  <img src="docs/capturas/anim-sugerencias.gif" alt="MARQui sugiere tres respuestas; se elige una y se escribe en el cuadro de texto" width="420">
+  &nbsp;
+  <img src="docs/capturas/anim-seguimiento.gif" alt="Seguir a una clienta, crearle una regla a MARQui y recibir el aviso cuando escribe" width="440">
+</p>
+
 | Qué hace | Cómo se ve |
 | --- | --- |
-| **Te sugiere qué responder.** Tres respuestas con el tono de MARQ en cada chat. Elegís una, la ajustás y la mandás vos. | ![Sugerencias](docs/capturas/02-sugerencias.jpg) |
+| **Te sugiere qué responder.** Tres respuestas con el tono de MARQ en cada chat. Elegís una, la ajustás y la mandás vos. | Primera animación, arriba |
 | **Tu día, resumido cada mañana.** A las 9 llega lo que pasó ayer y lo que no puede esperar hoy, con un botón para abrir cada chat. | ![Resumen diario](docs/capturas/03-resumen-diario.jpg) |
-| **Seguí a los que importan.** Marcás a un cliente importante con una estrella y MARQui te avisa apenas escribe. También le pedís tareas que se repiten («todos los días a las 18 pasame…»), que quedan a la vista en sus **Reglas**. | ![Seguimiento y reglas](docs/capturas/04-seguimiento-reglas.jpg) |
+| **Seguí a los que importan.** Marcás a un cliente importante con una estrella y MARQui te avisa apenas escribe. También le pedís tareas que se repiten («todos los días a las 18 pasame…»), que quedan a la vista en sus **Reglas**. | Segunda animación, arriba |
 | **Aprende cómo trabaja MARQ.** Se nutre de los chats, los audios, la pauta, los Excel, los documentos de Drive y la web. Nadie carga nada en otro sistema. | ![Aprende](docs/capturas/05-aprende.jpg) |
 | **También en el celular.** Es un contacto más: le preguntás, le mandás un audio o le reenviás un mensaje. | ![Celular](docs/capturas/06-celular.jpg) |
 
@@ -66,9 +72,9 @@ La línea de tiempo recorre un viernes, de 9:00 a 18:00, como una conversación 
 
 ## MARQador, el módulo de datos
 
-| | |
-| --- | --- |
-| ![MARQador](docs/capturas/11-marqador.jpg) | ![Tablero de MARQador](docs/capturas/12-tablero-marqador.jpg) |
+![MARQador](docs/capturas/11-marqador.jpg)
+
+![El tablero de MARQador, recorriendo sus pantallas](docs/capturas/anim-marqador.gif)
 
 **MARQador es un módulo de MARQui**, no otra solución: viene incluido y usa las mismas conversaciones. MARQui ayuda en cada charla, una por una; MARQador junta todas las fichas y muestra **qué pide el mercado**. Se abre en una pestaña desde WhatsApp Web y tiene cinco pantallas, cada una con una pregunta del negocio:
 
@@ -82,7 +88,7 @@ El resumen semanal también llega por WhatsApp, en PDF.
 
 ## Cómo llega MARQui a MARQ
 
-![Cómo llega MARQui a MARQ](docs/capturas/13-arquitectura.jpg)
+![Cómo llega MARQui a MARQ: las líneas, la API oficial, MARQui y dónde aparece](docs/capturas/anim-arquitectura.gif)
 
 Las dos líneas siguen funcionando igual que hoy. MARQui recibe los mensajes por la **API oficial de WhatsApp** (en modo coexistencia, el número sigue en el celular) y aparece donde el equipo trabaja:
 
