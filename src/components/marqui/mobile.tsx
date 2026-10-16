@@ -4,10 +4,10 @@ import { CalendarClock, CheckCheck, Copy, FileSpreadsheet, Forward, MessageCircl
 import { cn } from "@/lib/utils";
 import { ease } from "./primitives";
 import { PhoneFrame } from "./phone";
+import { StepControls, useBeats, useDemoSteps } from "./demo-steps";
 
 /* 0 rest · 1 you forward a client's message · 2 typing · 3 three replies · 4 you long-press the 2nd
    · 5 copied · 6 you ask a question · 7 typing · 8 the answer · 9 you send a voice note · 10 typing · 11 noted */
-const LAST = 11;
 
 const REPLIES = [
   "¡Hola! Sí, financiamos hasta 36 cuotas en pesos. ¿Te paso el plano con los lotes disponibles?",
@@ -46,17 +46,22 @@ function PhoneDemo() {
   const reduce = useReducedMotion();
   const root = useRef<HTMLDivElement>(null);
   const inView = useInView(root, { amount: 0.5 });
-  const [step, setStep] = useState(reduce ? LAST : 0);
+  const labels = ["En el celular, MARQui es un contacto más", "Le reenviás el mensaje de un cliente", "Copiás la respuesta que más te gusta", "Le preguntás lo que necesites", "Le contás una novedad por audio"];
+  const demo = useDemoSteps(labels.length - 1, inView, reduce ? labels.length - 1 : 0);
+  const [step, setStep] = useState(0);
   useEffect(() => publish(step), [step]);
-  const [run, setRun] = useState(0);
 
-  useEffect(() => {
-    if (!inView || reduce) return;
-    setStep(0);
-    const ids = [700, 1500, 2600, 5000, 6900, 9200, 10000, 11100, 13600, 14500, 15500].map((ms, i) => window.setTimeout(() => setStep(i + 1), ms));
-    ids.push(window.setTimeout(() => setRun((r) => r + 1), 20500));
-    return () => ids.forEach(clearTimeout);
-  }, [inView, reduce, run]);
+  useBeats(
+    (at) => {
+      // Each step starts from where the one before ended, so going back replays it.
+      setStep([0, 0, 3, 6, 9][demo.step]!);
+      if (demo.step === 1) [200, 1000, 2100].forEach((ms, i) => at(ms, () => setStep(1 + i)));
+      if (demo.step === 2) [200, 2100].forEach((ms, i) => at(ms, () => setStep(4 + i)));
+      if (demo.step === 3) [800, 1900].forEach((ms, i) => at(ms, () => setStep(7 + i)));
+      if (demo.step === 4) [900, 1900].forEach((ms, i) => at(ms, () => setStep(10 + i)));
+    },
+    [demo.step],
+  );
 
   const pop = reduce ? {} : { initial: { opacity: 0, y: 12, scale: 0.97 }, animate: { opacity: 1, y: 0, scale: 1 }, transition: { duration: 0.42, ease } };
   const holding = step === 4;
@@ -77,7 +82,7 @@ function PhoneDemo() {
             {step === 5 && (
               /* The phone's honest step: you copy it, then paste it in the client's chat yourself. */
               <motion.div
-                key={`toast-${run}`}
+                key="toast"
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 8 }}
@@ -97,7 +102,7 @@ function PhoneDemo() {
           <span className="mx-auto mb-auto rounded-lg bg-white/90 px-3 py-1 text-[0.72rem] font-medium text-black/55 shadow-sm">Hoy</span>
 
           {step >= 1 && (
-            <motion.div key={`fwd-${run}`} {...pop} className="ml-auto max-w-[86%] rounded-[0.8rem] rounded-tr-none bg-wa-bubble px-2.5 py-1.5 shadow-[0_1px_0.5px_rgb(11_20_26/0.13)]">
+            <motion.div key="fwd" {...pop} className="ml-auto max-w-[86%] rounded-[0.8rem] rounded-tr-none bg-wa-bubble px-2.5 py-1.5 shadow-[0_1px_0.5px_rgb(11_20_26/0.13)]">
               <span className="mb-0.5 flex items-center gap-1 text-[0.72rem] italic text-black/45">
                 <Forward className="size-3.5" aria-hidden /> Reenviado
               </span>
@@ -105,7 +110,7 @@ function PhoneDemo() {
               <Stamp out>19:05</Stamp>
             </motion.div>
           )}
-          <AnimatePresence mode="popLayout">{step === 2 && <motion.div key={`t1-${run}`} exit={{ opacity: 0, transition: { duration: 0 } }}>{typing}</motion.div>}</AnimatePresence>
+          <AnimatePresence mode="popLayout">{step === 2 && <motion.div key="t1" exit={{ opacity: 0, transition: { duration: 0 } }}>{typing}</motion.div>}</AnimatePresence>
 
           {step >= 3 && (
             <>
@@ -113,7 +118,7 @@ function PhoneDemo() {
                 const lifted = holding && i === 1;
                 return (
                   <motion.div
-                    key={`r${i}-${run}`}
+                    key={`r${i}`}
                     initial={reduce ? false : { opacity: 0, y: 12, scale: 0.97 }}
                     animate={{ opacity: holding && !lifted ? 0.35 : 1, y: 0, scale: lifted ? 1.03 : 1 }}
                     transition={{ duration: 0.42, delay: step === 3 ? i * 0.3 : 0, ease }}
@@ -151,14 +156,14 @@ function PhoneDemo() {
           )}
 
           {step >= 6 && (
-            <motion.div key={`q-${run}`} {...pop} className="ml-auto max-w-[86%] rounded-[0.8rem] rounded-tr-none bg-wa-bubble px-2.5 py-1.5 shadow-[0_1px_0.5px_rgb(11_20_26/0.13)]">
+            <motion.div key="q" {...pop} className="ml-auto max-w-[86%] rounded-[0.8rem] rounded-tr-none bg-wa-bubble px-2.5 py-1.5 shadow-[0_1px_0.5px_rgb(11_20_26/0.13)]">
               ¿Cuántos lotes quedan en Fontana?
               <Stamp out>19:08</Stamp>
             </motion.div>
           )}
-          <AnimatePresence mode="popLayout">{step === 7 && <motion.div key={`t2-${run}`} exit={{ opacity: 0, transition: { duration: 0 } }}>{typing}</motion.div>}</AnimatePresence>
+          <AnimatePresence mode="popLayout">{step === 7 && <motion.div key="t2" exit={{ opacity: 0, transition: { duration: 0 } }}>{typing}</motion.div>}</AnimatePresence>
           {step >= 8 && (
-            <motion.div key={`a-${run}`} {...pop} className="max-w-[86%] rounded-[0.8rem] rounded-tl-none bg-white px-2.5 py-1.5 shadow-[0_1px_0.5px_rgb(11_20_26/0.13)]">
+            <motion.div key="a" {...pop} className="max-w-[86%] rounded-[0.8rem] rounded-tl-none bg-white px-2.5 py-1.5 shadow-[0_1px_0.5px_rgb(11_20_26/0.13)]">
               Quedan <b>12 de 40</b>. Los de esquina son los más pedidos esta semana.
               <Stamp>19:08</Stamp>
             </motion.div>
@@ -166,7 +171,7 @@ function PhoneDemo() {
 
           {/* Talking to him: a voice note with a novelty, and he learns it. */}
           {step >= 9 && (
-            <motion.div key={`v-${run}`} {...pop} className="ml-auto w-[78%] rounded-[0.8rem] rounded-tr-none bg-wa-bubble px-2.5 pb-1.5 pt-2 shadow-[0_1px_0.5px_rgb(11_20_26/0.13)]">
+            <motion.div key="v" {...pop} className="ml-auto w-[78%] rounded-[0.8rem] rounded-tr-none bg-wa-bubble px-2.5 pb-1.5 pt-2 shadow-[0_1px_0.5px_rgb(11_20_26/0.13)]">
               <span className="flex items-center gap-2">
                 <Play className="size-4 shrink-0 fill-[#54656f] text-[#54656f]" aria-hidden />
                 <span className="flex h-5 flex-1 items-center gap-[2px]" aria-hidden>
@@ -180,15 +185,16 @@ function PhoneDemo() {
               <Stamp out>19:10</Stamp>
             </motion.div>
           )}
-          <AnimatePresence mode="popLayout">{step === 10 && <motion.div key={`t3-${run}`} exit={{ opacity: 0, transition: { duration: 0 } }}>{typing}</motion.div>}</AnimatePresence>
+          <AnimatePresence mode="popLayout">{step === 10 && <motion.div key="t3" exit={{ opacity: 0, transition: { duration: 0 } }}>{typing}</motion.div>}</AnimatePresence>
           {step >= 11 && (
-            <motion.div key={`n-${run}`} {...pop} className="max-w-[86%] rounded-[0.8rem] rounded-tl-none bg-white px-2.5 py-1.5 shadow-[0_1px_0.5px_rgb(11_20_26/0.13)]">
+            <motion.div key="n" {...pop} className="max-w-[86%] rounded-[0.8rem] rounded-tl-none bg-white px-2.5 py-1.5 shadow-[0_1px_0.5px_rgb(11_20_26/0.13)]">
               Anotado ✓ Desde hoy sugiero <b>36 cuotas</b> para Collection.
               <Stamp>19:10</Stamp>
             </motion.div>
           )}
         </div>
       </PhoneFrame>
+      <StepControls step={demo.step} labels={labels} go={demo.go} restart={demo.restart} />
     </div>
   );
 }

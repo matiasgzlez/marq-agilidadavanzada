@@ -9,6 +9,7 @@ import { MarquiMark } from "./marqui-mark";
 import { SKY } from "./sky";
 import { FollowVisual } from "./follow";
 import { AskVisual } from "./ask";
+import { StepControls, useBeats, useDemoSteps } from "./demo-steps";
 import { LearnText, LearnVisual } from "./learn";
 import { MobileLimits, MobileSteps, MobileVisual } from "./mobile";
 import { BUBBLE, ChatHeader, ChatWindow, Composer, Cursor, Face, SuggestionTray, Tail, Time } from "./wa-kit";
@@ -19,45 +20,45 @@ type Feature = { title: string; text: ReactNode; visual: ReactNode; tint?: strin
 
 const features: Feature[] = [
   {
-    title: "Te sugiere qué responder",
+    title: "Respuestas inteligentes",
     text: "Abrís el chat de un potencial cliente y MARQui ya lo leyó. Te deja tres respuestas con el tono de MARQ: tocás una, la ajustás si querés y la mandás vos, con tu nombre.",
     visual: <RepliesVisual />,
     pose: "guino",
   },
   {
-    title: "Arma la ficha de cada cliente",
+    title: "Ficha automática",
     text: "Mientras charlan, MARQui anota qué proyecto le interesa, qué busca, cómo piensa pagar y en qué etapa está. Si falta un dato, lo pregunta sutilmente dentro de una respuesta.",
     visual: <CardVisual />,
     pose: "pensando",
   },
   {
-    title: "Tu día, resumido cada mañana",
+    title: "Resumen diario",
     text: "A las 9 te llega lo que pasó ayer y lo que no puede esperar hoy. Tocás un nombre y abrís su chat. Durante el día, solo te escribe si vuelve un cliente, reaparece alguien, llega un referido o te escribe alguien que seguís.",
     visual: <BriefVisual />,
     pose: "sorpresa",
   },
   {
-    title: "Seguí a los que importan",
+    title: "Clientes destacados",
     text: "Marcás a un potencial cliente importante y MARQui te avisa apenas te escribe, para que no espere. Y le podés dar tareas que se repiten, como una lista diaria por proyecto. Todo queda a la vista en sus reglas.",
     visual: <FollowVisual />,
     wide: true,
     pose: "guino",
   },
   {
-    title: "Le preguntás lo que necesites",
-    text: "Le escribís o le mandás un audio, como a un compañero. Te contesta con los números de un vistazo, o con la lista: cada nombre abre su chat, y viene en Excel si la necesitás.",
+    title: "Preguntá lo que necesites",
+    text: "Le escribís o le mandás un audio, como a un compañero. Te contesta con los números de un vistazo, o con la lista: cada nombre abre su chat, y viene en Excel si la necesitás. Y si hay un evento o una oferta, te dice a quién avisarle y te prepara el mensaje.",
     visual: <AskVisual />,
     pose: "alegria",
   },
   {
-    title: "Aprende cómo trabaja MARQ",
+    title: "Aprendizaje continuo",
     text: <LearnText />,
     visual: <LearnVisual />,
     wide: true,
     pose: "derecha",
   },
   {
-    title: "También en el celular",
+    title: "MARQui móvil",
     text: "En el celular, MARQui es un contacto más: le preguntás y te contesta, o le reenviás el mensaje de un cliente y te devuelve tres respuestas para copiar.",
     visual: <MobileVisual />,
     center: true,
@@ -106,7 +107,7 @@ export function Functions() {
 function RepliesVisual() {
   const reduce = useReducedMotion();
   const root = useRef<HTMLDivElement>(null);
-  const inView = useInView(root, { once: true, amount: 0.6 });
+  const inView = useInView(root, { amount: 0.5 });
   const replies = [
     "¡Hola Juan! En MARQ Collection hay de 1, 2 y 3 dormitorios desde USD 68.000. ¿Cuántos dormitorios buscás?",
     "¡Hola Juan! Los valores arrancan en USD 68.000, con anticipo y cuotas. ¿Lo pensás para vivir o para invertir?",
@@ -114,19 +115,24 @@ function RepliesVisual() {
   ];
   const pick = 1;
   const full = replies[pick]!;
-  // The hand causes the reaction: the cursor taps a reply, and it lands in your text box.
-  const [picked, setPicked] = useState<number | null>(reduce ? pick : null);
-  const [draft, setDraft] = useState(reduce ? full : "");
+  // 1 MARQui suggests · 2 the cursor taps a reply and it lands in your text box · 3 you send it.
+  const labels = ["Llega una consulta por el anuncio", "MARQui lee el chat y sugiere tres respuestas", "Elegís una y se escribe en tu cuadro", "La enviás vos, con tu nombre"];
+  const { step, go, restart } = useDemoSteps(labels.length - 1, inView, reduce ? labels.length - 1 : 0);
+  const [picked, setPicked] = useState<number | null>(null);
+  const [draft, setDraft] = useState("");
 
-  useEffect(() => {
-    if (!inView || reduce) return;
-    const ids: number[] = [];
-    const at = (ms: number, fn: () => void) => ids.push(window.setTimeout(fn, ms));
-    at(2500, () => setPicked(pick));
-    for (let i = 0; i <= full.length; i += 3) at(2750 + i * 9, () => setDraft(full.slice(0, i)));
-    at(2750 + full.length * 9 + 40, () => setDraft(full));
-    return () => ids.forEach(clearTimeout);
-  }, [inView, reduce, full]);
+  useBeats(
+    (at) => {
+      setPicked(step >= 3 ? pick : null);
+      setDraft("");
+      if (step !== 2) return;
+      // The cursor needs ~1.35 s to glide in and press.
+      at(1400, () => setPicked(pick));
+      for (let i = 0; i <= full.length; i += 3) at(1650 + i * 9, () => setDraft(full.slice(0, i)));
+      at(1650 + full.length * 9 + 40, () => setDraft(full));
+    },
+    [step, full],
+  );
 
   const typing = draft.length > 0 && draft.length < full.length;
 
@@ -153,12 +159,33 @@ function RepliesVisual() {
               <span className="ml-3 inline-block translate-y-1 text-[0.66rem] text-[#667781]">10:30</span>
             </p>
           </div>
+          <AnimatePresence initial={false}>
+            {step >= 3 && (
+              <motion.div
+                initial={{ opacity: 0, y: 10, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.4, ease }}
+                className={cn("relative ml-auto w-fit max-w-[82%] rounded-[0.55rem] rounded-tr-none bg-wa-bubble px-2.5 py-1.5 text-[0.86rem] leading-[1.35]", BUBBLE)}
+              >
+                <Tail out />
+                {full}
+                <Time read>10:31</Time>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
-        <SuggestionTray replies={replies} picked={picked} show={inView} cursorAt={pick} cursor={<Cursor play={inView} />} />
+        <AnimatePresence initial={false}>
+          {step < 3 && (
+            <motion.div exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.4, ease }} className="overflow-hidden">
+              <SuggestionTray replies={replies} picked={picked} show={step >= 1} cursorAt={pick} cursor={step === 2 && <Cursor play delay={0} />} />
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <Composer draft={draft} typing={typing} />
       </ChatWindow>
+      <StepControls step={step} labels={labels} go={go} restart={restart} />
       <p className="sky-type mt-4 flex items-center justify-center gap-2 text-[0.9rem] font-medium text-white/85">
         <PenLine className="size-4" /> Se escribe en tu cuadro de texto. La enviás vos.
       </p>
@@ -170,36 +197,42 @@ function CardVisual() {
   const reduce = useReducedMotion();
   const root = useRef<HTMLDivElement>(null);
   const inView = useInView(root, { amount: 0.6 });
-  // 0 MARQui suggests · 1 you tap it: it lands in your text box · 2 you tweak it · 3 you send it
-  // · 4 Marta types · 5 Marta answers · 6 MARQui writes it down.
-  // It loops while on screen, so the explanation always comes back. With reduced motion it stays on the suggestion.
+  // Inside a step, the scene moves through: 0 MARQui suggests · 1 you tap it: it lands in your text box
+  // · 2 you tweak it · 3 you send it · 4 Marta types · 5 Marta answers · 6 MARQui writes it down.
+  const labels = ["Marta vuelve a escribir, 40 días después", "MARQui sugiere y suma la pregunta que falta", "Elegís la primera", "La ajustás y la enviás", "Marta responde", "MARQui completa la ficha sola"];
+  const demo = useDemoSteps(labels.length - 1, inView, reduce ? labels.length - 1 : 0);
   const reply = "¡Qué bueno que volviste, Marta! La 3B sigue disponible. ¿La pensás con crédito o de contado?";
   const edited = `${reply} 😊`;
   const [step, setStep] = useState(0);
   const [draft, setDraft] = useState("");
-  const [run, setRun] = useState(0);
 
-  useEffect(() => {
-    if (!inView || reduce) return;
-    setStep(0);
-    setDraft("");
-    const ids: number[] = [];
-    const at = (ms: number, fn: () => void) => ids.push(window.setTimeout(fn, ms));
-    at(2550, () => setStep(1));
-    for (let i = 0; i <= reply.length; i += 4) at(2650 + i * 6, () => setDraft(reply.slice(0, i)));
-    at(2650 + reply.length * 6 + 20, () => setDraft(reply));
-    at(3700, () => setStep(2));
-    at(3900, () => setDraft(edited));
-    at(5150, () => {
-      setStep(3);
-      setDraft("");
-    });
-    at(6300, () => setStep(4));
-    at(7700, () => setStep(5));
-    at(8300, () => setStep(6));
-    at(12000, () => setRun((r) => r + 1));
-    return () => ids.forEach(clearTimeout);
-  }, [inView, reduce, run, reply, edited]);
+  useBeats(
+    (at) => {
+      const base = [0, 0, 0, 1, 3, 5][demo.step]!;
+      setStep(base);
+      setDraft(base === 1 ? reply : "");
+      if (demo.step === 2) {
+        // The cursor needs ~1.35 s to glide in and press.
+        at(1400, () => setStep(1));
+        for (let i = 0; i <= reply.length; i += 4) at(1500 + i * 6, () => setDraft(reply.slice(0, i)));
+        at(1500 + reply.length * 6 + 20, () => setDraft(reply));
+      }
+      if (demo.step === 3) {
+        at(0, () => setStep(2));
+        at(1400, () => setDraft(edited));
+        at(2600, () => {
+          setStep(3);
+          setDraft("");
+        });
+      }
+      if (demo.step === 4) {
+        at(300, () => setStep(4));
+        at(1700, () => setStep(5));
+      }
+      if (demo.step === 5) at(300, () => setStep(6));
+    },
+    [demo.step, reply, edited],
+  );
 
   const tags: { label: string; value: string | null; solid?: boolean }[] = [
     { label: "Proyecto", value: "MARQ Collection" },
@@ -250,14 +283,14 @@ function CardVisual() {
           </motion.div>
           <AnimatePresence initial={false} mode="popLayout">
             {step >= 3 && (
-              <motion.div key={`sent-${run}`} layout {...pop} className={cn("relative ml-auto w-fit max-w-[82%] rounded-[0.55rem] rounded-tr-none bg-wa-bubble px-2.5 py-1.5 text-[0.86rem] leading-[1.35]", BUBBLE)}>
+              <motion.div key="sent" layout {...pop} className={cn("relative ml-auto w-fit max-w-[82%] rounded-[0.55rem] rounded-tr-none bg-wa-bubble px-2.5 py-1.5 text-[0.86rem] leading-[1.35]", BUBBLE)}>
                 <Tail out />
                 {edited}
                 <Time read>11:14</Time>
               </motion.div>
             )}
             {step === 4 && (
-              <motion.span key={`typing-${run}`} {...pop} exit={{ opacity: 0 }} className={cn("relative flex w-fit gap-1 rounded-[0.55rem] rounded-tl-none bg-white px-3 py-2.5", BUBBLE)} aria-label="Marta está escribiendo">
+              <motion.span key="typing" {...pop} exit={{ opacity: 0 }} className={cn("relative flex w-fit gap-1 rounded-[0.55rem] rounded-tl-none bg-white px-3 py-2.5", BUBBLE)} aria-label="Marta está escribiendo">
                 <Tail />
                 {[0, 1, 2].map((d) => (
                   <motion.i key={d} className="size-1.5 rounded-full bg-black/35" animate={{ y: [0, -3, 0] }} transition={{ duration: 0.9, repeat: Infinity, delay: d * 0.15 }} />
@@ -265,7 +298,7 @@ function CardVisual() {
               </motion.span>
             )}
             {step >= 5 && (
-              <motion.div key={`answer-${run}`} layout {...pop} className={cn("relative w-fit max-w-[78%] rounded-[0.55rem] rounded-tl-none bg-white px-2.5 py-1.5 text-[0.86rem] leading-[1.35]", BUBBLE)}>
+              <motion.div key="answer" layout {...pop} className={cn("relative w-fit max-w-[78%] rounded-[0.55rem] rounded-tl-none bg-white px-2.5 py-1.5 text-[0.86rem] leading-[1.35]", BUBBLE)}>
                 <Tail />
                 Con crédito hipotecario 👍
                 <Time>11:15</Time>
@@ -276,7 +309,7 @@ function CardVisual() {
         <AnimatePresence initial={false}>
           {step === 0 && (
             /* Three replies; the first carries the question that was missing. */
-            <motion.div key={`tray-${run}`} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.4, ease }} className="overflow-hidden">
+            <motion.div key="tray" exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.4, ease }} className="overflow-hidden">
               <SuggestionTray
                 replies={[
                   <>
@@ -285,9 +318,9 @@ function CardVisual() {
                   "¡Hola Marta! Sí, la 3B sigue libre. ¿Querés venir a verla esta semana?",
                   "¡Hola Marta! Sigue disponible. Te paso el plano y los valores actualizados.",
                 ]}
-                show={inView}
+                show={demo.step >= 1}
                 cursorAt={0}
-                cursor={<Cursor play={inView} />}
+                cursor={demo.step === 2 && <Cursor play delay={0} />}
                 note={
                   <span className="flex items-start gap-1.5">
                     <Info className="mt-px size-3.5 shrink-0 text-[#008c7e]" aria-hidden />
@@ -300,9 +333,10 @@ function CardVisual() {
             </motion.div>
           )}
         </AnimatePresence>
-        <Composer draft={draft} typing={step === 1 && draft !== reply} cursor={step === 2 && <Cursor key={run} play delay={0} />} />
+        <Composer draft={draft} typing={step === 1 && draft !== reply} cursor={step === 2 && <Cursor play delay={0} />} />
         </div>
       </ChatWindow>
+      <StepControls step={demo.step} labels={labels} go={demo.go} restart={demo.restart} />
       <p className="sky-type mt-4 flex items-center justify-center gap-2 text-[0.9rem] font-medium text-white/85">
         <Tag className="size-4" /> La ficha se completa sola mientras charlan.
       </p>
@@ -390,50 +424,42 @@ const pending: Pending[] = [
 
 /**
  * MARQui's morning brief, in its own chat: yesterday in three numbers and today's
- * short list. Every name opens that person's chat. It plays itself while on screen
- * (the cursor opens Marta, then Sofía); the first real click hands you the wheel.
+ * short list. Every name opens that person's chat. You step through it: it arrives,
+ * the cursor opens Marta, then Sofía. Any chat can also be opened by hand.
  */
 function BriefVisual() {
   const reduce = useReducedMotion();
   const root = useRef<HTMLDivElement>(null);
   const inView = useInView(root, { amount: 0.55 });
-  const [arrived, setArrived] = useState(!!reduce);
+  const labels = ["Son las 9: MARQui prepara tu resumen", "Llega el resumen: lo de ayer y lo de hoy", "Tocás a Marta y abrís su chat", "Volvés y abrís el de Sofía, una referida"];
+  const demo = useDemoSteps(labels.length - 1, inView, reduce ? 1 : 0);
+  const [arrived, setArrived] = useState(false);
   const [open, setOpen] = useState<string | null>(null);
   const [seen, setSeen] = useState<string[]>([]);
   const [aim, setAim] = useState<string | null>(null);
-  const [manual, setManual] = useState(false);
-  const [run, setRun] = useState(0);
 
-  useEffect(() => {
-    if (!inView || reduce || manual) return;
-    setArrived(false);
-    setOpen(null);
-    setSeen([]);
-    setAim(null);
-    const ids: number[] = [];
-    const at = (ms: number, fn: () => void) => ids.push(window.setTimeout(fn, ms));
-    const visit = (id: string, start: number) => {
+  useBeats(
+    (at) => {
+      setArrived(demo.step >= 1);
+      setOpen(null);
+      setSeen(demo.step >= 3 ? ["marta"] : []);
+      setAim(null);
       // The cursor needs ~1.35 s to glide in and press.
-      at(start, () => setAim(id));
-      at(start + 1450, () => {
-        setAim(null);
-        setOpen(id);
-        setSeen((s) => [...s, id]);
-      });
-      at(start + 5600, () => setOpen(null));
-    };
-    at(1100, () => setArrived(true));
-    visit("marta", 4200);
-    visit("sofia", 11400);
-    at(19800, () => setRun((r) => r + 1));
-    return () => ids.forEach(clearTimeout);
-  }, [inView, reduce, manual, run]);
+      const visit = (id: string, start: number) => {
+        at(start, () => setAim(id));
+        at(start + 1450, () => {
+          setAim(null);
+          setOpen(id);
+          setSeen((s) => (s.includes(id) ? s : [...s, id]));
+        });
+      };
+      if (demo.step === 2) visit("marta", 200);
+      if (demo.step === 3) visit("sofia", 700);
+    },
+    [demo.step],
+  );
 
-  const take = () => {
-    setManual(true);
-    setAim(null);
-    setArrived(true);
-  };
+  const take = () => setAim(null);
   const openChat = (id: string) => {
     take();
     setOpen(id);
@@ -455,9 +481,9 @@ function BriefVisual() {
               <span className={cn("mx-auto mb-auto rounded-md bg-white px-2.5 py-1 text-[0.68rem] font-medium uppercase tracking-wide text-[#54656f]", BUBBLE)}>Hoy</span>
               <AnimatePresence mode="popLayout" initial={false}>
                 {arrived ? (
-                  <Brief key={`brief-${run}`} play={!reduce} seen={seen} aim={aim} onOpen={openChat} />
+                  <Brief key="brief" play={!reduce} seen={seen} aim={aim} onOpen={openChat} />
                 ) : (
-                  <motion.span key={`typing-${run}`} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ duration: 0.3, ease }} className={cn("relative flex w-fit gap-1 rounded-[0.55rem] rounded-tl-none bg-white px-3 py-2.5", BUBBLE)} aria-label="MARQui está escribiendo">
+                  <motion.span key="typing" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ duration: 0.3, ease }} className={cn("relative flex w-fit gap-1 rounded-[0.55rem] rounded-tl-none bg-white px-3 py-2.5", BUBBLE)} aria-label="MARQui está escribiendo">
                     <Tail />
                     {[0, 1, 2].map((d) => (
                       <motion.i key={d} className="size-1.5 rounded-full bg-black/35" animate={{ y: [0, -3, 0] }} transition={{ duration: 0.9, repeat: Infinity, delay: d * 0.15 }} />
@@ -484,6 +510,7 @@ function BriefVisual() {
           </AnimatePresence>
         </div>
       </ChatWindow>
+      <StepControls step={demo.step} labels={labels} go={demo.go} restart={demo.restart} />
       <p className="sky-type mt-4 flex items-center justify-center gap-2 text-[0.9rem] font-medium text-white/85">
         <Sunrise className="size-4" /> Llega a las 9:00. Tocá un nombre y abrís su chat.
       </p>

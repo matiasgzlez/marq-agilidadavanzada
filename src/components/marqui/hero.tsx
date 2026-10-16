@@ -13,7 +13,7 @@ import { SKY } from "./sky";
    types itself out and then the two ways in appear. */
 
 const COPY =
-  "Un asistente que trabaja con el equipo dentro del WhatsApp de MARQ: te propone tres respuestas para cada consulta, conoce cada conversación, le podés preguntar lo que necesites y te cuenta qué están pidiendo los clientes potenciales.";
+  "Un compañero de equipo que vive en el WhatsApp de MARQ. No responde por vos: te ayuda a responder más rápido, con las mejores opciones para cada consulta. Le preguntás lo que necesites, le das reglas y rutinas, te avisa lo importante y cada mañana te resume el día.";
 
 /* The intro's sound. Drop the file at public/assets/audio/intro.mp3 (it's git-ignored);
    without it the intro simply plays silent. */

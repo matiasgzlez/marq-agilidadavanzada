@@ -37,13 +37,13 @@ MARQui es **un compañero de trabajo que vive en el WhatsApp que el equipo ya us
 
 | Qué hace | Cómo se ve |
 | --- | --- |
-| **Te sugiere qué responder.** Tres respuestas con el tono de MARQ en cada chat. Elegís una, la ajustás y la mandás vos. | Primera animación, arriba |
-| **Tu día, resumido cada mañana.** A las 9 llega lo que pasó ayer y lo que no puede esperar hoy, con un botón para abrir cada chat. | ![Resumen diario](docs/capturas/03-resumen-diario.jpg) |
-| **Seguí a los que importan.** Marcás a un cliente importante con una estrella y MARQui te avisa apenas escribe. También le pedís tareas que se repiten («todos los días a las 18 pasame…»), que quedan a la vista en sus **Reglas**. | Segunda animación, arriba |
-| **Aprende cómo trabaja MARQ.** Se nutre de los chats, los audios, la pauta, los Excel, los documentos de Drive y la web. Nadie carga nada en otro sistema. | ![Aprende](docs/capturas/05-aprende.jpg) |
-| **También en el celular.** Es un contacto más: le preguntás, le mandás un audio o le reenviás un mensaje. | ![Celular](docs/capturas/06-celular.jpg) |
+| **Respuestas inteligentes.** Tres respuestas con el tono de MARQ en cada chat. Elegís una, la ajustás y la mandás vos. | Primera animación, arriba |
+| **Resumen diario.** A las 9 llega lo que pasó ayer y lo que no puede esperar hoy, con un botón para abrir cada chat. | ![Resumen diario](docs/capturas/03-resumen-diario.jpg) |
+| **Clientes destacados.** Marcás a un cliente importante con una estrella y MARQui te avisa apenas escribe. También le pedís tareas que se repiten («todos los días a las 18 pasame…»), que quedan a la vista en sus **Reglas**. | Segunda animación, arriba |
+| **Aprendizaje continuo.** Se nutre de los chats, los audios, la pauta, los Excel, los documentos de Drive y la web. Nadie carga nada en otro sistema. | ![Aprende](docs/capturas/05-aprende.jpg) |
+| **MARQui móvil.** Es un contacto más: le preguntás, le mandás un audio o le reenviás un mensaje. | ![Celular](docs/capturas/06-celular.jpg) |
 
-Además arma la **ficha de cada cliente** mientras charlan (proyecto, qué busca, cómo paga, etapa). Si falta un dato, lo pregunta de forma natural dentro de una respuesta, sin encuestas. También responde preguntas sobre los datos, con números o con la lista en Excel.
+Además, con la **Ficha automática** arma la ficha de cada cliente mientras charlan (proyecto, qué busca, cómo paga, etapa). Si falta un dato, lo pregunta de forma natural dentro de una respuesta, sin encuestas. Y con **Preguntá lo que necesites** responde preguntas sobre los datos, con números o con la lista en Excel.
 
 ### Lo que gana el equipo
 

@@ -39,13 +39,13 @@ export function TimeSaved() {
   );
 }
 
-/* ——— De tu lado, bajo tu control ——— */
+/* ——— Qué no es MARQui ——— */
 
 export function Control() {
   return (
     <Section sky={SKY.noon} id="control" className="py-28 sm:py-40" aria-labelledby="control-title">
-      <Lead id="control-title" title={["De tu lado,", <em key="e">bajo tu control.</em>]}>
-        Ya probaron con un bot y la gente se dio cuenta y dejó de contestar. MARQui no reemplaza a nadie: trabaja para el que atiende.
+      <Lead id="control-title" title={["Lo que MARQui", <em key="e">no es.</em>]}>
+        Es un asistente para el equipo comercial. La conversación y la relación con el cliente siguen en manos de una persona.
       </Lead>
       <ControlCards />
     </Section>

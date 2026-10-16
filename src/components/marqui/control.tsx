@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { AnimatePresence, motion, useInView, useReducedMotion } from "motion/react";
-import { Ban, Check, Eye, Hand, ShieldCheck, UserRound } from "lucide-react";
+import { Ban, Check, Eye, Hand, UserRound } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { MarquiMark } from "./marqui-mark";
 import { LOGO, ease } from "./primitives";
-import { Cursor, Face } from "./wa-kit";
+import { Face } from "./wa-kit";
 
 /* ——— De tu lado, bajo tu control ———
-   Three promises, each one proven by a tiny scene that plays itself while on screen,
+   Two promises, each one proven by a tiny scene that plays itself while on screen,
    in the same light-tile language as the results bento. */
 
 /** Loops through `n` beats of `ms` each while the tile is on screen. Reduced motion holds the last beat. */
@@ -68,7 +68,7 @@ function NotABot() {
   const { ref, beat, reduce } = useBeats(2, 3400);
   const yours = beat === 1;
   return (
-    <Tile stage={ref} icon={Hand} title="No es un bot" text="El cliente habla siempre con una persona de MARQ. MARQui te sugiere qué responder; el que envía sos vos.">
+    <Tile stage={ref} icon={Hand} title="No es un chatbot" text="Al cliente siempre le responde una persona de MARQ. MARQui sugiere; vos revisás, ajustás y enviás. No reemplaza al vendedor.">
       <div className="wa-font w-full max-w-[19rem] text-[#111b21]">
         {/* Whose screen is this? */}
         <div className="relative mx-auto mb-3 grid w-fit grid-cols-2 rounded-full bg-black/[0.06] p-1 text-[0.72rem] font-semibold">
@@ -134,7 +134,7 @@ function NotABot() {
 function NoSurveys() {
   const { ref, beat } = useBeats(3, [2200, 1100, 3600]);
   return (
-    <Tile stage={ref} icon={Ban} title="Nada de encuestas" text="MARQui saca los datos de la charla. Si falta alguno, te lo deja como una pregunta normal dentro de la respuesta." delay={0.08}>
+    <Tile stage={ref} icon={Ban} title="No es una encuesta" text="El cliente no tiene que completar un cuestionario. MARQui toma los datos de la charla y, si falta algo, te sugiere cómo preguntarlo de forma natural." delay={0.08}>
       {/* One fixed chat window: only what's inside it changes. */}
       <div className="wa-font flex h-[15.5rem] w-full max-w-[19rem] flex-col overflow-hidden rounded-[1.1rem] bg-white text-[#111b21] shadow-[0_1rem_2rem_-1rem_rgb(1_30_27/0.35)] ring-1 ring-black/[0.06]">
         <div className="flex h-11 shrink-0 items-center gap-2 border-b border-black/[0.06] bg-[#f0f2f5] px-3">
@@ -198,62 +198,11 @@ function NoSurveys() {
   );
 }
 
-/* 3 · Nothing changes without a yes. The cursor says yes; the number rolls. */
-function LastWord() {
-  const { ref, beat, reduce } = useBeats(4, [1500, 1500, 1200, 3200]);
-  const changed = beat === 3;
-  return (
-    <Tile stage={ref} icon={ShieldCheck} title="Vos tenés la última palabra" text="Si algo nuevo contradice lo que sabía, como un precio, te pregunta antes de cambiarlo." delay={0.16}>
-      <div className="wa-font grid w-full max-w-[19rem] gap-3 text-[#111b21]">
-        {/* What MARQui knows, as a record. */}
-        <span className="mx-auto flex items-center gap-2 rounded-full bg-white px-3.5 py-2 text-[0.8rem] shadow-[0_0.6rem_1.4rem_-0.8rem_rgb(1_30_27/0.4)] ring-1 ring-black/[0.06]">
-          <span className="text-[#667781]">Collection financia en</span>
-          <span className="relative inline-grid h-[1.2em] overflow-hidden font-semibold tabular-nums">
-            <AnimatePresence mode="popLayout" initial={false}>
-              <motion.b key={changed ? 36 : 24} initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "-100%" }} transition={{ duration: 0.5, ease }} className={changed ? "text-[#008c7e]" : ""}>
-                {changed ? 36 : 24}
-              </motion.b>
-            </AnimatePresence>
-          </span>
-          <span className="font-semibold">cuotas</span>
-          <motion.span animate={{ scale: changed ? 1 : 0 }} transition={{ type: "spring", stiffness: 420, damping: 16 }} className="grid size-4 place-items-center rounded-full bg-[#008c7e] text-white">
-            <Check className="size-2.5" strokeWidth={4} aria-hidden />
-          </motion.span>
-        </span>
-
-        {/* MARQui asks first. */}
-        <div className="rounded-[1.1rem] bg-white p-3.5 shadow-[0_1rem_2rem_-1rem_rgb(1_30_27/0.35)] ring-1 ring-black/[0.06]">
-          <span className="flex items-center gap-1.5 text-[0.72rem]">
-            <MarquiMark tone="teal" className="size-4" />
-            <b className="font-semibold">MARQui</b>
-          </span>
-          <p className="mt-1.5 text-[0.84rem] leading-snug">
-            Me dijeron <b>36 cuotas</b>, pero yo tenía <b>24</b>. ¿Lo reemplazo?
-          </p>
-          <div className="mt-3 grid grid-cols-2 gap-2 text-[0.78rem] font-semibold">
-            <span className="relative grid h-9 place-items-center rounded-full bg-[#008c7e] text-white">
-              Sí, reemplazá
-              {!reduce && beat === 1 && <Cursor play delay={0} />}
-              <AnimatePresence>
-                {beat === 2 && (
-                  <motion.i initial={{ scale: 0.6, opacity: 0.6 }} animate={{ scale: 1.6, opacity: 0 }} transition={{ duration: 0.6 }} className="absolute inset-0 rounded-full bg-[#19d3b4]" aria-hidden />
-                )}
-              </AnimatePresence>
-            </span>
-            <span className="grid h-9 place-items-center rounded-full bg-[#f0f2f5] text-[#54656f]">Dejá 24</span>
-          </div>
-        </div>
-      </div>
-    </Tile>
-  );
-}
-
 export function ControlCards() {
   return (
-    <div className="mx-auto mt-16 grid max-w-[80rem] gap-4 md:grid-cols-3">
+    <div className="mx-auto mt-16 grid max-w-[58rem] gap-4 md:grid-cols-2">
       <NotABot />
       <NoSurveys />
-      <LastWord />
     </div>
   );
 }

@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import { AnimatePresence, motion, useInView, useReducedMotion } from "motion/react";
 import { BellRing, CalendarClock, Clock, FileText, ListChecks, MessageCircle, MessageSquarePlus, MoreVertical, Pin, Search, Star, Sun, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { MarquiAvatar, ease } from "./primitives";
 import { MarquiMark } from "./marqui-mark";
+import { StepControls, useBeats, useDemoSteps } from "./demo-steps";
 import { BUBBLE, ChatHeader, ChatWindow, Composer, Cursor, Face, SuggestionTray, Tail, Time } from "./wa-kit";
 
 type ChatId = "marqui" | "laura";
@@ -11,64 +12,67 @@ type Aim = "seguir" | "list-marqui" | "reglas" | "abrir" | null;
 
 const RULE = "Todos los días a las 18 pasame la lista de los que preguntaron por Fontana y MARQ Collection";
 
-/* The scene at rest: what reduced motion shows, and where autoplay starts from. */
+/* The scene at rest, where the demo starts. */
 const START = { active: "laura" as ChatId, following: false, toast: false, draft: "", ruleSent: false, marquiTyping: false, ruleMade: false, panel: false, clock: false, later: false, notified: false, lauraRead: false };
-const SETTLED = { ...START, active: "marqui" as ChatId, following: true, ruleSent: true, ruleMade: true, later: true, notified: true };
+const FOLLOWED = { ...START, following: true };
+const RULED = { ...FOLLOWED, active: "marqui" as ChatId, ruleSent: true, ruleMade: true };
+const NOTIFIED = { ...RULED, later: true, notified: true };
+/* Where each step leaves the scene. */
+const AFTER = [FOLLOWED, RULED, { ...RULED, panel: true }, NOTIFIED, { ...NOTIFIED, active: "laura" as ChatId, lauraRead: true }];
+const LABELS = ["Estás en el chat de Laura, una potencial clienta", "La seguís con la estrella", "Le pedís a MARQui una tarea diaria", "Mirás sus reglas: todo a la vista", "Tres días después, Laura escribe", "MARQui te avisa y abrís su chat"];
 
 /**
  * Seguimiento y reglas, in the full WhatsApp Web layout: chat list on the left,
- * the conversation on the right. Three beats, each caused by the cursor:
+ * the conversation on the right. You step through it, each beat caused by the cursor:
  * you follow Laura · you give MARQui a daily task and it shows up in his rules ·
- * days later Laura writes, and MARQui tells you first. The first real click
- * stops the autoplay and hands you the controls.
+ * days later Laura writes, and MARQui tells you first. Real clicks work at any step.
  */
 export function FollowVisual() {
   const reduce = useReducedMotion();
   const root = useRef<HTMLDivElement>(null);
   const inView = useInView(root, { amount: 0.5 });
-  const [s, setS] = useState(reduce ? SETTLED : START);
+  const demo = useDemoSteps(LABELS.length - 1, inView, reduce ? LABELS.length - 1 : 0);
+  const [s, setS] = useState(START);
   const [aim, setAim] = useState<Aim>(null);
-  const [manual, setManual] = useState(false);
-  const [run, setRun] = useState(0);
   const set = (patch: Partial<typeof START>) => setS((prev) => ({ ...prev, ...patch }));
 
-  useEffect(() => {
-    if (!inView || reduce || manual) return;
-    setS(START);
-    setAim(null);
-    const ids: number[] = [];
-    const at = (ms: number, fn: () => void) => ids.push(window.setTimeout(fn, ms));
-    // The cursor takes ~1.35 s to glide in and press.
-    const press = (ms: number, target: Exclude<Aim, null>, fn: () => void) => {
-      at(ms, () => setAim(target));
-      at(ms + 1400, () => {
-        setAim(null);
-        fn();
-      });
-    };
-    // 1 · Follow Laura.
-    press(1200, "seguir", () => set({ following: true, toast: true }));
-    at(4300, () => set({ toast: false }));
-    // 2 · Give MARQui a rule, then look at his rules.
-    press(4500, "list-marqui", () => set({ active: "marqui" }));
-    for (let i = 0; i <= RULE.length; i += 3) at(6400 + i * 13, () => set({ draft: RULE.slice(0, i) }));
-    at(6400 + RULE.length * 13 + 30, () => set({ draft: RULE }));
-    at(8300, () => set({ draft: "", ruleSent: true }));
-    at(8800, () => set({ marquiTyping: true }));
-    at(9900, () => set({ marquiTyping: false, ruleMade: true }));
-    press(10900, "reglas", () => set({ panel: true }));
-    at(16200, () => set({ panel: false }));
-    // 3 · Three days later, Laura writes. MARQui tells you first.
-    at(16800, () => set({ clock: true, later: true }));
-    at(18500, () => set({ clock: false, notified: true }));
-    press(19700, "abrir", () => set({ active: "laura", lauraRead: true }));
-    at(26500, () => setRun((r) => r + 1));
-    return () => ids.forEach(clearTimeout);
-  }, [inView, reduce, manual, run]);
+  useBeats(
+    (at) => {
+      // Each step starts from where the one before ended, so going back replays it.
+      setS(AFTER[demo.step - 1] ?? START);
+      setAim(null);
+      // The cursor takes ~1.35 s to glide in and press.
+      const press = (ms: number, target: Exclude<Aim, null>, fn: () => void) => {
+        at(ms, () => setAim(target));
+        at(ms + 1400, () => {
+          setAim(null);
+          fn();
+        });
+      };
+      if (demo.step === 1) {
+        press(200, "seguir", () => set({ following: true, toast: true }));
+        at(4200, () => set({ toast: false }));
+      }
+      if (demo.step === 2) {
+        press(200, "list-marqui", () => set({ active: "marqui" }));
+        for (let i = 0; i <= RULE.length; i += 3) at(2100 + i * 13, () => set({ draft: RULE.slice(0, i) }));
+        at(2100 + RULE.length * 13 + 30, () => set({ draft: RULE }));
+        at(4000, () => set({ draft: "", ruleSent: true }));
+        at(4500, () => set({ marquiTyping: true }));
+        at(5600, () => set({ marquiTyping: false, ruleMade: true }));
+      }
+      if (demo.step === 3) press(200, "reglas", () => set({ panel: true }));
+      if (demo.step === 4) {
+        at(200, () => set({ clock: true, later: true }));
+        at(1900, () => set({ clock: false, notified: true }));
+      }
+      if (demo.step === 5) press(200, "abrir", () => set({ active: "laura", lauraRead: true }));
+    },
+    [demo.step],
+  );
 
-  /** A real click: autoplay stops where it is, and you drive. */
+  /** A real click works at any step; the next step picks up from its own starting point. */
   const take = (patch: Partial<typeof START>) => {
-    setManual(true);
     setAim(null);
     set({ clock: false, toast: false, draft: "", ...patch });
   };
@@ -118,6 +122,7 @@ export function FollowVisual() {
           </AnimatePresence>
         </div>
       </ChatWindow>
+      <StepControls step={demo.step} labels={LABELS} go={demo.go} restart={demo.restart} />
       <p className="sky-type mt-4 flex items-center justify-center gap-2 text-[0.9rem] font-medium text-white/85">
         <Star className="size-4" /> Seguís a quien importa. Las reglas, siempre a la vista.
       </p>

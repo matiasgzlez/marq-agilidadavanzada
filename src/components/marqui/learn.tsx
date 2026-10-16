@@ -4,6 +4,7 @@ import { Camera, Globe, Handshake, MessageSquareText, Mic, PenLine, Phone, Sheet
 import { cn } from "@/lib/utils";
 import { useMarquiLife } from "./marqui-character";
 import { MarquiLive } from "./marqui-live";
+import { StepControls, useDemoSteps } from "./demo-steps";
 
 /* ——— Where MARQui learns from, like the "all your apps, one context" hub on gasti.pro ——— */
 
@@ -63,7 +64,7 @@ const H = 100;
 const CENTER = { x: 62.5, y: 47 };
 
 /* One shared "what's lit" between the words on the left and the diagram on the right. */
-let snap: { active: Id; held: boolean } = { active: "wa", held: false };
+let snap: { active: Id | null; held: boolean } = { active: null, held: false };
 const subs = new Set<() => void>();
 const store = {
   get: () => snap,
@@ -120,18 +121,16 @@ export function LearnVisual() {
   const { active, held } = useLit();
   const pose = useMarquiLife({ active: inView });
 
-  // Presenting: it walks through the sources by itself, unless someone is pointing.
+  // Presenting: each step lights the next source. Pointing at one lights it for a moment.
+  const labels = ["Todo lo que MARQui ya sabe de MARQ", ...MAIN.map((id) => byId(id).label)];
+  const demo = useDemoSteps(labels.length - 1, inView);
   useEffect(() => {
-    if (!inView || held || reduce) return;
-    const t = window.setInterval(() => {
-      const i = MAIN.indexOf(store.get().active);
-      store.set({ active: MAIN[(i + 1) % MAIN.length]! });
-    }, 2400);
-    return () => clearInterval(t);
-  }, [inView, held, reduce]);
+    if (!held) store.set({ active: demo.step ? MAIN[demo.step - 1]! : null });
+  }, [demo.step, held]);
 
   return (
-    <div ref={root} className="w-full max-w-[46rem] overflow-hidden rounded-[2rem] bg-white/92 text-[#111b21] shadow-[0_3rem_6rem_-2rem_rgb(1_30_27/0.55)] ring-1 ring-white/70 backdrop-blur">
+    <div ref={root} className="w-full max-w-[46rem]">
+    <div className="w-full overflow-hidden rounded-[2rem] bg-white/92 text-[#111b21] shadow-[0_3rem_6rem_-2rem_rgb(1_30_27/0.55)] ring-1 ring-white/70 backdrop-blur">
       <div className="relative aspect-[5/4]">
         {/* A soft glow behind MARQui, the way gasti lights its mark. */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_47%,rgb(138_216_200/0.5)_0%,rgb(138_216_200/0.1)_30%,transparent_55%)]" aria-hidden />
@@ -208,6 +207,8 @@ export function LearnVisual() {
           );
         })}
       </div>
+    </div>
+    <StepControls step={demo.step} labels={labels} go={demo.go} restart={demo.restart} />
     </div>
   );
 }
