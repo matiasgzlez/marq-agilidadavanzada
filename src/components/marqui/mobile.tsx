@@ -69,7 +69,7 @@ function PhoneDemo() {
   );
 
   return (
-    <div ref={root} className="wa-font w-full max-w-[21rem] shrink-0">
+    <div ref={root} className="wa-font w-[min(21rem,calc((100svh-11rem)*0.477),calc(100vw-2rem))] shrink-0">
       <PhoneFrame
         subtitle={step === 2 || step === 7 || step === 10 ? <span className="text-[#00a884]">escribiendo…</span> : "Asistente de MARQ"}
         overlay={

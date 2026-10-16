@@ -47,7 +47,7 @@ const lucide = (Icon: typeof Mic): Glyph => ({ className }) => <Icon className={
 const SOURCES: Source[] = [
   { id: "wa", label: "Chats de WhatsApp", short: "WhatsApp", name: "los chats de WhatsApp", x: 62.5, y: 12, size: "lg", glyph: WhatsAppGlyph, tile: "bg-[#25d366] text-white" },
   { id: "audio", label: "Audios", short: "Audios", name: "los audios", x: 91.9, y: 18.7, size: "md", glyph: lucide(Mic), tile: "bg-white text-[#008c7e]" },
-  { id: "xls", label: "Excels", short: "Excels", name: "los Excel", x: 110.1, y: 36.2, size: "md", glyph: lucide(Sheet), tile: "bg-white text-[#0f9d58]" },
+  { id: "xls", label: "Excel", short: "Excel", name: "los Excel", x: 110.1, y: 36.2, size: "md", glyph: lucide(Sheet), tile: "bg-white text-[#0f9d58]" },
   { id: "drive", label: "Documentos de Drive", short: "Drive", name: "los documentos de Drive", x: 110.1, y: 57.8, size: "md", glyph: DriveGlyph, tile: "bg-white" },
   { id: "web", label: "La web y su formulario", short: "Web", name: "la web", x: 91.9, y: 75.3, size: "md", glyph: lucide(Globe), tile: "bg-white text-[#014645]" },
   { id: "mp", label: "Mercado Pago", short: "Pagos", name: "Mercado Pago", x: 62.5, y: 82, size: "sm", soon: true, glyph: lucide(Handshake), tile: "bg-white text-[#009ee3]" },

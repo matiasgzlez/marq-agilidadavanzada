@@ -39,32 +39,35 @@ const T = {
   logoIn: [0, 0.8],
   entry: [
     // [start, end, from x, to x, height]
-    [1.0, 1.48, 3600, 2900, 190],
-    [1.52, 1.96, 2900, 2380, 150],
-    [2.0, 2.42, 2380, 1940, 120],
-    [2.46, 2.82, 1940, WAIT_X, 70],
+    // Each hop lands on a thud of the soundtrack (1.505, 1.98, 2.45, 2.965 s).
+    [1.03, 1.505, 3600, 2900, 190],
+    [1.53, 1.98, 2900, 2380, 150],
+    [2.0, 2.45, 2380, 1940, 120],
+    [2.47, 2.965, 1940, WAIT_X, 70],
   ],
-  recoil: [3.0, 3.6],
-  shake: [3.7, 4.3],
-  crouch: [4.38, 4.6],
-  onto: [4.6, 5.22],
+  recoil: [3.09, 3.64],
+  // Timed to the soundtrack, measured to 5 ms: each landing on the Q is a thud
+  // (6.145, 6.62, 7.085, 7.6 s) and the crush hits the floor on the big hit at 8.39 s.
+  shake: [4.58, 5.18],
+  crouch: [5.26, 5.48],
+  onto: [5.48, 6.145],
   // [start, end, k while in the air, k once he lands]
   bounces: [
-    [5.38, 5.78, 0.84, 0.7],
-    [5.84, 6.24, 0.7, 0.56],
-    [6.3, 6.7, 0.56, 0.42],
+    [6.185, 6.62, 0.84, 0.7],
+    [6.66, 7.085, 0.7, 0.56],
+    [7.125, 7.6, 0.56, 0.42],
   ],
-  crouch2: [6.78, 7.05],
-  leap: [7.05, 7.9],
-  crush: [7.9, 8.0],
-  pan: [8.5, 9.7],
-  // He is the Q for a while (from the crash at 8 s), then the letters go.
-  logoOut: [11.6, 12.3],
-  toCenter: [12.0, 12.75],
+  crouch2: [7.64, 7.84],
+  leap: [7.84, 8.29],
+  crush: [8.29, 8.39],
+  pan: [8.96, 10.16],
+  // He is the Q for a while (from the crash at 8.4 s), then the letters go.
+  logoOut: [12.06, 12.76],
+  toCenter: [12.46, 13.21],
   // The title comes in as soon as he has settled in the Q; the sentence types itself a little later.
-  headline: 8.4,
-  copy: 10.8,
-  end: 13.0,
+  headline: 8.86,
+  copy: 11.26,
+  end: 13.46,
 } as const;
 
 export const INTRO_END = T.end;
@@ -76,24 +79,24 @@ export function introStep(t: number) {
 /** His face through the film (the body follows on its own springs). */
 const POSES: [number, Pose][] = [
   [0, "izquierda"], // hopping in, looking where he is going
-  [2.86, "reposo"],
-  [3.0, "sorpresa"], // a Q!
+  [2.98, "reposo"],
+  [3.09, "sorpresa"], // a Q!
   [3.55, "izquierda"], // looks at it
-  [4.62, "reposo"],
-  [5.22, "sorpresa"], // it gives under him
-  [5.42, "alegria"], // and that is fun
-  [6.76, "reposo"],
-  [7.1, "alegria"],
-  [8.0, "parpadeo"], // the crash
-  [8.16, "sorpresa"],
-  [8.6, "izquierda"], // where did it go?
-  [9.2, "derecha"],
-  [9.75, "sorpresa"],
-  [10.0, "reposo"], // looks at us
-  [10.4, "alegria"],
-  [11.2, "reposo"],
-  [11.95, "alegria"], // off to the middle
-  [12.95, "reposo"],
+  [5.5, "reposo"],
+  [6.145, "sorpresa"], // it gives under him
+  [6.32, "alegria"], // and that is fun
+  [7.6, "reposo"],
+  [7.86, "alegria"],
+  [8.33, "parpadeo"], // the crash
+  [8.47, "sorpresa"],
+  [9.06, "izquierda"], // where did it go?
+  [9.66, "derecha"],
+  [10.21, "sorpresa"],
+  [10.46, "reposo"], // looks at us
+  [10.86, "alegria"],
+  [11.66, "reposo"],
+  [12.41, "alegria"], // off to the middle
+  [13.41, "reposo"],
 ];
 const poseAt = (t: number) => POSES.reduce<Pose>((p, [at, pose]) => (t >= at ? pose : p), POSES[0]![1]);
 
@@ -231,7 +234,9 @@ const CHAR = { x: -(622.6 - 380) * S, y: -(525.2 - 240) * S, width: 470 * S, hei
  * The stage. `play` restarts the film (from `from` seconds; `INTRO_END` skips
  * it); `livePose` is his face once it is over.
  */
-export function MarqIntro({ play, livePose, onStep, onCharClick, className }: { play: { id: number; from: number }; livePose: Pose; onStep: (step: number) => void; onCharClick?: () => void; className?: string }) {
+export function MarqIntro({ play, livePose, onStep, onCharClick, className, clock }: { play: { id: number; from: number }; livePose: Pose; onStep: (step: number) => void; onCharClick?: () => void; className?: string; clock?: () => number | null }) {
+  const clockRef = useRef(clock);
+  clockRef.current = clock;
   const cam = useRef<SVGGElement>(null);
   const logo = useRef<SVGGElement>(null);
   const q = useRef<SVGPathElement>(null);
@@ -274,8 +279,16 @@ export function MarqIntro({ play, livePose, onStep, onCharClick, className }: { 
 
     let raf = 0;
     const start = performance.now() - play.from * 1000;
+    let start0 = start;
     const tick = (now: number) => {
-      const t = (now - start) / 1000;
+      // When the soundtrack plays, it is the master clock: the picture follows the sound,
+      // re-locking whenever they drift more than 15 ms apart.
+      const audioT = clockRef.current?.();
+      if (audioT != null) {
+        const ours = (now - start0) / 1000;
+        if (Math.abs(ours - audioT) > 0.015) start0 = now - audioT * 1000;
+      }
+      const t = (now - start0) / 1000;
       draw(Math.min(t, T.end));
       if (t < T.end) raf = requestAnimationFrame(tick);
     };

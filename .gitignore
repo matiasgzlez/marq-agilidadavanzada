@@ -5,3 +5,6 @@ dist/
 .vite/
 video/marqui/out/
 video/marqui/sfx-*.wav
+
+# Intro audio (third-party, not ours to publish)
+public/assets/audio/

@@ -1,5 +1,6 @@
-import { useRef, useState } from "react";
-import { motion, useReducedMotion } from "motion/react";
+import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { Play, Volume2 } from "lucide-react";
 import { useMarquiLife, type Pose } from "./marqui-character";
 import { IntroControls, IntroTitle, Typed } from "./intro-text";
 import { INTRO_END, MarqIntro } from "./marq-intro";
@@ -14,8 +15,33 @@ import { SKY } from "./sky";
 const COPY =
   "Un asistente que trabaja con el equipo dentro del WhatsApp de MARQ: te propone tres respuestas para cada consulta, conoce cada conversación, le podés preguntar lo que necesites y te cuenta qué están pidiendo los clientes potenciales.";
 
+/* The intro's sound. Drop the file at public/assets/audio/intro.mp3 (it's git-ignored);
+   without it the intro simply plays silent. */
+const INTRO_AUDIO = "/assets/audio/intro.mp3";
+
 export function Hero() {
   const reduce = useReducedMotion();
+  // Browsers only allow sound after a click, so the film waits for «Empezar».
+  const [started, setStarted] = useState(!!reduce);
+  const audio = useRef<HTMLAudioElement | null>(null);
+  useEffect(() => {
+    audio.current = new Audio(INTRO_AUDIO);
+    audio.current.preload = "auto";
+    return () => audio.current?.pause();
+  }, []);
+  const sound = (on: boolean) => {
+    const a = audio.current;
+    if (!a) return Promise.resolve();
+    a.pause();
+    a.currentTime = 0;
+    // Resolves once sound is actually coming out (or right away if there is none).
+    return on ? a.play().catch(() => {}) : Promise.resolve();
+  };
+  /** The intro's master clock while the soundtrack plays. */
+  const clock = () => {
+    const a = audio.current;
+    return a && !a.paused && a.readyState >= 2 && a.currentTime > 0 ? a.currentTime : null;
+  };
   const [play, setPlay] = useState(() => ({ id: 0, from: reduce ? INTRO_END : 0 }));
   const [step, setStep] = useState(0);
   const [reaction, setReaction] = useState<Pose | null>(null);
@@ -34,7 +60,8 @@ export function Hero() {
   };
   const restart = (from: number) => {
     setReaction(null);
-    setPlay((p) => ({ id: p.id + 1, from }));
+    // The film waits for the sound to really start, so the first frame and the first note line up.
+    void sound(from === 0).then(() => setPlay((p) => ({ id: p.id + 1, from })));
   };
 
   const show = (on: boolean) => ({
@@ -46,7 +73,11 @@ export function Hero() {
   return (
     <Section sky={SKY.noon} id="inicio" className="grid min-h-[100svh] place-items-center overflow-x-clip pb-16 pt-28">
       <div className="mx-auto grid w-full max-w-[64rem] justify-items-center text-center">
-        <MarqIntro play={play} livePose={pose} onStep={setStep} onCharClick={cheer} className="w-[min(59vw,38rem,calc((100svh-17rem)*1.3))]" />
+        {started ? (
+          <MarqIntro play={play} clock={clock} livePose={pose} onStep={setStep} onCharClick={cheer} className="w-[min(59vw,38rem,calc((100svh-17rem)*1.3))]" />
+        ) : (
+          <div className="aspect-[1.3] w-[min(59vw,38rem,calc((100svh-17rem)*1.3))]" aria-hidden />
+        )}
 
         <IntroTitle lead="Presentamos" name="MARQui" shine="marqui-shine" shown={step >= 1} instant={instant} className="mt-6" />
         <Typed key={play.id} text={COPY} start={step >= 2} instant={instant} onDone={setTyped} />
@@ -60,7 +91,36 @@ export function Hero() {
         </motion.div>
       </div>
 
-      {!reduce && <IntroControls done={step === 3} onSkip={() => restart(INTRO_END)} onReplay={() => restart(0)} />}
+      {!reduce && started && <IntroControls done={step === 3} onSkip={() => restart(INTRO_END)} onReplay={() => restart(0)} />}
+
+      {/* The gate: a quiet glass button in the middle of the sky. One click starts the film, with sound. */}
+      <AnimatePresence>
+        {!started && (
+          <motion.div className="absolute inset-0 z-10 grid place-items-center" exit={{ opacity: 0 }} transition={{ duration: 0.4 }}>
+            <motion.button
+              type="button"
+              onClick={() => {
+                // Mount the film only once the sound is playing, so both start on the same frame.
+                void sound(true).then(() => {
+                  setPlay((p) => ({ id: p.id + 1, from: 0 }));
+                  setStarted(true);
+                });
+              }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6, ease }}
+              className="group relative inline-flex h-14 cursor-pointer items-center gap-3 rounded-full bg-white/12 pl-2 pr-6 text-[1.05rem] font-medium text-white ring-1 ring-white/30 backdrop-blur-md transition-colors hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+            >
+              <motion.i className="absolute inset-0 rounded-full" animate={{ boxShadow: ["0 0 0 0 rgb(255 255 255 / 0.35)", "0 0 0 1.2rem rgb(255 255 255 / 0)"] }} transition={{ duration: 2.2, repeat: Infinity, ease: "easeOut" }} aria-hidden />
+              <span className="grid size-10 place-items-center rounded-full bg-white text-ink transition-transform group-hover:scale-105">
+                <Play className="ml-0.5 size-4 fill-current" aria-hidden />
+              </span>
+              Empezar
+              <Volume2 className="size-4 text-white/60" aria-label="con sonido" />
+            </motion.button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </Section>
   );
 }
