@@ -141,13 +141,6 @@ export function Inside() {
           </div>
         </FadeUp>
 
-        <FadeUp delay={0.2} className="mx-auto mt-14 flex max-w-[60rem] flex-wrap justify-center gap-2.5">
-          {["Las líneas siguen como hoy", "Vía oficial de WhatsApp", "Una sola instalación: la extensión", "Si la extensión falla, sigue por el contacto"].map((t) => (
-            <span key={t} className="sky-type rounded-full bg-white/10 px-4 py-2 text-[clamp(0.9rem,1.05vw,1.05rem)] font-medium text-white ring-1 ring-white/20 backdrop-blur-sm">
-              {t}
-            </span>
-          ))}
-        </FadeUp>
       </div>
     </Section>
   );

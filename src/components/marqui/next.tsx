@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { AnimatePresence, motion, useInView, useReducedMotion } from "motion/react";
-import { Check, CreditCard, Globe, Lock, Sheet, Sparkles, Tags } from "lucide-react";
+import { Check, CreditCard, Globe, Lock, Sheet, Tags } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { MarquiMark } from "./marqui-mark";
 import { FadeUp, Section, ease } from "./primitives";
@@ -38,11 +38,6 @@ function useBeats(n: number, ms: number[]) {
 export function Next() {
   return (
     <Section sky={SKY.dawn} id="lo-que-viene" className="py-28 sm:py-40" aria-labelledby="lo-que-viene-title">
-      <FadeUp className="mb-6 flex justify-center">
-        <span className="sky-type inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-[clamp(0.85rem,1vw,1rem)] font-semibold text-white ring-1 ring-white/25 backdrop-blur-sm">
-          <Sparkles className="size-4" aria-hidden /> Próximas integraciones
-        </span>
-      </FadeUp>
       <Lead id="lo-que-viene-title" title={["Lo que viene,", <em key="e">también por chat.</em>]}>
         Con MARQui y MARQador andando, el siguiente paso es conectarlo a la web y a los pagos. Lo que hoy depende del programador o se hace dos veces, se pide en una frase.
       </Lead>
