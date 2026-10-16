@@ -1,17 +1,16 @@
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { useMarquiLife } from "./marqui-character";
 import { MarquiLive } from "./marqui-live";
 import { FadeUp, Section } from "./primitives";
 import { Lead } from "./story";
-import { MarqadorMark } from "./marqador-mark";
 import { SKY } from "./sky";
 
 /* ——— Cómo llega MARQui a MARQ ———
    Abstract on purpose (the detail lives in the portfolio): the two lines on the left, the
    official API, MARQui in the middle, the three places the team sees him on the right.
-   Light travels the wires: messages in, help out, and a person's reply going back. */
+   Light travels the wires: messages in, help out, and the team asking back from the phone. */
 
 const W = 1200;
 const H = 520;
@@ -36,10 +35,14 @@ const WIRES = {
   cel: `M650 260 L 1070 260`,
   mqd: `M650 260 C 820 260 830 400 1000 400`,
 };
+/* The team talks back to MARQui from the phone: the same cable, the other way. */
+const CEL_BACK = `M1070 260 L 650 260`;
 
 export function Inside() {
   const reduce = useReducedMotion();
-  const pose = useMarquiLife();
+  const { pose, hop } = useWorkingMarqui(!reduce);
+  // His little brother is awake too: blinks, glances, smiles when the numbers come in.
+  const mqdPose = useMarquiLife({ base: "alegria" });
   return (
     <Section sky={SKY.dusk} id="por-dentro" className="py-28 sm:py-40" aria-labelledby="por-dentro-title">
       <div className="mx-auto max-w-[90rem]">
@@ -49,7 +52,7 @@ export function Inside() {
 
         <FadeUp className="mt-14 sm:mt-20">
           <div className="[container-type:inline-size]">
-            <div className="relative mx-auto aspect-[12/5.2] max-w-[78rem]" role="img" aria-label="Los mensajes de las dos líneas llegan a MARQui por la API oficial de WhatsApp; MARQui ayuda en WhatsApp Web, en el celular y en MARQador, y la respuesta la envía una persona.">
+            <div className="relative mx-auto aspect-[12/5.2] max-w-[78rem]" role="img" aria-label="Los mensajes de las dos líneas llegan a MARQui por la API oficial de WhatsApp, y MARQui ayuda en WhatsApp Web a través de la extensión, en el celular, donde también se le pregunta, y en MARQador.">
               <svg viewBox={`0 0 ${W} ${H}`} className="absolute inset-0 size-full overflow-visible" aria-hidden>
                 <defs>
                   <radialGradient id="core-glow">
@@ -81,7 +84,7 @@ export function Inside() {
                   </g>
                 )}
 
-                {/* Light on the wires: messages in, help out, a person's reply going back. */}
+                {/* Light on the wires: messages in, help out, and questions back from the phone. */}
                 {!reduce && (
                   <>
                     <Packet d={WIRES.in1} color="#25d366" dur={2.2} begin={0} />
@@ -92,6 +95,8 @@ export function Inside() {
                     <Packet d={WIRES.cel} color="#7cf5dc" dur={1.8} begin={1.5} />
                     <Packet d={WIRES.mqd} color="#ff9a52" dur={1.8} begin={2.1} />
                     <Packet d={WIRES.plug} color="#7cf5dc" dur={0.9} begin={2.6} />
+                    {/* You ask from the phone: light runs back to MARQui. */}
+                    <Packet d={CEL_BACK} color="#25d366" dur={1.8} begin={2.4} />
                   </>
                 )}
               </svg>
@@ -113,9 +118,14 @@ export function Inside() {
               <Node pos={P.marqui} label="MARQui" big>
                 <span className="relative grid size-[min(12cqw,9.5rem)] place-items-center rounded-full bg-[radial-gradient(circle_at_35%_28%,#00a390,#008c7e_55%,#014645)] shadow-[0_0_0_1px_rgb(255_255_255/0.25),0_1.5rem_3rem_-1rem_rgb(0_40_35/0.6)]">
                   {!reduce && <motion.i className="absolute inset-0 rounded-full" animate={{ boxShadow: ["0 0 0 0 rgb(25 211 180 / 0.45)", "0 0 0 1.6rem rgb(25 211 180 / 0)"] }} transition={{ duration: 2.4, repeat: Infinity, ease: "easeOut" }} />}
-                  <span className="w-[66%]">
-                    <MarquiLive pose={pose} shadow={false} />
-                  </span>
+                  {/* He works: sways, thinks, and hops when an answer is ready. */}
+                  <motion.span
+                    className="w-[66%]"
+                    animate={reduce ? undefined : hop ? { y: ["0%", "-22%", "0%", "-8%", "0%"], rotate: [0, -6, 4, 0, 0], scale: [1, 1.04, 0.97, 1.01, 1] } : { rotate: [-4, 4, -4], y: ["0%", "-3%", "0%"] }}
+                    transition={hop ? { duration: 0.9, ease: "easeOut" } : { duration: 3.4, repeat: Infinity, ease: "easeInOut" }}
+                  >
+                    <MarquiLive pose={pose} follow shadow={false} />
+                  </motion.span>
                 </span>
               </Node>
               {/* The extension is the plug: MARQui's cable goes into it, and it clicks MARQui's layer into WhatsApp Web. */}
@@ -125,7 +135,7 @@ export function Inside() {
               <Node pos={P.ext} label="Extensión de Chrome" short="Extensión" above>
                 <ExtensionPlug play={!reduce} />
               </Node>
-              <Node pos={P.cel} label="Celular" sub="contacto MARQui">
+              <Node pos={P.cel} label="Celular" sub="le preguntás y te contesta">
                 <Halo tone="glass">
                   <MiniPhone kind="marqui" />
                 </Halo>
@@ -133,7 +143,13 @@ export function Inside() {
               <Node pos={P.mqd} label="MARQador">
                 <span className="relative grid place-items-center">
                   <i className="absolute size-[min(7cqw,5.4rem)] rounded-full bg-[#ff6c0c]/40 blur-[1.2cqw]" aria-hidden />
-                  <MarqadorMark className="relative size-[min(6.4cqw,5rem)] drop-shadow-[0_0.6cqw_0.9cqw_rgb(80_25_0/0.4)]" />
+                  <motion.span
+                    className="relative block w-[min(6.4cqw,5rem)] drop-shadow-[0_0.6cqw_0.9cqw_rgb(80_25_0/0.4)]"
+                    animate={reduce ? undefined : { y: ["0%", "-10%", "0%", "0%", "-18%", "0%", "0%"], rotate: [0, 0, 0, 0, -8, 6, 0] }}
+                    transition={{ duration: 4.2, repeat: Infinity, ease: "easeInOut", times: [0, 0.18, 0.36, 0.7, 0.8, 0.9, 1] }}
+                  >
+                    <MarquiLive who="marqador" pose={mqdPose} follow shadow={false} />
+                  </motion.span>
                 </span>
               </Node>
 
@@ -326,3 +342,25 @@ function ApiGlyph() {
   );
 }
 
+/**
+ * MARQui at work, on a loop: idle (blinks, glances), then he thinks for a moment,
+ * then the answer is ready and he hops with joy.
+ */
+function useWorkingMarqui(active: boolean) {
+  const [phase, setPhase] = useState<"idle" | "think" | "joy">("idle");
+  useEffect(() => {
+    if (!active) return;
+    const seq: ["idle" | "think" | "joy", number][] = [["idle", 2600], ["think", 1700], ["joy", 1300]];
+    let i = 0;
+    let t = 0;
+    const next = () => {
+      const [p, ms] = seq[i++ % seq.length]!;
+      setPhase(p);
+      t = window.setTimeout(next, ms);
+    };
+    next();
+    return () => clearTimeout(t);
+  }, [active]);
+  const pose = useMarquiLife({ override: phase === "think" ? "pensando" : phase === "joy" ? "alegria" : null });
+  return { pose, hop: phase === "joy" };
+}
