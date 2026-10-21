@@ -7,7 +7,7 @@ import { SKY } from "./sky";
    short lines on screen; the explanation is said over them (it lives in the
    doc). Each technique adds its own as it's done. */
 
-const LEARNINGS = ["La queja más concreta no siempre es el problema", "Contar notas no alcanza: hace falta un criterio", "Lo que no se elige, no se tira", "El mismo mensaje viene de personas muy distintas"];
+const LEARNINGS = ["La queja más concreta no siempre es el problema", "Contar notas no alcanza: hace falta un criterio", "Lo que no se elige, no se tira", "El mismo mensaje viene de personas muy distintas", "La venta se pierde en el silencio, no en la consulta"];
 
 export function Learnings() {
   return (

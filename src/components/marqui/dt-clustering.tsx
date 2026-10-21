@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { AnimatePresence, LayoutGroup, motion, useInView, useReducedMotion } from "motion/react";
-import { Check, Globe, Landmark, MessageCircle, X } from "lucide-react";
+import { Ban, Check, Clock, Lightbulb, Target, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { FadeUp, RiseLines, Section, ease } from "./primitives";
-import { MarquiMark } from "./marqui-mark";
 import { BigList, PartTitle, STICKY, Scrolly, StageCaption, TechniquePill, useWide } from "./dt-kit";
 import { SKY } from "./sky";
 
@@ -276,7 +275,8 @@ function BoardStage() {
    Having the most notes is not enough. Each group answers the same three
    questions; every stretch of scroll answers one of them for all four, as
    a checklist on each tile. A group with a "no" stays for later. In the
-   end only one has three yeses, and every group shows where it went. */
+   end only one has three yeses, and the others show what's left of them.
+   No solution names here: they come with the ideas. */
 
 const QUESTIONS = [
   { title: "¿Es un dolor para MARQ?", short: "Es un dolor para MARQ" },
@@ -286,10 +286,10 @@ const QUESTIONS = [
 
 /* Each group's answers; a "no" carries its reason, in a few words. */
 const ANSWERS: Record<ClusterId, { yes: [boolean, boolean, boolean]; no: [string?, string?, string?]; to: string; mark: ReactNode }> = {
-  consultas: { yes: [true, true, true], no: [], to: "MARQui y MARQador", mark: <MarquiMark tone="light" className="size-5" title="" /> },
-  procesos: { yes: [false, true, false], no: ["«La información está»", undefined, "Es interno, no llega al cliente"], to: "Regla: nada de sistemas nuevos", mark: <MessageCircle className="size-4" /> },
-  web: { yes: [true, false, false], no: [undefined, "Depende del programador", "La venta es uno a uno"], to: "Lo que viene", mark: <Globe className="size-4" /> },
-  reconocimiento: { yes: [true, true, false], no: [undefined, undefined, "Ya llegan 100 consultas por día"], to: "MARQ Alloy", mark: <Landmark className="size-4" /> },
+  consultas: { yes: [true, true, true], no: [], to: "El problema a resolver", mark: <Target className="size-4" /> },
+  procesos: { yes: [false, true, false], no: ["«La información está»", undefined, "Es interno, no llega al cliente"], to: "Una restricción: no sumar sistemas", mark: <Ban className="size-4" /> },
+  web: { yes: [true, false, false], no: [undefined, "Depende del programador", "La venta es uno a uno"], to: "Queda para una segunda etapa", mark: <Clock className="size-4" /> },
+  reconocimiento: { yes: [true, true, false], no: [undefined, undefined, "Ya llegan 100 consultas por día"], to: "Queda para otra propuesta", mark: <Lightbulb className="size-4" /> },
 };
 
 const PICK_STEPS: { title: string; text?: string }[] = [
@@ -298,7 +298,7 @@ const PICK_STEPS: { title: string; text?: string }[] = [
   { title: QUESTIONS[1]!.title },
   { title: QUESTIONS[2]!.title },
   { title: "El único con tres sí" },
-  { title: "Los otros no se descartaron" },
+  { title: "Los otros no se descartan" },
 ];
 
 function Answer({ yes }: { yes: boolean | null }) {

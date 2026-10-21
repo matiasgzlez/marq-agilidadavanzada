@@ -1,21 +1,22 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { AnimatePresence, motion, useInView, useReducedMotion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { FadeUp, RiseLines, Section, ease } from "./primitives";
-import { MarquiMark } from "./marqui-mark";
-import { MarqadorMark } from "./marqador-mark";
 import { BigList, PartTitle, STICKY, Scrolly, StageCaption, TechniquePill } from "./dt-kit";
 import { SKY } from "./sky";
 
 /* ——— Técnica 2 · Personas ———
    Same shape as Clustering: what it is, why, how (where the four come from,
    then each one), and what we got (the three questions that tell them
-   apart, which MARQui asks inside a reply). Text stays short on screen;
+   apart). It stays in the problem: the solution only shows up with the ideas. Text stays short on screen;
    the explanation is said over it and lives in the doc. */
 
 type PersonaId = "roberto" | "lucia" | "marta" | "tomas";
 
-const PERSONAS: {
+/* The fields of the Personas canvas from designthinking.es (Dinngo): name, photo,
+   phrase, data, biography, personality, goals and frustrations. `from` is the
+   interview line each one comes from; `needs` is what MARQ has to give them. */
+type Persona = {
   id: PersonaId;
   name: string;
   age: number;
@@ -24,10 +25,17 @@ const PERSONAS: {
   segment: "inversor" | "final";
   tone: string;
   from: string;
-  fields: [string, string][];
-  says: string;
-  marqui: string;
-}[] = [
+  job: string;
+  family: string;
+  city: string;
+  bio: string;
+  traits: string[];
+  goals: string[];
+  pains: string[];
+  needs: string;
+};
+
+const PERSONAS: Persona[] = [
   {
     id: "roberto",
     name: "Roberto",
@@ -37,16 +45,14 @@ const PERSONAS: {
     segment: "inversor",
     tone: "from-[#19d3b4] to-[#014645]",
     from: "«Tiene gente fija que ya confía en ellos»",
-    fields: [
-      ["Busca", "Entrar primero a la preventa"],
-      ["Piensa y siente", "Confía en MARQ, quiere rentabilidad"],
-      ["Le frustra", "Que lo traten como uno más"],
-      ["Cómo decide", "Rápido y solo"],
-      ["Llega por", "WhatsApp de clientes"],
-      ["Necesita de MARQ", "Prioridad y trato directo"],
-    ],
-    says: "Hola Cande, ¿sale algo nuevo? Anotame.",
-    marqui: "Cliente destacado: te avisa apenas escribe",
+    job: "Comerciante",
+    family: "Casado, dos hijos grandes",
+    city: "Resistencia",
+    bio: "Invirtió en dos edificios de MARQ desde la preventa. Prefiere el ladrillo para cuidar sus ahorros y entra apenas sale un proyecto nuevo.",
+    traits: ["Decidido", "Leal", "Práctico"],
+    goals: ["Entrar primero a la preventa", "Elegir las mejores unidades"],
+    pains: ["Que lo traten como uno más", "Enterarse tarde de un lanzamiento"],
+    needs: "Prioridad y trato directo",
   },
   {
     id: "lucia",
@@ -57,16 +63,14 @@ const PERSONAS: {
     segment: "inversor",
     tone: "from-[#7fb4ff] to-[#23488f]",
     from: "«Hay gente que es su primera vez invirtiendo»",
-    fields: [
-      ["Busca", "Renta o revalorización"],
-      ["Piensa y siente", "Miedo a comprar algo que no se ve"],
-      ["Le frustra", "Que la presionen o la olviden"],
-      ["Cómo decide", "En semanas, con su contador"],
-      ["Llega por", "Un anuncio en Instagram"],
-      ["Necesita de MARQ", "Pruebas de trayectoria y seguimiento"],
-    ],
-    says: "¿Qué pasa si la obra se atrasa?",
-    marqui: "Respuesta con obras entregadas, y aviso si reaparece",
+    job: "Odontóloga",
+    family: "Casada, un hijo",
+    city: "Resistencia",
+    bio: "Tiene ahorros y quiere que rindan. Vio un anuncio de MARQ en Instagram, pero no conoce a la empresa ni cómo funciona un fideicomiso.",
+    traits: ["Cautelosa", "Analítica", "Desconfiada"],
+    goals: ["Que su plata rinda", "Entender todo antes de firmar"],
+    pains: ["Que la apuren para decidir", "Que dejen de responderle"],
+    needs: "Pruebas de trayectoria y seguimiento",
   },
   {
     id: "marta",
@@ -77,16 +81,14 @@ const PERSONAS: {
     segment: "final",
     tone: "from-[#ffa25c] to-[#b13d0c]",
     from: "«Su consumidor final es una persona grande»",
-    fields: [
-      ["Busca", "Su casa, con cada detalle claro"],
-      ["Piensa y siente", "Desconfía de lo automático"],
-      ["Le frustra", "Hablar con una máquina"],
-      ["Cómo decide", "En familia, con tiempo"],
-      ["Llega por", "Teléfono o recomendación"],
-      ["Necesita de MARQ", "Una persona con nombre"],
-    ],
-    says: "¿Me pueden llamar? Prefiero hablar.",
-    marqui: "Respuesta con tu nombre y propuesta de llamada",
+    job: "Docente jubilada",
+    family: "Viuda, tres hijos",
+    city: "Resistencia",
+    bio: "Vendió su casa grande y busca un departamento cerca del centro. Prefiere hablar por teléfono y decide junto con sus hijos.",
+    traits: ["Detallista", "Paciente", "Tradicional"],
+    goals: ["Mudarse a algo cómodo y seguro", "Entender cada detalle de la compra"],
+    pains: ["Hablar con una máquina", "Sentirse apurada"],
+    needs: "Una persona con nombre y paciencia",
   },
   {
     id: "tomas",
@@ -97,21 +99,26 @@ const PERSONAS: {
     segment: "final",
     tone: "from-[#c4b5fd] to-[#4b3b9a]",
     from: "«32 casas en 120 cuotas: muchas consultas y ninguna venta»",
-    fields: [
-      ["Busca", "Dejar de alquilar"],
-      ["Piensa y siente", "Entusiasmo, pero no le alcanza"],
-      ["Le frustra", "No tener una respuesta clara"],
-      ["Cómo decide", "Según la cuota"],
-      ["Llega por", "Un anuncio, con un «precio?»"],
-      ["Necesita de MARQ", "Honestidad y seguir en contacto"],
-    ],
-    says: "¿Se puede con crédito?",
-    marqui: "Anota cómo paga; MARQador lo suma a Frenos",
+    job: "Diseñador gráfico",
+    family: "En pareja, alquila",
+    city: "Resistencia",
+    bio: "Quiere dejar de alquilar. Consulta con entusiasmo cada lanzamiento, pero hoy no le alcanza y no le dan crédito.",
+    traits: ["Entusiasta", "Digital", "Ansioso"],
+    goals: ["Dejar de alquilar", "Una cuota que pueda pagar"],
+    pains: ["No tener una respuesta clara", "Perder tiempo en algo que no puede pagar"],
+    needs: "Honestidad y seguir en contacto",
   },
 ];
 
-function Face({ p, className }: { p: (typeof PERSONAS)[number]; className?: string }) {
-  return <span className={cn("grid shrink-0 place-items-center rounded-full bg-gradient-to-br font-semibold text-white", p.tone, className)}>{p.name[0]}</span>;
+/* Their portrait once it's in public/assets/personas/<id>.jpg; until then, the initial. */
+function Face({ p, className }: { p: Persona; className?: string }) {
+  const [failed, setFailed] = useState(false);
+  return (
+    <span className={cn("relative grid shrink-0 place-items-center overflow-hidden rounded-full bg-gradient-to-br font-semibold text-white", p.tone, className)}>
+      {p.name[0]}
+      {!failed && <img src={`/assets/personas/${p.id}.jpg`} alt="" onError={() => setFailed(true)} className="absolute inset-0 size-full object-cover" />}
+    </span>
+  );
 }
 
 /* ——— ¿Por qué? Mismo mensaje, cuatro personas ———
@@ -225,40 +232,87 @@ function Tree({ step }: { step: number }) {
 }
 
 /* ——— ¿Cómo? Cada Persona ———
-   One per stretch of scroll: who, the line that sums them up, and six short
-   fields (the empathy map lives in «Piensa y siente» and «Le frustra»). */
+   One per stretch of scroll, laid out like the canvas: who they are on the
+   left, their story and personality in the middle, goals and frustrations
+   on the right. The empathy map lives in personality and frustrations. */
 
-function PersonaCard({ p }: { p: (typeof PERSONAS)[number] }) {
+function Field({ label, children, className }: { label: string; children: ReactNode; className?: string }) {
   return (
-    <motion.article key={p.id} initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }} transition={{ duration: 0.5, ease }} className="grid overflow-hidden rounded-[2rem] bg-[#f7f7f5] p-2.5 text-ink shadow-[0_2.5rem_5rem_-2rem_rgb(1_30_27/0.5)] lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-      <div className="grid content-between gap-8 rounded-[1.6rem] bg-[radial-gradient(120%_90%_at_50%_0%,#ffffff_0%,#eef3f1_60%,#e3ebe8_100%)] p-6 ring-1 ring-black/[0.04] sm:p-8">
-        <span className="flex items-center gap-4">
-          <Face p={p} className="size-16 text-[1.6rem]" />
-          <span className="leading-tight">
-            <span className="block text-[clamp(1.4rem,1.9vw,2rem)] font-semibold tracking-[-0.02em]">
-              {p.name}, {p.age}
+    <div className={cn("p-5 sm:p-6", className)}>
+      <p className="text-[0.85rem] font-semibold text-teal">{label}</p>
+      <div className="mt-1.5 text-[clamp(1rem,1.15vw,1.2rem)] font-medium leading-snug">{children}</div>
+    </div>
+  );
+}
+
+function PersonaCard({ p }: { p: Persona }) {
+  const data: [string, string][] = [
+    ["Edad", `${p.age} años`],
+    ["Profesión", p.job],
+    ["Estado civil", p.family],
+    ["Ciudad", p.city],
+    ["Arquetipo", p.who],
+  ];
+  return (
+    <motion.article initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }} transition={{ duration: 0.5, ease }} className="overflow-hidden rounded-[2rem] bg-[#f7f7f5] p-2.5 text-ink shadow-[0_2.5rem_5rem_-2rem_rgb(1_30_27/0.5)]">
+      <div className="grid overflow-hidden rounded-[1.6rem] bg-white ring-1 ring-black/[0.06] lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.1fr)_minmax(0,1fr)] lg:divide-x lg:divide-line">
+        {/* Nombre · Foto · Frase · datos */}
+        <div className="grid content-start">
+          <div className="flex items-center gap-4 p-5 sm:p-6">
+            <Face p={p} className="size-[clamp(5.5rem,8vw,8rem)] rounded-[1.25rem] text-[2.2rem]" />
+            <span className="leading-tight">
+              <span className="block text-[clamp(1.5rem,2vw,2.1rem)] font-semibold tracking-[-0.02em]">{p.name}</span>
+              <span className="mt-1 block text-[clamp(1.05rem,1.3vw,1.35rem)] font-semibold leading-snug tracking-[-0.01em] text-ink-2">«{p.quote}»</span>
             </span>
-            <span className="block text-[clamp(0.95rem,1.1vw,1.15rem)] text-ink-3">{p.who}</span>
-          </span>
-        </span>
-        <p className="text-[clamp(1.6rem,2.6vw,2.8rem)] font-semibold leading-[1.1] tracking-[-0.03em]">«{p.quote}»</p>
-      </div>
-      <dl className="grid grid-cols-2 gap-x-6 gap-y-5 p-6 sm:p-8">
-        {p.fields.map(([k, v]) => (
-          <div key={k}>
-            <dt className="text-[0.85rem] font-semibold text-teal">{k}</dt>
-            <dd className="mt-1 text-[clamp(1rem,1.2vw,1.25rem)] font-medium leading-snug">{v}</dd>
           </div>
-        ))}
-      </dl>
+          <dl className="grid gap-2 border-t border-line p-5 sm:p-6">
+            {data.map(([k, v]) => (
+              <div key={k} className="grid grid-cols-[7.5rem_1fr] gap-3 text-[clamp(0.95rem,1.05vw,1.1rem)] leading-snug">
+                <dt className="font-semibold text-teal">{k}</dt>
+                <dd className="font-medium">{v}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+        {/* Biografía · Personalidad */}
+        <div className="grid content-start border-t border-line lg:border-t-0">
+          <Field label="Biografía">{p.bio}</Field>
+          <Field label="Personalidad" className="border-t border-line">
+            <span className="flex flex-wrap gap-2">
+              {p.traits.map((t) => (
+                <span key={t} className="rounded-full bg-teal-soft px-3 py-1 text-[0.95rem] font-semibold text-teal-deep">
+                  {t}
+                </span>
+              ))}
+            </span>
+          </Field>
+        </div>
+        {/* Objetivos · Frustraciones */}
+        <div className="grid content-start border-t border-line lg:border-t-0">
+          <Field label="Objetivos">
+            <ul className="grid gap-1.5">
+              {p.goals.map((g) => (
+                <li key={g} className="flex gap-2"><span className="text-teal">+</span>{g}</li>
+              ))}
+            </ul>
+          </Field>
+          <Field label="Frustraciones" className="border-t border-line">
+            <ul className="grid gap-1.5">
+              {p.pains.map((g) => (
+                <li key={g} className="flex gap-2"><span className="text-orange">−</span>{g}</li>
+              ))}
+            </ul>
+          </Field>
+        </div>
+      </div>
     </motion.article>
   );
 }
 
 /* ——— ¿Qué obtuvimos? ———
-   The same "precio?" asks for four different answers. Three questions tell
-   them apart, and MARQui asks them inside a reply; each Persona leaves a
-   sign in the chat that MARQui acts on. */
+   Still in the problem: the same "precio?" hides four different needs, and
+   three questions are enough to tell them apart. No solution yet; that
+   comes with the ideas. */
 
 const ASKS = ["¿Para vivir o para invertir?", "¿Ya compró con MARQ?", "¿Cómo piensa pagar?"];
 
@@ -315,22 +369,10 @@ export function Personas() {
       <Section sky={SKY.noon} id="personas-resultado" className="py-28 sm:py-40" aria-labelledby="personas-resultado-title">
         <PartTitle id="personas-resultado-title">¿Qué obtuvimos?</PartTitle>
         <div className="mx-auto mt-10 grid max-w-[72rem] justify-items-center text-center">
-          <RiseLines as="h3" lines={["Mismo «precio?»,", <em key="e" className="text-white/70">cuatro respuestas distintas.</em>]} className="display sky-type text-[clamp(2rem,4.4vw,4.8rem)]" />
+          <RiseLines as="h3" lines={["Mismo «precio?»,", <em key="e" className="text-white/70">cuatro necesidades distintas.</em>]} className="display sky-type text-[clamp(2rem,4.4vw,4.8rem)]" />
         </div>
 
-        {/* The three questions that tell them apart: MARQui slips them into a reply, and they fill the client's card. */}
-        <FadeUp delay={0.1} className="mx-auto mt-12 flex max-w-[64rem] flex-wrap justify-center gap-3">
-          {ASKS.map((q) => (
-            <span key={q} className="inline-flex items-center gap-2.5 rounded-full bg-white py-2 pl-2 pr-5 text-[clamp(1rem,1.25vw,1.3rem)] font-semibold text-ink shadow-[0_1rem_2rem_-1rem_rgb(1_30_27/0.5)]">
-              <span className="grid size-8 place-items-center rounded-full bg-ink">
-                <MarquiMark tone="light" className="size-5" title="" />
-              </span>
-              {q}
-            </span>
-          ))}
-        </FadeUp>
-
-        {/* Each Persona leaves a sign in the chat, and MARQui does something with it. */}
+        {/* What each one needs from MARQ, under the same first message. */}
         <div className="mx-auto mt-14 grid max-w-[84rem] gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
           {PERSONAS.map((p, i) => (
             <FadeUp key={p.id} delay={i * 0.08} className="h-full">
@@ -340,23 +382,33 @@ export function Personas() {
                     <Face p={p} className="size-8 text-[0.85rem]" />
                     <b className="text-[0.9rem] font-medium">{p.name}</b>
                   </span>
-                  <span className="w-fit max-w-[92%] rounded-[0.6rem] rounded-tl-none bg-white px-3 py-2 text-[0.92rem] leading-snug text-[#111b21] shadow-[0_1px_0.5px_rgb(11_20_26/0.13)]">{p.says}</span>
+                  <span className="w-fit rounded-[0.6rem] rounded-tl-none bg-white px-3 py-2 text-[0.95rem] text-[#111b21] shadow-[0_1px_0.5px_rgb(11_20_26/0.13)]">precio?</span>
                 </div>
-                <p className="flex flex-1 items-start gap-2.5 px-5 pb-6 pt-2 text-[clamp(0.98rem,1.1vw,1.15rem)] font-semibold leading-snug">
-                  {p.id === "tomas" ? <MarqadorMark className="mt-0.5 size-6 shrink-0" title="" /> : <MarquiMark tone="ink" className="mt-0.5 size-6 shrink-0" title="" />}
-                  {p.marqui}
+                <p className="px-5 pb-6 pt-2 leading-snug">
+                  <span className="block text-[0.85rem] font-semibold text-teal">Necesita</span>
+                  <span className="mt-1 block text-[clamp(1.05rem,1.2vw,1.25rem)] font-semibold">{p.needs}</span>
                 </p>
               </article>
             </FadeUp>
           ))}
         </div>
 
-        <FadeUp delay={0.2} className="mt-12 flex justify-center">
-          <span className="inline-flex items-center gap-2.5 rounded-full bg-ink/85 py-2 pl-2 pr-5 text-[clamp(0.95rem,1.1vw,1.15rem)] font-medium text-white ring-1 ring-white/15">
-            <span className="grid size-8 place-items-center rounded-full bg-white">
-              <MarqadorMark className="size-5" title="" />
-            </span>
-            Son hipótesis: se validan con los datos reales de MARQador
+        {/* The three questions that tell them apart. */}
+        <FadeUp delay={0.1} className="mx-auto mt-16 max-w-[64rem] text-center">
+          <h4 className="display sky-type text-[clamp(1.6rem,2.6vw,2.8rem)]">Tres preguntas para distinguirlos</h4>
+          <div className="mt-6 flex flex-wrap justify-center gap-3">
+            {ASKS.map((q, i) => (
+              <span key={q} className="inline-flex items-center gap-2.5 rounded-full bg-white py-2 pl-2 pr-5 text-[clamp(1rem,1.25vw,1.3rem)] font-semibold text-ink shadow-[0_1rem_2rem_-1rem_rgb(1_30_27/0.5)]">
+                <span className="grid size-8 place-items-center rounded-full bg-[linear-gradient(135deg,#19d3b4,#014645)] text-[0.9rem] text-white">{i + 1}</span>
+                {q}
+              </span>
+            ))}
+          </div>
+        </FadeUp>
+
+        <FadeUp delay={0.2} className="mt-10 flex justify-center">
+          <span className="rounded-full border-2 border-dashed border-white/50 px-5 py-2.5 text-[clamp(0.95rem,1.1vw,1.15rem)] font-medium text-white">
+            Son hipótesis: hay que validarlas con clientes reales
           </span>
         </FadeUp>
       </Section>
