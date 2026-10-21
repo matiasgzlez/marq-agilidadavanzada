@@ -6,6 +6,7 @@ import { Opening } from "./dt-opening";
 import { HowMightWe } from "./dt-hmw";
 import { Journey } from "./dt-journey";
 import { Personas } from "./dt-personas";
+import { Prototipo } from "./dt-prototipo";
 
 /* ——— Design thinking ———
    The road from the interview to MARQui, one technique after the other,
@@ -19,6 +20,7 @@ export function ThinkingPanel({ onGoToSolution }: { onGoToSolution?: () => void 
       <Personas />
       <Journey />
       <HowMightWe />
+      <Prototipo />
       <Learnings />
 
       <footer className="relative -mx-4 flex flex-wrap items-center justify-between gap-3 bg-ink px-6 py-5 text-[0.95rem] text-white/75 sm:-mx-8 lg:-mx-12 lg:px-12">

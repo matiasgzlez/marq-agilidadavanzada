@@ -9,7 +9,7 @@ import { SKY } from "./sky";
    road: five techniques in one light tile, each a stop that links down. */
 
 /* Techniques already told on the page; the others show on the road but don't link yet. */
-const READY = new Set<string>(["clustering", "personas", "journey", "como-podriamos"]);
+const READY = new Set<string>(["clustering", "personas", "journey", "como-podriamos", "prototipo"]);
 
 export function Opening() {
   return (

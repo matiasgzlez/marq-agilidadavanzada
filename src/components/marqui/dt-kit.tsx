@@ -10,7 +10,7 @@ export const TECHNIQUES = [
   { id: "personas", n: 2, name: "Personas", phase: "Definir", text: "Quién nos escribe" },
   { id: "journey", n: 3, name: "Customer Journey", phase: "Empatizar", text: "Dónde se pierde el prospecto" },
   { id: "como-podriamos", n: 4, name: "¿Cómo podríamos…?", phase: "Definir e Idear", text: "Del problema a las ideas" },
-  { id: "prototipo", n: 5, name: "Prototipo", phase: "Prototipar", text: "Probar la propuesta" },
+  { id: "prototipo", n: 5, name: "Prototipo en papel", phase: "Prototipar y Testear", text: "Probar la propuesta" },
 ] as const;
 
 export type TechniqueId = (typeof TECHNIQUES)[number]["id"];

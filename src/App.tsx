@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Next, Outro, Thinking } from "@/components/marqui/closing";
+import { Portfolio } from "@/components/marqui/portfolio";
 import { Day } from "@/components/marqui/day";
 import { Functions } from "@/components/marqui/functions";
 import { Header, type Panel } from "@/components/marqui/header";
@@ -10,16 +11,19 @@ import { Control, TimeSaved } from "@/components/marqui/story";
 import { Where } from "@/components/marqui/where";
 import { SkyBackground, SkyProvider } from "@/components/marqui/sky";
 
-/* Design thinking is on: its tab and the header switch show. Flip to hide them again. */
+/* The header switch (Solución · Portfolio · Design thinking). Flip to hide it and show only the solution. */
 const SHOW_THINKING = true;
-const initialPanel = (): Panel => (SHOW_THINKING && new URLSearchParams(window.location.search).get("panel") === "thinking" ? "thinking" : "solucion");
+const initialPanel = (): Panel => {
+  const p = new URLSearchParams(window.location.search).get("panel");
+  return SHOW_THINKING && (p === "thinking" || p === "portfolio") ? p : "solucion";
+};
 
 export function App() {
   const [panel, setPanel] = useState<Panel>(initialPanel);
 
   useEffect(() => {
     const url = new URL(window.location.href);
-    if (panel === "thinking") url.searchParams.set("panel", "thinking");
+    if (panel !== "solucion") url.searchParams.set("panel", panel);
     else url.searchParams.delete("panel");
     history.replaceState(null, "", url);
   }, [panel]);
@@ -45,6 +49,8 @@ export function App() {
             <Next />
             <Outro />
           </div>
+        ) : panel === "portfolio" ? (
+          <Portfolio />
         ) : (
           <Thinking
             onGoToSolution={() => {

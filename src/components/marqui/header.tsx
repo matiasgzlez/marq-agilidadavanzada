@@ -4,14 +4,15 @@ import { cn } from "@/lib/utils";
 import { MarquiLive } from "./marqui-live";
 import { MarqLogo, ease } from "./primitives";
 
-export type Panel = "solucion" | "thinking";
+export type Panel = "solucion" | "portfolio" | "thinking";
+const PANEL_LABEL: Record<Panel, string> = { solucion: "Solución", portfolio: "Portfolio", thinking: "Design thinking" };
 type Brand = "marqui" | "marqador";
 
 /**
  * Three things, floating: MARQ on the left, the switch in the middle, and on
  * the right whoever is on stage, MARQui or, inside his sections, MARQador.
  */
-/** `showPanels`: the MARQui / Design thinking switch. Off until Design thinking is presented. */
+/** `showPanels`: the Solución / Portfolio / Design thinking switch. */
 export function Header({ panel, onPanel, showPanels = false }: { panel: Panel; onPanel: (p: Panel) => void; showPanels?: boolean }) {
   const [brand, setBrand] = useState<Brand>("marqui");
   const pill = usePillVisible();
@@ -63,7 +64,7 @@ export function Header({ panel, onPanel, showPanels = false }: { panel: Panel; o
         {...pill.handlers}
         className={cn(pill.visible ? "pointer-events-auto" : "pointer-events-none", "flex rounded-full bg-ink/90 p-1 shadow-[0_0.75rem_2rem_-0.75rem_rgb(0_0_0/0.5)] ring-1 ring-white/15 backdrop-blur-sm")}
       >
-        {(["solucion", "thinking"] as const).map((p) => (
+        {(["solucion", "portfolio", "thinking"] as const).map((p) => (
           <button
             key={p}
             role="tab"
@@ -73,10 +74,10 @@ export function Header({ panel, onPanel, showPanels = false }: { panel: Panel; o
               onPanel(p);
               window.scrollTo({ top: 0, behavior: "instant" });
             }}
-            className={cn("relative rounded-full px-4 py-2 text-[clamp(0.9rem,1vw,1.05rem)] font-semibold transition-colors sm:px-6 sm:py-2.5", panel === p ? "text-ink" : "text-white/80 hover:text-white")}
+            className={cn("relative rounded-full px-3 py-2 text-[clamp(0.85rem,1vw,1.05rem)] font-semibold transition-colors sm:px-6 sm:py-2.5", panel === p ? "text-ink" : "text-white/80 hover:text-white")}
           >
             {panel === p && <motion.span layoutId="panel-pill" className="absolute inset-0 rounded-full bg-white" transition={{ type: "spring", stiffness: 380, damping: 34 }} />}
-            <span className="relative">{p === "solucion" ? "MARQui" : "Design thinking"}</span>
+            <span className="relative">{PANEL_LABEL[p]}</span>
           </button>
         ))}
       </motion.div>
