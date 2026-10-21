@@ -3,6 +3,7 @@ import { MarqLogo } from "./primitives";
 import { Clustering } from "./dt-clustering";
 import { Learnings } from "./dt-learnings";
 import { Opening } from "./dt-opening";
+import { HowMightWe } from "./dt-hmw";
 import { Journey } from "./dt-journey";
 import { Personas } from "./dt-personas";
 
@@ -17,6 +18,7 @@ export function ThinkingPanel({ onGoToSolution }: { onGoToSolution?: () => void 
       <Clustering />
       <Personas />
       <Journey />
+      <HowMightWe />
       <Learnings />
 
       <footer className="relative -mx-4 flex flex-wrap items-center justify-between gap-3 bg-ink px-6 py-5 text-[0.95rem] text-white/75 sm:-mx-8 lg:-mx-12 lg:px-12">

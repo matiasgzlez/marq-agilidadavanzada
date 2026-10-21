@@ -9,7 +9,7 @@ export const TECHNIQUES = [
   { id: "clustering", n: 1, name: "Clustering", phase: "Definir", text: "Ordenar la entrevista" },
   { id: "personas", n: 2, name: "Personas", phase: "Definir", text: "Quién nos escribe" },
   { id: "journey", n: 3, name: "Customer Journey", phase: "Empatizar", text: "Dónde se pierde el prospecto" },
-  { id: "como-podriamos", n: 4, name: "¿Cómo podríamos…?", phase: "Idear", text: "Del problema a las ideas" },
+  { id: "como-podriamos", n: 4, name: "¿Cómo podríamos…?", phase: "Definir e Idear", text: "Del problema a las ideas" },
   { id: "prototipo", n: 5, name: "Prototipo", phase: "Prototipar", text: "Probar la propuesta" },
 ] as const;
 
