@@ -10,8 +10,8 @@ import { Control, TimeSaved } from "@/components/marqui/story";
 import { Where } from "@/components/marqui/where";
 import { SkyBackground, SkyProvider } from "@/components/marqui/sky";
 
-/* Design thinking isn't presented yet: its tab and the header switch stay hidden. Flip to bring them back. */
-const SHOW_THINKING = false;
+/* Design thinking is on: its tab and the header switch show. Flip to hide them again. */
+const SHOW_THINKING = true;
 const initialPanel = (): Panel => (SHOW_THINKING && new URLSearchParams(window.location.search).get("panel") === "thinking" ? "thinking" : "solucion");
 
 export function App() {

@@ -128,7 +128,7 @@ npm run preview
 
 `.npmrc` activa `legacy-peer-deps` por un conflicto de una dependencia opcional de `@vitejs/plugin-react` (`@babel/core` 7 contra 8).
 
-La pestaña **Design thinking** está oculta hasta que se presente. Para mostrarla, cambiá `SHOW_THINKING` a `true` en [src/App.tsx](src/App.tsx).
+La pestaña **Design thinking** (http://127.0.0.1:4173/?panel=thinking) cuenta las técnicas que usamos. Para ocultarla, cambiá `SHOW_THINKING` a `false` en [src/App.tsx](src/App.tsx).
 
 ## Documentos del proceso
 
